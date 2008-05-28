@@ -62,7 +62,7 @@ xml = ' \
    <uint16 value="0x0111"/>                    \
   </attribute>									\
   <attribute id="0x0202">                       \
-   <uint8 value="0x0c"/>                    \
+   <uint8 value="0xc0"/>                    \
   </attribute>									\
   <attribute id="0x0203">                       \
    <uint8 value="0x016"/>                    \
