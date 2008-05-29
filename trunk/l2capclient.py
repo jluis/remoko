@@ -1,8 +1,7 @@
+
 import sys
 import dbus
-
-from bluetooth import *
-
+import bluetooth
 
 def check_pairing(host):
 	
@@ -21,17 +20,17 @@ def check_pairing(host):
                 
 	return paired       
 
-service_matches = find_service(name = "OBEX Object Push", uuid = OBEX_OBJPUSH_CLASS)
 
-if len(service_matches) == 0:
-	print "couldnt find the service!"
-	sys . exit(0)
-	
-first_match = service_matches[0]
 
-port = first_match[ "port" ]
-name = first_match[ "name" ]
-host = first_match[ "host" ]
+sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
+
+if len(sys.argv) < 2:
+    print "usage: l2capclient.py < device addr>"
+    sys.exit(2)
+
+host=sys.argv[1]
+# a porta tem de estar disponivel, mudar para um scan de portas ou algo do genero
+port = 25
 
 paired = check_pairing(host)
 
@@ -46,20 +45,15 @@ if not paired:
 
 print "connecting to " , host
 
-sock=BluetoothSocket( RFCOMM )
-sock.connect( (host , port) )
+print "trying to connect to %s on PSM 0x%X" % (host, port)
 
-sock.send( "Hello!!" )
+sock.connect((host, port))
 
-print 'port: ' + str(port)
-print 'name: ' + str(name)
-print 'host: ' + str(host)
+print "connected.  type stuff"
+while True:
+    data = raw_input()
+    if(len(data) == 0): break
+    sock.send(data)
 
-data = sock.recv(80)
-print "received: " , data
-sock.close( )
-
-
-
-
+sock.close()
 
