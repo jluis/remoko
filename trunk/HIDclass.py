@@ -9,7 +9,7 @@ def setupHID(self):
 	os.popen ("hciconfig hci0 piscan")
 	os.popen ("hciconfig hci0 class 0x0005c0")
 	
-	#pode ser necessario o sdpd tb
+	# verify if sdpd is running
 	
 	print "Device class changed to keyboard/mouse combo"
 	

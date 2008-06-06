@@ -29,13 +29,14 @@ if len(sys.argv) < 2:
     sys.exit(2)
 
 host=sys.argv[1]
-# a porta tem de estar disponivel, mudar para um scan de portas ou algo do genero
+#port should be available, make a l2cap scan
+
 port = 25
 
 paired = check_pairing(host)
 
 if not paired:
-	#apanhar a excepcao de autenticacao falhada
+	#put exception of authentication failed
 	bus = dbus.SystemBus()
 
 	obj = bus.get_object('org.bluez', '/org/bluez/hci0')
