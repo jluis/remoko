@@ -33,10 +33,13 @@ port = first_match[ "port" ]
 name = first_match[ "name" ]
 host = first_match[ "host" ]
 
+sock=BluetoothSocket( RFCOMM )
+sock.connect( (host , port) )
+
 paired = check_pairing(host)
 
 if not paired:
-	#apanhar a excepcao de autenticacao falhada
+	#put exception of authentication failed
 	bus = dbus.SystemBus()
 
 	obj = bus.get_object('org.bluez', '/org/bluez/hci0')
@@ -46,8 +49,7 @@ if not paired:
 
 print "connecting to " , host
 
-sock=BluetoothSocket( RFCOMM )
-sock.connect( (host , port) )
+
 
 sock.send( "Hello!!" )
 
