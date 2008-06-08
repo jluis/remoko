@@ -1,6 +1,8 @@
 import dbus
 import time
 
+from bluetooth import *
+
 xml = ' \
 <?xml version="1.0" encoding="UTF-8" ?>         \
 <record>                                        \
@@ -117,6 +119,41 @@ handle = database.AddServiceRecordFromXML(xml)
 print "Service record with handle 0x%04x added" % (handle)
 
 print "Press CTRL-C to remove service record"
+
+interrupt_sock= BluetoothSocket( L2CAP )
+control_sock= BluetoothSocket( L2CAP )
+
+
+
+interrupt_port = 0x1013
+control_port = 0x1011
+
+interrupt_sock.bind(("",interrupt_port))
+interrupt_sock.listen(1)
+
+control_sock.bind(("",control_port))
+control_sock.listen(1)
+
+                   
+client_sock,address = interrupt_sock.accept()
+print "Accepted connection from ",address
+
+client_sock_C,address_C = control_sock.accept()
+print "Accepted connection from ",address_C
+
+data = client_sock.recv(1024)
+print "Data received:", data
+
+data = client_sock_C.recv(1024)
+print "Data received:", data
+
+
+client_sock.close()
+interrupt_sock.close()
+
+client_sock_C.close()
+control_sock.close()
+
 
 try:
         time.sleep(1000)
