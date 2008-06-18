@@ -15,13 +15,18 @@ xml = ' \
     <sequence>                                  \
      <sequence>                                \
         <uuid value="0x0100"/>                  \
-        <uint16 value="0x0011"/>				\
+        <uint8 value="0x11"/>				\
       </sequence>                               \
     <sequence>								  	\
        <uuid value="0x0011"/>					\
      </sequence>								\
- </sequence>								    \
+</sequence>								    \
  </attribute>                                  \
+ <attribute id="0x0005">                       \
+    <sequence>                                  \
+      <uuid value="0x1002"/>                    \
+    </sequence>                                 \
+  </attribute>                                  \
  <attribute id="0x0006">						\
     <sequence>									\
         <uint16 value="0x656e"/>				\
@@ -38,24 +43,26 @@ xml = ' \
     </sequence>									\
   </attribute>									\
   <attribute id="0x000d">                       \
-    <sequence>                                  \
+   <sequence>                                  \
      <sequence>                                \
-        <uuid value="0x01124"/>                  \
-        <uint16 value="0x0100"/>				\
+      <sequence>								\
+        <uuid value="0x0100"/>                  \
+        <uint8 value="0x013"/>					\
       </sequence>                               \
     <sequence>								  	\
        <uuid value="0x0011"/>					\
-     </sequence>								\
+    </sequence>								\
    </sequence>								    \
+    </sequence>								    \
   </attribute>                                  \
   <attribute id="0x0100">                       \
-      <text value="BluetoothKeyboard" name="name"/>            \
+      <text value="BluetoothKeyboard"/>            \
   </attribute>									\
   <attribute id="0x0101">                       \
-   <text value="BluetoothVirtual Keyboard" name="name"/>            \
+   <text value="BluetoothVirtual Keyboard"/>            \
   </attribute>									\
   <attribute id="0x0102">                       \
-   <text value="VDVsx Inc." name="name"/>            \
+   <text value="VDVsx Inc."/>            \
   </attribute>									\
   <attribute id="0x0200">                       \
    <uint16 value="0x0100"/>                    \
@@ -64,16 +71,16 @@ xml = ' \
    <uint16 value="0x0111"/>                    \
   </attribute>									\
   <attribute id="0x0202">                       \
-   <uint8 value="0xc0"/>                    \
+   <uint16 value="0x0040"/>                    \
   </attribute>									\
   <attribute id="0x0203">                       \
-   <uint8 value="0x016"/>                    \
+   <uint16 value="0x000d"/>                    \
   </attribute>									\
   <attribute id="0x0204">                       \
-   <boolean value="true"/>                    \
+   <uint16 value="0x0001"/>                    \
   </attribute>									\
    <attribute id="0x0205">                       \
-   <boolean value="true"/>                    \
+   <uint16 value="0x0001"/>                    \
   </attribute>									\
   <attribute id="0x0206">                       \
     <sequence>                                  \
@@ -92,19 +99,22 @@ xml = ' \
   </sequence>								    \
   </attribute>                                  \
   <attribute id="0x0208">                       \
-   <boolean value="false"/>                    \
+   <uint16 value="0x0000"/>                    \
   </attribute>									\
    <attribute id="0x0209">                       \
-   <boolean value="true"/>                    \
+   <uint16 value="0x0001"/>                    \
  </attribute>									\
   <attribute id="0x020a">                       \
-  <boolean value="true"/>                    \
+  <uint16 value="0x0001"/>                    \
   </attribute>									\
   <attribute id="0x020b">                       \
   <uint16 value="0x0100"/>                    \
   </attribute>									\
+  <attribute id="0x020c">                       \
+  <uint16 value="0x1f40"/>                    \
+  </attribute>									\
   <attribute id="0x020d">                       \
-  <boolean value="true"/>                    \
+  <uint16 value="0x0001"/>                    \
   </attribute>									\
   <attribute id="0x020e">                       \
    <boolean value="false"/>                    \
@@ -120,39 +130,39 @@ print "Service record with handle 0x%04x added" % (handle)
 
 print "Press CTRL-C to remove service record"
 
-interrupt_sock= BluetoothSocket( L2CAP )
-control_sock= BluetoothSocket( L2CAP )
+#interrupt_sock= BluetoothSocket( L2CAP )
+#control_sock= BluetoothSocket( L2CAP )
 
 
 
-interrupt_port = 0x1013
-control_port = 0x1011
+#interrupt_port = 19
+#control_port = 17
 
-interrupt_sock.bind(("",interrupt_port))
-interrupt_sock.listen(1)
+#interrupt_sock.bind(("",interrupt_port))
+#interrupt_sock.listen(1)
 
-control_sock.bind(("",control_port))
-control_sock.listen(1)
+#control_sock.bind(("",control_port))
+#control_sock.listen(1)
 
                    
-client_sock,address = interrupt_sock.accept()
-print "Accepted connection from ",address
+#client_sock,address = interrupt_sock.accept()
+#print "Accepted connection from ",address
 
-client_sock_C,address_C = control_sock.accept()
-print "Accepted connection from ",address_C
+#client_sock_C,address_C = control_sock.accept()
+#print "Accepted connection from ",address_C
 
-data = client_sock.recv(1024)
-print "Data received:", data
+#data = client_sock.recv(1024)
+#print "Data received:", data
 
-data = client_sock_C.recv(1024)
-print "Data received:", data
+#data = client_sock_C.recv(1024)
+#print "Data received:", data
 
 
-client_sock.close()
-interrupt_sock.close()
+#client_sock.close()
+#interrupt_sock.close()
 
-client_sock_C.close()
-control_sock.close()
+#client_sock_C.close()
+#control_sock.close()
 
 
 try:

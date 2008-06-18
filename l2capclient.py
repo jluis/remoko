@@ -23,6 +23,7 @@ def check_pairing(host):
 
 
 sock=bluetooth.BluetoothSocket(bluetooth.L2CAP)
+sock2=bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
 if len(sys.argv) < 2:
     print "usage: l2capclient.py < device addr>"
@@ -31,7 +32,8 @@ if len(sys.argv) < 2:
 host=sys.argv[1]
 #port should be available, make a l2cap scan
 
-port = 25
+port = 17
+port2 = 19
 
 paired = check_pairing(host)
 
@@ -49,6 +51,7 @@ print "connecting to " , host
 print "trying to connect to %s on PSM 0x%X" % (host, port)
 
 sock.connect((host, port))
+sock2.connect((host, port2))
 
 print "connected.  type stuff"
 while True:
