@@ -83,7 +83,7 @@ static int l2cap_accept(int sk, bdaddr_t *bdaddr)
 
 int main()
 {
-	int opt, ctl, csk, isk,cs,is;
+	int opt, ctl, csk, isk,cs,is,i;
 	bdaddr_t bdaddr, dev;
 	char addr[18];
 	int bytes_read,lm = 0;
@@ -123,21 +123,41 @@ int main()
 	
 	is = l2cap_accept(isk, NULL);
 	
-	
-	write(cs, th, 1);
-	bzero(th, 12);
+	sleep(5);
+	//write(cs, th, 1);
+	//bzero(th, 12);
 	
 	th[0] = 0xa1;
 	th[1] = 0x01;
-	th[2] = 0x00;
+	th[2] = 0x00; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
 	th[3] = 0x00;
-	th[4] = 0x00; // the key code
+	th[4] = 0x07; // the key code
 	th[5] = 0x00;
 	th[6] = 0x00;
-	th[7] = 0x01;
+	th[7] = 0x00;
 	th[8] = 0x00;
-	th[9] = 30;
+	th[9] = 0x00;
 	
+	write(is, th, sizeof(th));
+	
+	/*for (i=0;i<1;i++){*/
+		
+		
+	//th[4] = 0x0f;
+	//write(is, th, sizeof(th));
+	//th[4] = 0x2b;	
+	//write(is, th, sizeof(th));
+	//th[4] = 0x08;
+	//write(is, th, sizeof(th));
+	//th[4] = 0x1d;
+	//write(is, th, sizeof(th));
+	//th[4] = 0x111;
+	//write(is, th, sizeof(th));
+	
+	/*}*/
+		
+	
+	/*
 	while(1){	
 		bzero(cenas,1);
 		cenas[0] = 30;
@@ -147,7 +167,7 @@ int main()
 		th2[0] = 0;
 		write(cs,cenas,1);
 		//write(cs,30,1);
-	}
+	}*/
 	
 	/*
 	while(1){
