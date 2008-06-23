@@ -135,7 +135,6 @@ int main()
 	
 	unsigned char th[10];
 	
-	
 	dev_class = get_device_class(0);
 	printf("0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
 
