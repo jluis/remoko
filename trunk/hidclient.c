@@ -23,6 +23,8 @@
 #define L2CAP_PSM_HIDP_CTRL 0x11
 #define L2CAP_PSM_HIDP_INTR 0x13
 
+uint8_t cls[3];
+
 /*From Bluez Utils 3.2*/
 
 static int l2cap_listen(const bdaddr_t *bdaddr, unsigned short psm, int lm, int backlog)
@@ -81,6 +83,42 @@ static int l2cap_accept(int sk, bdaddr_t *bdaddr)
 	return nsk;
 }
 
+static uint8_t* get_device_class(int hdev)
+{
+	static char dev_class[3];
+	int s = hci_open_dev(hdev);
+
+	if (s < 0) {
+		fprintf(stderr, "Can't open device hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+	
+	if (hci_read_class_of_dev(s, cls, 1000) < 0) {
+		fprintf(stderr, "Can't read class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+	//sprintf(dev_class,"0x%02x%02x%02x\n", cls[2], cls[1], cls[0]);
+	//printf("%s", dev_class);
+	return cls;
+
+}
+
+static void set_device_class(int hdev, char* class)
+{
+
+	int s = hci_open_dev(hdev);
+
+	uint32_t cod = strtoul(class, NULL, 16);
+	if (hci_write_class_of_dev(s, cod, 2000) < 0) {
+		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+
+}
+
 int main()
 {
 	int opt, ctl, csk, isk,cs,is,i;
@@ -89,19 +127,81 @@ int main()
 	int bytes_read,lm = 0;
 	char buf[1024] = { 0 };
 	char buf2[1024] = { 0 };
+	char val[4];
+	int hdev = 0;
+	uint8_t* dev_class;
+	uint8_t* dev_class2;
+	char default_class[8];
 	
-	unsigned char th[12];
-	unsigned char cenas[1];
-	unsigned char th2[12];
+	unsigned char th[10];
 	
-	/*ba2str(&bdaddr, addr);*/
-/*
-	ctl = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HIDP);
-	if (ctl < 0) {
-		perror("Can't open HIDP control socket");
+	
+	dev_class = get_device_class(0);
+	printf("0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
+
+	sprintf(default_class,"0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
+	printf("%s", default_class);
+	
+	set_device_class(hdev, "0x0005c0");
+
+	dev_class2 = get_device_class(0);
+	printf("Device Class changed to: 0x%02x%02x%02x\n", dev_class2[2], dev_class2[1], dev_class2[0]);
+	/*
+	int s = hci_open_dev(hdev);
+
+	uint32_t cod = strtoul(new_dev_class, NULL, 16);
+	if (hci_write_class_of_dev(s, cod, 2000) < 0) {
+		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+
+	dev_class2 = get_device_class(0);
+	printf("0x%02x%02x%02x\n", dev_class2[2], dev_class2[1], dev_class2[0]);
+	*/
+	/*
+	char dev_class[1];
+	static char dev_class2[3];
+	int s = hci_open_dev(hdev);
+	uint8_t cls[3];
+	char new_dev_class[8] = "0x120112";
+
+	memset(dev_class,0,sizeof(dev_class));
+	memset(dev_class2,0, sizeof(dev_class2));
+
+	dev_class2 = get_device_class(0);
+	//printf("%s",dev_class);
+
+	uint32_t cod = strtoul(new_dev_class, NULL, 16);
+	if (hci_write_class_of_dev(s, cod, 2000) < 0) {
+		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+
+	
+
+
+	//ghhhh
+
+	uint32_t cod2 = strtoul(dev_class2, NULL, 16);
+	if (hci_write_class_of_dev(s, cod2, 2000) < 0) {
+		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
+		exit(1);
+	}
+
+	if (hci_read_class_of_dev(s, cls, 1000) < 0) {
+		fprintf(stderr, "Can't read class of device on hci%d: %s (%d)\n",
+						hdev, strerror(errno), errno);
 		exit(1);
 	}
 	
+	sprintf(dev_class,"0x%02x%02x%02x\n", cls[2], cls[1], cls[0]);
+	printf("%s", dev_class);
+	printf("%s", cls);
+
+	//ghhh
 	*/
 	
 	csk = l2cap_listen(BDADDR_ANY, L2CAP_PSM_HIDP_CTRL, lm, 10);
@@ -122,71 +222,44 @@ int main()
 	cs = l2cap_accept(csk, NULL);
 	
 	is = l2cap_accept(isk, NULL);
-	
-	sleep(5);
-	//write(cs, th, 1);
-	//bzero(th, 12);
-	
-	th[0] = 0xa1;
-	th[1] = 0x01;
-	th[2] = 0x00; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
-	th[3] = 0x00;
-	th[4] = 0x07; // the key code
-	th[5] = 0x00;
-	th[6] = 0x00;
-	th[7] = 0x00;
-	th[8] = 0x00;
-	th[9] = 0x00;
-	
-	write(is, th, sizeof(th));
-	
-	/*for (i=0;i<1;i++){*/
-		
-		
-	//th[4] = 0x0f;
-	//write(is, th, sizeof(th));
-	//th[4] = 0x2b;	
-	//write(is, th, sizeof(th));
-	//th[4] = 0x08;
-	//write(is, th, sizeof(th));
-	//th[4] = 0x1d;
-	//write(is, th, sizeof(th));
-	//th[4] = 0x111;
-	//write(is, th, sizeof(th));
-	
-	/*}*/
-		
-	
-	/*
-	while(1){	
-		bzero(cenas,1);
-		cenas[0] = 30;
-		write(is, th, 1);
-		bzero(th2, 12);
-		
-		th2[0] = 0;
-		write(cs,cenas,1);
-		//write(cs,30,1);
-	}*/
-	
-	/*
-	while(1){
-		
-		// read data from the client
-    	memset(buf, 0, sizeof(buf));
-    	bytes_read = recv(csk, buf, sizeof(buf), 0);
-    	if( bytes_read > 0 ) {
-        	printf("received [%s]\n", buf);
-    	}
-		
-		// read data from the client
-    	memset(buf2, 0, sizeof(buf2));
-    	bytes_read = recv(isk, buf2, sizeof(buf2), 0);
-    	if( bytes_read > 0 ) {
-        	printf("received [%s]\n", buf2);
-    	}
-		
+
+
+	while (1){
+
+		memset(val,0, sizeof(val));
+
+		if(scanf("%s", val)){
+			
+			if(!strcmp (val, "quit")){
+
+				set_device_class(hdev, default_class);
+				printf("Device class changed to: %s\n", default_class);
+				exit(1);
+				
+			}
+			else{
+				getchar();
+				//printf("%s\n", val);
+
+				th[0] = 0xa1;
+				th[1] = 0x01;
+				th[2] = 0x00; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
+				th[3] = 0x00;
+				th[4] = atoi(val); // the key code
+				th[5] = 0x00;
+				th[6] = 0x00;
+				th[7] = 0x00;
+				th[8] = 0x00;
+				th[9] = 0x00;
+				
+				
+				write(is, th, sizeof(th));
+				printf("%d\n", th[4]);
+				th[4] = 0x00;
+				write(is, th, sizeof(th));
+				
+			}
+		}
 	}
-		*/
 	
 }
