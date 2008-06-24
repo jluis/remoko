@@ -99,8 +99,7 @@ static uint8_t* get_device_class(int hdev)
 						hdev, strerror(errno), errno);
 		exit(1);
 	}
-	//sprintf(dev_class,"0x%02x%02x%02x\n", cls[2], cls[1], cls[0]);
-	//printf("%s", dev_class);
+	
 	return cls;
 
 }
@@ -119,6 +118,29 @@ static void set_device_class(int hdev, char* class)
 
 }
 
+static void send_event(int is, int modifiers, int val)
+{
+
+        unsigned char th[10];
+	
+	th[0] = 0xa1;
+	th[1] = 0x01;
+	th[2] = modifiers; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
+	th[3] = 0x00;
+	th[4] = val; // the key code
+	th[5] = 0x00;
+	th[6] = 0x00;
+	th[7] = 0x00;
+	th[8] = 0x00;
+	th[9] = 0x00;
+	
+
+	write(is, th, sizeof(th));
+	printf("%d\n", th[4]);
+	th[4] = 0x00;
+	write(is, th, sizeof(th));
+}
+
 int main()
 {
 	int opt, ctl, csk, isk,cs,is,i;
@@ -133,7 +155,7 @@ int main()
 	uint8_t* dev_class2;
 	char default_class[8];
 	
-	unsigned char th[10];
+	
 	
 	dev_class = get_device_class(0);
 	printf("0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
@@ -145,63 +167,7 @@ int main()
 
 	dev_class2 = get_device_class(0);
 	printf("Device Class changed to: 0x%02x%02x%02x\n", dev_class2[2], dev_class2[1], dev_class2[0]);
-	/*
-	int s = hci_open_dev(hdev);
 
-	uint32_t cod = strtoul(new_dev_class, NULL, 16);
-	if (hci_write_class_of_dev(s, cod, 2000) < 0) {
-		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
-						hdev, strerror(errno), errno);
-		exit(1);
-	}
-
-	dev_class2 = get_device_class(0);
-	printf("0x%02x%02x%02x\n", dev_class2[2], dev_class2[1], dev_class2[0]);
-	*/
-	/*
-	char dev_class[1];
-	static char dev_class2[3];
-	int s = hci_open_dev(hdev);
-	uint8_t cls[3];
-	char new_dev_class[8] = "0x120112";
-
-	memset(dev_class,0,sizeof(dev_class));
-	memset(dev_class2,0, sizeof(dev_class2));
-
-	dev_class2 = get_device_class(0);
-	//printf("%s",dev_class);
-
-	uint32_t cod = strtoul(new_dev_class, NULL, 16);
-	if (hci_write_class_of_dev(s, cod, 2000) < 0) {
-		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
-						hdev, strerror(errno), errno);
-		exit(1);
-	}
-
-	
-
-
-	//ghhhh
-
-	uint32_t cod2 = strtoul(dev_class2, NULL, 16);
-	if (hci_write_class_of_dev(s, cod2, 2000) < 0) {
-		fprintf(stderr, "Can't write local class of device on hci%d: %s (%d)\n",
-						hdev, strerror(errno), errno);
-		exit(1);
-	}
-
-	if (hci_read_class_of_dev(s, cls, 1000) < 0) {
-		fprintf(stderr, "Can't read class of device on hci%d: %s (%d)\n",
-						hdev, strerror(errno), errno);
-		exit(1);
-	}
-	
-	sprintf(dev_class,"0x%02x%02x%02x\n", cls[2], cls[1], cls[0]);
-	printf("%s", dev_class);
-	printf("%s", cls);
-
-	//ghhh
-	*/
 	
 	csk = l2cap_listen(BDADDR_ANY, L2CAP_PSM_HIDP_CTRL, lm, 10);
 		if (csk < 0) {
@@ -238,24 +204,7 @@ int main()
 			}
 			else{
 				getchar();
-				//printf("%s\n", val);
-
-				th[0] = 0xa1;
-				th[1] = 0x01;
-				th[2] = 0x00; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
-				th[3] = 0x00;
-				th[4] = atoi(val); // the key code
-				th[5] = 0x00;
-				th[6] = 0x00;
-				th[7] = 0x00;
-				th[8] = 0x00;
-				th[9] = 0x00;
-				
-				
-				write(is, th, sizeof(th));
-				printf("%d\n", th[4]);
-				th[4] = 0x00;
-				write(is, th, sizeof(th));
+				send_event(is, 0, atoi(val));
 				
 			}
 		}
