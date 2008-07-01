@@ -1,7 +1,6 @@
 import dbus
 import time
-
-from bluetooth import *
+import os
 
 xml = ' \
 <?xml version="1.0" encoding="UTF-8" ?>\
@@ -127,6 +126,16 @@ database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
                                                         'org.bluez.Database')
 handle = database.AddServiceRecordFromXML(xml)
 
+bus2 = dbus.SystemBus()
+input = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'), 'org.bluez.Manager')
+#input.Stop()
+a = input.FindService('input')
+input2 = dbus.Interface(bus.get_object('org.bluez', a), 'org.bluez.Service.stop()')
+os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
+#stop(input2)
+#b = input.ServiceRemoved(input.FindService('input'))
+
+
 print "Service record with handle 0x%04x added" % (handle)
 
 print "Press CTRL-C to remove service record"
@@ -173,3 +182,5 @@ except:
         pass
 
 database.RemoveServiceRecord(handle)
+os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
+
