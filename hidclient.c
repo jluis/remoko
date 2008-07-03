@@ -136,12 +136,38 @@ static void send_event(int is, int modifiers, int val)
 	
 
 	write(is, th, sizeof(th));
-	printf("%d\n", th[4]);
+	//printf("%d\n", th[4]);
 	th[4] = 0x00;
 	write(is, th, sizeof(th));
 }
 
-int main()
+static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
+{
+
+        unsigned char th[10];
+	
+	th[0] = 0xa1;
+	th[1] = 0x02;
+	th[2] = btn; // 0x01 - left, 0x02 - right, 0x04 - middle, 0x08 - side, 0x10 - extra
+	th[3] = mov_x;
+	th[4] = mov_y; // the key code
+	th[5] = whell;
+	th[6] = 0x00;
+	th[7] = 0x00;
+	th[8] = 0x00;
+	th[9] = 0x00;
+	
+
+	write(is, th, sizeof(th));
+	//printf("%d\n", th[4]);
+	//th[4] = 0x00;
+	//write(is, th, sizeof(th));
+}
+
+
+
+
+int main(int argc, char *argv[])
 {
 	int opt, ctl, csk, isk,cs,is,i;
 	bdaddr_t bdaddr, dev;
@@ -154,6 +180,7 @@ int main()
 	uint8_t* dev_class;
 	uint8_t* dev_class2;
 	char default_class[8];
+	unsigned char th[10];
 	
 	
 	
@@ -199,12 +226,26 @@ int main()
 
 				set_device_class(hdev, default_class);
 				printf("Device class changed to: %s\n", default_class);
+				close(cs);
+				close(is);
 				exit(1);
 				
+			}
+			if(!strlen(val) > 2){
+				char *val_x = strncat(&val[0], &val[1],1);
+                                char *val_y = strncat(&val[2], &val[3],1);
+				getchar();
+				send_mouse_event(is, 0, atoi(val_x),atoi(val_y),0);
+				
+
 			}
 			else{
 				getchar();
 				send_event(is, 0, atoi(val));
+				//write(is, th, sizeof(th));
+				//printf("%d\n", th[4]);
+				//th[4] = 0x00;
+				//write(is, th, sizeof(th));
 				
 			}
 		}
