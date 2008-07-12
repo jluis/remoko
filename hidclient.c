@@ -22,14 +22,17 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdlib.h>
+#include <string.h>
 #include <malloc.h>
 #include <syslog.h>
 #include <signal.h>
 #include <getopt.h>
+#include <netinet/in.h>
+#include <sys/types.h> 
 #include <sys/poll.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -46,6 +49,39 @@
 #define L2CAP_PSM_HIDP_INTR 0x13
 
 uint8_t cls[3];
+
+void error(char *msg)
+{
+    perror(msg);
+    exit(1);
+}
+
+int create_socket()
+{
+	
+     int sockfd, newsockfd, portno, clilen;
+     char buffer[256];
+     struct sockaddr_in serv_addr, cli_addr;
+     int n;
+    
+     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+     if (sockfd < 0){
+        error("ERROR opening socket");
+     }
+
+     bzero((char *) &serv_addr, sizeof(serv_addr));
+     portno = 6543;
+     serv_addr.sin_family = AF_INET;
+     serv_addr.sin_addr.s_addr = INADDR_ANY;
+     serv_addr.sin_port = htons(portno);
+
+     if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0){
+              error("ERROR on binding");
+     }
+    return sockfd;
+
+}
 
 /*From Bluez Utils 3.2*/
 
@@ -191,7 +227,7 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 
 int main(int argc, char *argv[])
 {
-	int opt, ctl, csk, isk,cs,is,i;
+	int opt, ctl, csk, isk,cs,is,i,n,sockfd, newsockfd, clilen;
 	bdaddr_t bdaddr, dev;
 	char addr[18];
 	int bytes_read,lm = 0;
@@ -203,8 +239,16 @@ int main(int argc, char *argv[])
 	uint8_t* dev_class2;
 	char default_class[8];
 	unsigned char th[10];
-	
-	
+     	char buffer[256];
+    	char event[3];
+     	char modifiers[3];
+     	char key_value[3];
+     	char btn[3];
+     	char mov_x[3];
+     	char mov_y[3];
+     	char whell[3];
+     	struct sockaddr_in serv_addr, cli_addr;
+     
 	
 	dev_class = get_device_class(0);
 	printf("0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
@@ -238,8 +282,91 @@ int main(int argc, char *argv[])
 	is = l2cap_accept(isk, NULL);
 
 
-	while (1){
+	sockfd = create_socket();
+     
 
+     	listen(sockfd,5);
+     	clilen = sizeof(cli_addr);
+     	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+
+     	if (newsockfd < 0){
+		error("ERROR on accept");
+    	}
+
+
+
+	while (1){
+	     
+		bzero(buffer,256);
+		n = recv(newsockfd,buffer,255,0);
+
+		if (n < 0){
+		 error("ERROR reading from socket");
+		}
+
+			printf("The message: %s\n",buffer);
+			n = write(newsockfd,"Message received",17);
+			strncpy(event, &buffer[0],2);
+			event[2] = '\0';
+			printf("event: %s\n", event);
+
+		if (n < 0){
+			error("ERROR writing to socket");
+		}
+
+		if (strcmp(event,"01") == 0){
+			printf("keyboard\n");
+
+			strncpy(modifiers, &buffer[3],2);
+			modifiers[2] = '\0';
+			printf("modifiers: %s\n", modifiers);
+
+			strncpy(key_value, &buffer[6],2);
+			key_value[2] = '\0';
+			printf("key_value: %s\n", key_value);
+
+			send_event(is,atoi(modifiers),atoi(key_value));
+
+		}
+		else if (strcmp(event, "02") == 0){
+			printf("mouse\n");
+
+			strncpy(btn, &buffer[3],2);
+			btn[2] = '\0';
+			printf("btn: %s\n", btn);
+
+			strncpy(mov_x, &buffer[6],2);
+			mov_x[2] = '\0';
+			printf("mov_x: %s\n", mov_x);
+
+			strncpy(mov_y, &buffer[3],2);
+			mov_y[2] = '\0';
+			printf("mov_y: %s\n", mov_y);
+
+			strncpy(whell, &buffer[6],2);
+			whell[2] = '\0';
+			printf("whell: %s\n", whell);
+		}
+		else{
+
+			if(!strcmp (buffer, "quit")){
+
+				set_device_class(hdev, default_class);
+				printf("Device class changed to: %s\n", default_class);
+				close(cs);
+				close(is);
+				close(sockfd);
+				exit(1);
+				
+			}
+			printf("invalid\n");
+		}
+     }
+     close(cs);
+     close(is);
+     close(sockfd);
+
+		/*
 		memset(val,0, sizeof(val));
 
 		if(scanf("%s", val)){
@@ -253,24 +380,10 @@ int main(int argc, char *argv[])
 				exit(1);
 				
 			}
-			/*if(!strlen(val) > 2){
-				char *val_x = strncat(&val[0], &val[1],1);
-                                char *val_y = strncat(&val[2], &val[3],1);
-				getchar();
-				send_mouse_event(is, 0, atoi(val_x),atoi(val_y),0);
-				
-
-			}*/
-			//else{
+			
 				getchar();
 				send_event(is, 0, atoi(val));
-				//write(is, th, sizeof(th));
-				//printf("%d\n", th[4]);
-				//th[4] = 0x00;
-				//write(is, th, sizeof(th));
 				
-			//}
-		}
-	}
+		}*/
 	
 }
