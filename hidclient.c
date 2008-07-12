@@ -244,9 +244,11 @@ int main(int argc, char *argv[])
      	char modifiers[3];
      	char key_value[3];
      	char btn[3];
-     	char mov_x[3];
-     	char mov_y[3];
-     	char whell[3];
+     	char mov_x[4];
+     	char mov_y[4];
+     	char whell[4];
+	char chk[2];
+        char chk2[2];
      	struct sockaddr_in serv_addr, cli_addr;
      
 	
@@ -293,8 +295,6 @@ int main(int argc, char *argv[])
 		error("ERROR on accept");
     	}
 
-
-
 	while (1){
 	     
 		bzero(buffer,256);
@@ -335,17 +335,77 @@ int main(int argc, char *argv[])
 			btn[2] = '\0';
 			printf("btn: %s\n", btn);
 
-			strncpy(mov_x, &buffer[6],2);
-			mov_x[2] = '\0';
-			printf("mov_x: %s\n", mov_x);
+			strncpy(chk, &buffer[6],1);
+			chk[1] = '\0';
+			printf("gh %s\n", chk);
 
-			strncpy(mov_y, &buffer[3],2);
-			mov_y[2] = '\0';
-			printf("mov_y: %s\n", mov_y);
+			strncpy(chk2, &buffer[9],1);
+			chk2[1] = '\0';
+			printf("gh %s\n", chk2);
 
-			strncpy(whell, &buffer[6],2);
-			whell[2] = '\0';
-			printf("whell: %s\n", whell);
+			if (strcmp(chk,"-") == 0){
+
+				strncpy(mov_x, &buffer[6],3);
+				mov_x[3] = '\0';
+				printf("mov_x: %s\n", mov_x);
+
+				bzero(chk2,sizeof(chk2));
+				strncpy(chk2, &buffer[10],1);
+				chk2[1] = '\0';
+				printf("gh %s\n", chk2);
+				if(strcmp(chk2,"-") == 0){
+
+					strncpy(mov_y, &buffer[10],3);
+					mov_y[3] = '\0';
+					printf("mov_y: %s\n", mov_y);
+
+					strncpy(whell, &buffer[14],2);
+					whell[2] = '\0';
+					printf("whell: %s\n", whell);
+				}
+				else{
+					strncpy(mov_y, &buffer[10],2);
+					mov_y[2] = '\0';
+					printf("mov_y: %s\n", mov_y);
+
+					strncpy(whell, &buffer[13],2);
+					whell[2] = '\0';
+					printf("whell: %s\n", whell);
+				}
+							
+			}
+			
+			else if(strcmp(chk2,"-") == 0){	
+							
+				strncpy(mov_x, &buffer[6],2);
+				mov_x[2] = '\0';
+				printf("mov_x: %s\n", mov_x);
+
+				strncpy(mov_y, &buffer[9],3);
+				mov_y[3] = '\0';
+				printf("mov_y: %s\n", mov_y);
+
+				strncpy(whell, &buffer[13],2);
+				whell[2] = '\0';
+				printf("whell: %s\n", whell);
+			}
+
+			else{
+				
+
+				strncpy(mov_x, &buffer[6],2);
+				mov_x[2] = '\0';
+				printf("mov_x: %s\n", mov_x);
+
+				strncpy(mov_y, &buffer[9],2);
+				mov_y[2] = '\0';
+				printf("mov_y: %s\n", mov_y);
+
+				strncpy(whell, &buffer[12],2);
+				whell[2] = '\0';
+				printf("whell: %s\n", whell);
+			}
+			send_mouse_event(is,atoi(btn),atoi(mov_x),atoi(mov_y),atoi(whell));
 		}
 		else{
 
