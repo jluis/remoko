@@ -231,15 +231,15 @@ int main(int argc, char *argv[])
 				exit(1);
 				
 			}
-			if(!strlen(val) > 2){
+			/*if(!strlen(val) > 2){
 				char *val_x = strncat(&val[0], &val[1],1);
                                 char *val_y = strncat(&val[2], &val[3],1);
 				getchar();
 				send_mouse_event(is, 0, atoi(val_x),atoi(val_y),0);
 				
 
-			}
-			else{
+			}*/
+			//else{
 				getchar();
 				send_event(is, 0, atoi(val));
 				//write(is, th, sizeof(th));
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
 				//th[4] = 0x00;
 				//write(is, th, sizeof(th));
 				
-			}
+			//}
 		}
 	}
 	
