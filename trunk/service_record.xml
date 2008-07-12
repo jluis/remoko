@@ -53,13 +53,13 @@
 		</sequence>
 	</attribute>
 	<attribute id="0x0100">
-		<text value="BluetoothKeyboard" />
+		<text encoding="hex" value="426c75655a20484944206d6f7573652026204b6579626f617264" />
 	</attribute>
 	<attribute id="0x0101">
-		<text value="BluetoothVirtual Keyboard" />
+		<text encoding="hex" value="426c75655a207669727475616c20636f6d626f" />
 	</attribute>
 	<attribute id="0x0102">
-		<text value= "VDVsx Inc." />
+		<text encoding="hex" value="436f7079726967687420323030382056616c6572696f2056616c6572696f202d2076647631303040676d61696c2e636f6d" />
 	</attribute>
 	<attribute id="0x0200">
 		<uint16 value="0x0100" />
