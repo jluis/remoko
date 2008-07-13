@@ -79,6 +79,7 @@ int create_socket()
      if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0){
               error("ERROR on binding");
      }
+
     return sockfd;
 
 }
@@ -227,7 +228,7 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 
 int main(int argc, char *argv[])
 {
-	int opt, ctl, csk, isk,cs,is,i,n,sockfd, newsockfd, clilen;
+	int opt, ctl, csk, isk,cs,is,i,n,sockfd, newsockfd, clilen, client_addr;
 	bdaddr_t bdaddr, dev;
 	char addr[18];
 	int bytes_read,lm = 0;
@@ -250,6 +251,7 @@ int main(int argc, char *argv[])
 	char chk[2];
         char chk2[2];
      	struct sockaddr_in serv_addr, cli_addr;
+	int client_len = 20;
      
 	
 	dev_class = get_device_class(0);
@@ -262,7 +264,7 @@ int main(int argc, char *argv[])
 
 	dev_class2 = get_device_class(0);
 	printf("Device Class changed to: 0x%02x%02x%02x\n", dev_class2[2], dev_class2[1], dev_class2[0]);
-
+	
 	
 	csk = l2cap_listen(BDADDR_ANY, L2CAP_PSM_HIDP_CTRL, lm, 10);
 		if (csk < 0) {
@@ -282,7 +284,7 @@ int main(int argc, char *argv[])
 	cs = l2cap_accept(csk, NULL);
 	
 	is = l2cap_accept(isk, NULL);
-
+	
 
 	sockfd = create_socket();
      
@@ -416,6 +418,7 @@ int main(int argc, char *argv[])
 				close(cs);
 				close(is);
 				close(sockfd);
+				close(newsockfd);
 				exit(1);
 				
 			}
@@ -425,6 +428,7 @@ int main(int argc, char *argv[])
      close(cs);
      close(is);
      close(sockfd);
+     close(newsockfd);
 
 		/*
 		memset(val,0, sizeof(val));
