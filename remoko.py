@@ -22,6 +22,8 @@
 import dbus
 import time
 import os
+import socket
+import sys
 
 input_connect = False
 
@@ -51,25 +53,39 @@ if input_status == True:
 else:
 	
 	input_connect = False
-
-print "Service record with handle 0x%04x added" % (handle)
-
-print "Press CTRL-C to remove service record"
-
-
-try:
-        time.sleep(1000)
-        print "Terminating session"
-except:
-        pass
-
-database.RemoveServiceRecord(handle)
-
-# Restore initial input service condition
-if input_connect == True:
-	input.Start()
-	print "--> BlueZ input service started"
-	#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
 	
+#os.system("sudo ./hidclient")
+
+sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(('localhost', 6543))
+	
+reply = sock.recv(100)
+print reply
+
+bus_adapter = dbus.SystemBus()
+adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
+input_status = adapter.ListConnections()
+print input_status
+print "You are connect to the address: " + str(input_status[-1])
+client_name = adapter.GetRemoteName(input_status[-1])
+print "connected to: " + str(client_name)
+
+
+while 1:
+	s = raw_input()
+	sock.send(s)
+	print sock.recv(100)
+	if s == "quit":
+		sock.close()
+		sys.exit(1)
+
+		database.RemoveServiceRecord(handle)
+
+		# Restore initial input service condition
+		if input_connect == True:
+			input.Start()
+			print "--> BlueZ input service started"
+			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
+			
 
 
