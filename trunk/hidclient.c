@@ -223,9 +223,6 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 	//write(is, th, sizeof(th));
 }
 
-
-
-
 int main(int argc, char *argv[])
 {
 	int opt, ctl, csk, isk,cs,is,i,n,sockfd, newsockfd, clilen, client_addr;
@@ -253,7 +250,18 @@ int main(int argc, char *argv[])
      	struct sockaddr_in serv_addr, cli_addr;
 	int client_len = 20;
      
+	//Communication socket initialization
+	sockfd = create_socket();
+
+     	listen(sockfd,5);
+     	clilen = sizeof(cli_addr);
+     	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+
+     	if (newsockfd < 0){
+		error("ERROR on accept");
+    	}
 	
+	//Change device class
 	dev_class = get_device_class(0);
 	printf("0x%02x%02x%02x\n", dev_class[2], dev_class[1], dev_class[0]);
 
@@ -286,17 +294,13 @@ int main(int argc, char *argv[])
 	is = l2cap_accept(isk, NULL);
 	
 
-	sockfd = create_socket();
-     
+	//send connection info
+	n = write(newsockfd,"connected",9);
 
-     	listen(sockfd,5);
-     	clilen = sizeof(cli_addr);
-     	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-
-     	if (newsockfd < 0){
-		error("ERROR on accept");
-    	}
-
+	if (n < 0){
+		error("ERROR writing to socket");
+	}
+	//start listen the events
 	while (1){
 	     
 		bzero(buffer,256);
