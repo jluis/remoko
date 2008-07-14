@@ -59,10 +59,8 @@ void error(char *msg)
 int create_socket()
 {
 	
-     int sockfd, newsockfd, portno, clilen;
-     char buffer[256];
-     struct sockaddr_in serv_addr, cli_addr;
-     int n;
+     int sockfd, portno;
+     struct sockaddr_in serv_addr;
     
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -144,7 +142,6 @@ static int l2cap_accept(int sk, bdaddr_t *bdaddr)
 
 static uint8_t* get_device_class(int hdev)
 {
-	static char dev_class[3];
 	int s = hci_open_dev(hdev);
 
 	if (s < 0) {
@@ -225,18 +222,12 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 
 int main(int argc, char *argv[])
 {
-	int opt, ctl, csk, isk,cs,is,i,n,sockfd, newsockfd, clilen, client_addr;
-	bdaddr_t bdaddr, dev;
-	char addr[18];
-	int bytes_read,lm = 0;
-	char buf[1024] = { 0 };
-	char buf2[1024] = { 0 };
-	char val[4];
+	int csk, isk,cs,is,n,sockfd, newsockfd, clilen;
+	int lm = 0;
 	int hdev = 0;
 	uint8_t* dev_class;
 	uint8_t* dev_class2;
 	char default_class[8];
-	unsigned char th[10];
      	char buffer[256];
     	char event[3];
      	char modifiers[3];
@@ -248,7 +239,6 @@ int main(int argc, char *argv[])
 	char chk[2];
         char chk2[2];
      	struct sockaddr_in serv_addr, cli_addr;
-	int client_len = 20;
      
 	//Communication socket initialization
 	sockfd = create_socket();
@@ -277,14 +267,12 @@ int main(int argc, char *argv[])
 	csk = l2cap_listen(BDADDR_ANY, L2CAP_PSM_HIDP_CTRL, lm, 10);
 		if (csk < 0) {
 			perror("Can't listen on HID control channel");
-			close(ctl);
 			exit(1);
 		}
 
 	isk = l2cap_listen(BDADDR_ANY, L2CAP_PSM_HIDP_INTR, lm, 10);
 		if (isk < 0) {
 			perror("Can't listen on HID interrupt channel");
-			close(ctl);
 			close(csk);
 			exit(1);
 		}
@@ -413,7 +401,7 @@ int main(int argc, char *argv[])
 			}
 			send_mouse_event(is,atoi(btn),atoi(mov_x),atoi(mov_y),atoi(whell));
 		}
-		else{
+		else{ 
 
 			if(!strcmp (buffer, "quit")){
 
