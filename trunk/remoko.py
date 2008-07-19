@@ -25,67 +25,87 @@ import os
 import socket
 import sys
 
-input_connect = False
-
-# Read record file
-file_read = open('service_record.xml','r')
-xml = file_read.read()
-
-# Add service record to the BlueZ database
-bus = dbus.SystemBus()
-database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
-                                                        'org.bluez.Database')
-handle = database.AddServiceRecordFromXML(xml)
-
-
-# Check if input service is running, if yes terminate the service
-bus_input = dbus.SystemBus()
-input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
-input_status = input.IsRunning()
-
-if input_status == True:
-	input_connect = True
-	cenas = input.Stop()
+class Connect:
 	
-	print "--> BlueZ input service stopped"
-	#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
+	def __init__(self):
 
-else:
-	
-	input_connect = False
-	
-#os.system("sudo ./hidclient")
+		self.input_connect = False
+		self.connect = False
+		
+		bus_input = dbus.SystemBus()
+		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
+		
+		bus_adapter = dbus.SystemBus()
+		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
+		
+		# Read record file
+		file_read = open('service_record.xml','r')
+		xml = file_read.read()
 
-sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(('localhost', 6543))
-	
-reply = sock.recv(100)
-print reply
+		# Add service record to the BlueZ database
+		bus = dbus.SystemBus()
+		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
+																'org.bluez.Database')
+		handle = self.database.AddServiceRecordFromXML(xml)
 
-bus_adapter = dbus.SystemBus()
-adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
-input_status = adapter.ListConnections()
-print input_status
-print "You are connect to the address: " + str(input_status[-1])
-client_name = adapter.GetRemoteName(input_status[-1])
-print "connected to: " + str(client_name)
+		# Check if input service is running, if yes terminate the service
+		
+		input_status = self.input.IsRunning()
 
-
-while 1:
-	s = raw_input()
-	sock.send(s)
-	print sock.recv(100)
-	if s == "quit":
-		sock.close()
-		sys.exit(1)
-
-		database.RemoveServiceRecord(handle)
-
-		# Restore initial input service condition
-		if input_connect == True:
-			input.Start()
-			print "--> BlueZ input service started"
-			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
+		if input_status == True:
+			input_connect = True
+			cenas = self.input.Stop()
 			
+			print "--> BlueZ input service stopped"
+			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
+
+		else:
+			
+			input_connect = False
+			
+		#os.system("sudo ./hidclient")
+
+		self.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+		self.sock.connect(('localhost', 6543))
+		
+		#catch errors	
+		reply = self.sock.recv(100)
+		print reply
+		self.connect = True
+		
+		input_status = self.adapter.ListConnections()
+		print input_status
+		print "You are connect to the address: " + str(input_status[-1])
+		client_name = self.adapter.GetRemoteName(input_status[-1])
+		print "connected to: " + str(client_name)
+	
+	def send_event(self,event):
+		
+		self.sock.send(event)
+	
+	
+	def terminate_connection(self):
+		
+		self.sock.send("quit")
+		self.sock.close()
+		
+
+		self.database.RemoveServiceRecord(handle)
+
+			# Restore initial input service condition
+		if self.input_connect == True:
+			self.input.Start()
+			print "--> BlueZ input service started"
+			
+	
+		
+	#while 1:
+		#s = raw_input()
+		#sock.send(s)
+		#print sock.recv(100)
+		#if s == "quit":
+			
+				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
+				
 
 
