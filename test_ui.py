@@ -11,31 +11,55 @@ import os
 from remoko import *
 
 
+def mouse_position(self,x1,y1):
+	
+	x = x1 - self.x_init
+	y = y1 - self.y_init
+	
+	self.x_init = x1
+	self.y_init = y1
+			
+	return x,y
+
+
 class Screen(edje.Edje):
     def __init__(self, canvas, file):
         edje.Edje.__init__(self, canvas, file=file, group="layout")
+        self.x_init, self.y_init = canvas.pointer_canvas_xy
         #self.container = Container(self.evas)
         #self.part_swallow("contents", self.container)
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def cb_on_btn_clicked(self, emission, source):
     	
-    	if source == "bt_right":
-    		
-    		connection.send_event("02:04:000:000:000")
-    		
-    	elif source == "bt_left":
-    		
-    		connection.send_event("02:01:000:000:000")
-    		
-    	else:
-    		
-    		connection.send_event("quit")
-    		connection.terminate_connection
-    		
-    		sys.exit(1)
-        
-
+		if source == "bt_right":
+			
+			connection.send_event("02:02:000:000:000")
+			
+		elif source == "bt_left":
+			
+			connection.send_event("02:01:000:000:000")
+			
+			
+		elif source == "quit":
+			
+			connection.send_event("quit")
+			connection.terminate_connection
+			ecore.main_loop_quit()
+				
+		else:
+			
+			x,y = canvas.pointer_canvas_xy
+			x1,y1 = mouse_position(self,x,y)
+			
+			print x1
+			print y1
+				
+			mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
+			print mov
+			connection.send_event(mov)
+			
+		
 connection = Connect()
 while connection.connect == False:
 	
@@ -56,3 +80,4 @@ ee.data["screen"] = screen
 
 ee.show()
 ecore.main_loop_begin()
+
