@@ -221,20 +221,19 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 
 int main(int argc, char *argv[])
 {
-	int csk, isk,cs,is,n,sockfd, newsockfd, clilen;
+	int csk, isk,cs,is,n,sockfd, newsockfd, clilen,i,btn,mov_x, mov_y, whell;
 	int lm = 0;
 	int hdev = 0;
 	uint8_t* dev_class;
 	uint8_t* dev_class2;
 	char default_class[8];
      	char buffer[256];
+	char event_msg[18];
     	char event[3];
      	char modifiers[3];
      	char key_value[3];
-     	char btn[3];
-     	char mov_x[5];
-     	char mov_y[5];
-     	char whell[4];
+	char delims[] = ":";
+   	char *result = NULL;
 
      	struct sockaddr_in serv_addr, cli_addr;
      
@@ -302,6 +301,42 @@ int main(int argc, char *argv[])
 			event[2] = '\0';
 			printf("event: %s\n", event);
 
+			if (strcmp(event,"02") == 0){
+
+				strncpy(event_msg, &buffer[0],17);
+				event[18] = '\0';
+
+				result = strtok(event_msg, delims );
+	   			for(i=0; i < 5; i++) {
+					printf("I is %d\n", i);
+					if (i == 0){
+						printf( "event \"%s\"\n", result );
+	       		
+					}
+					else if (i == 1){
+						printf( "btn is \"%s\"\n", result );
+				       		 btn = atoi(result);
+		
+					}
+					else if (i == 2){
+						printf( "mov_x is \"%s\"\n", result );
+				       		mov_x = atoi(result);
+		
+					}
+					else if (i == 3){
+						printf( "mov_y is \"%s\"\n", result );
+						mov_y = atoi(result);
+					}
+
+					else 
+						printf( "scrool is \"%s\"\n", result );
+				       		whell = atoi(result);
+		
+					result = strtok( NULL, delims );	
+				      
+				   }   
+			}        
+
 		if (n < 0){
 			error("ERROR writing to socket");
 		}
@@ -323,75 +358,9 @@ int main(int argc, char *argv[])
 		else if (strcmp(event, "02") == 0){
 			printf("mouse\n");
 
-			strncpy(btn, &buffer[3],2);
-			btn[2] = '\0';
-			printf("btn: %s\n", btn);
-
-			if (strcmp(buffer[7], ":") == 0){
-
-				strncpy(mov_x, &buffer[6],1);
-				mov_x[1] = '\0';
-				printf("mov_x: %s\n", mov_x);
-			}
-			else if (strcmp(buffer[8], ":") == 0){
-
-				strncpy(mov_x, &buffer[6],2);
-				mov_x[2] = '\0';
-				printf("mov_x: %s\n", mov_x);
-			}
-			else if (strcmp(buffer[9], ":") == 0){
-
-				strncpy(mov_x, &buffer[6],3);
-				mov_x[3] = '\0';
-				printf("mov_x: %s\n", mov_x);
-			}
-			else if (strcmp(buffer[10], ":") == 0){
-
-				strncpy(mov_x, &buffer[6],4);
-				mov_x[4] = '\0';
-				printf("mov_x: %s\n", mov_x);
-			}
-
-			if (strcmp(buffer[8], ":") == 0){
-				strncpy(mov_y, &buffer[9],1);
-				mov_y[1] = '\0';
-				printf("mov_y: %s\n", mov_y);
-
-				strncpy(whell, &buffer[11],3);
-				whell[3] = '\0';
-				printf("whell: %s\n", whell);
-			}
-			else if (strcmp(buffer[9], ":") == 0){
-				strncpy(mov_y, &buffer[9],2);
-				mov_y[2] = '\0';
-				printf("mov_y: %s\n", mov_y);
-				
-				strncpy(whell, &buffer[12],3);
-				whell[3] = '\0';
-				printf("whell: %s\n", whell);
-			}
-			else if (strcmp(buffer[10], ":") == 0){
-				strncpy(mov_y, &buffer[9],3);
-				mov_y[3] = '\0';
-				printf("mov_y: %s\n", mov_y);
-
-				strncpy(whell, &buffer[13],3);
-				whell[3] = '\0';
-				printf("whell: %s\n", whell);
-			}
-			else if (strcmp(buffer[11], ":") == 0){
-				strncpy(mov_y, &buffer[9],4);
-				mov_y[4] = '\0';
-				printf("mov_y: %s\n", mov_y);
-
-				strncpy(whell, &buffer[14],3);
-				whell[3] = '\0';
-				printf("whell: %s\n", whell);
-			}
-				
-			printf("atoi mov_x: %d\n",atoi(mov_x));
-			printf("atoi mov_y: %d\n",atoi(mov_y));
-			send_mouse_event(is,atoi(btn),atoi(mov_x),atoi(mov_y),atoi(whell));
+			printf("atoi mov_x: %d\n",mov_x);
+			printf("atoi mov_y: %d\n",mov_y);
+			send_mouse_event(is,btn,mov_x,mov_y,whell);
 		}
 		else{ 
 
@@ -414,24 +383,5 @@ int main(int argc, char *argv[])
      close(sockfd);
      close(newsockfd);
 
-		/*
-		memset(val,0, sizeof(val));
-
-		if(scanf("%s", val)){
-			
-			if(!strcmp (val, "quit")){
-
-				set_device_class(hdev, default_class);
-				printf("Device class changed to: %s\n", default_class);
-				close(cs);
-				close(is);
-				exit(1);
-				
-			}
-			
-				getchar();
-				send_event(is, 0, atoi(val));
-				
-		}*/
 	
 }
