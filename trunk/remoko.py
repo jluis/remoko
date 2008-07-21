@@ -46,7 +46,7 @@ class Connect:
 		bus = dbus.SystemBus()
 		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
 																'org.bluez.Database')
-		handle = self.database.AddServiceRecordFromXML(xml)
+		self.handle = self.database.AddServiceRecordFromXML(xml)
 
 		# Check if input service is running, if yes terminate the service
 		
@@ -61,7 +61,7 @@ class Connect:
 
 		else:
 			
-			input_connect = False
+			self.input_connect = False
 			
 		#os.system("sudo ./hidclient")
 
@@ -87,15 +87,15 @@ class Connect:
 	def terminate_connection(self):
 		
 		self.sock.send("quit")
-		self.sock.close()
-		
 
-		self.database.RemoveServiceRecord(handle)
+		self.database.RemoveServiceRecord(self.handle)
 
 			# Restore initial input service condition
 		if self.input_connect == True:
 			self.input.Start()
 			print "--> BlueZ input service started"
+			
+		print "Connection terminated"
 			
 	
 		
