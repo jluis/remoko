@@ -28,6 +28,7 @@ class Screen(edje.Edje):
         edje.Edje.__init__(self, canvas, file=file, group="layout")
         self.x_init, self.y_init = 0,0
         self.mouse_down = False
+        self.first_touch = True
         #self.container = Container(self.evas)
         #self.part_swallow("contents", self.container)
         
@@ -81,21 +82,30 @@ class Screen(edje.Edje):
     def on_mouse_up(self, emission, source):
 		
 		self.mouse_down = False
+		self.first_touch = True
 		self.x_init, self.y_init = 0,0
 
     @edje.decorators.signal_callback("mouse_over_area", "*")
     def on_mouse_move(self, emission, source):
 
 		if self.mouse_down == True:
-			x,y = canvas.pointer_canvas_xy
-			x1,y1 = mouse_position(self,x,y)
-
-			print x1
-			print y1
+			
+			if self.first_touch == True:
 				
-			mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-			print mov
-			connection.send_event(mov)
+				self.first_touch = False
+				self.x_init, self.y_init = canvas.pointer_canvas_xy
+				
+			else:
+				
+				x,y = canvas.pointer_canvas_xy
+				x1,y1 = mouse_position(self,x,y)
+
+				print x1
+				print y1
+					
+				mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
+				print mov
+				connection.send_event(mov)
 
 		else:
 
@@ -143,6 +153,7 @@ screen.size = canvas.size
 screen.show()
 ee.data["screen"] = screen
 
+ee.fullscreen = not ee.fullscreen
 ee.show()
 ecore.main_loop_begin()
 
