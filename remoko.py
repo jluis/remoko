@@ -53,7 +53,7 @@ class Connect:
 		input_status = self.input.IsRunning()
 
 		if input_status == True:
-			input_connect = True
+			self.input_connect = True
 			cenas = self.input.Stop()
 			
 			print "--> BlueZ input service stopped"
