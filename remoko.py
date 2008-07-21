@@ -24,6 +24,8 @@ import time
 import os
 import socket
 import sys
+from threading import Thread
+
 
 class Connect:
 	
@@ -31,6 +33,7 @@ class Connect:
 
 		self.input_connect = False
 		self.connect = False
+		self.sock_open = False
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
@@ -63,10 +66,18 @@ class Connect:
 			
 			self.input_connect = False
 			
-		#os.system("sudo ./hidclient")
-
-		self.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-		self.sock.connect(('localhost', 6543))
+		#os.popen("sudo ./hidclient")
+		self.deamon = start_deamon()
+		self.deamon.start()
+		while self.sock_open == False:
+			try:
+				
+				self.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+				self.sock.connect(('localhost', 6543))
+				self.sock_open = True
+				
+			except:
+				print "waiting connection ..."
 		
 		#catch errors	
 		reply = self.sock.recv(100)
@@ -107,5 +118,20 @@ class Connect:
 			
 				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
 				
-
+class start_deamon(Thread):
+	
+	def __init__(self):
+		
+		Thread.__init__(self)
+		print "initializing deamon ..."
+		
+	def run(self):
+		
+		try:
+			
+			os.system("sudo ./hidclient")
+			
+		except:
+			
+			print "Error in the deamon"
 
