@@ -148,8 +148,8 @@ class Screen(edje.Edje):
 			
 		elif source == "quit":
 			
-			connection.send_event("quit")
-			connection.terminate_connection
+			#connection.send_event("quit")
+			connection.terminate_connection()
 			ecore.main_loop_quit()
 				
 		else:
