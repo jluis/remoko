@@ -211,7 +211,6 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 	
 
 	write(is, th, sizeof(th));
-	printf("%d\n", th[4]);
 	th[2] = 0x00; 
 	th[3] = 0x00;
 	th[4] = 0x00; 
@@ -328,10 +327,13 @@ int main(int argc, char *argv[])
 						mov_y = atoi(result);
 					}
 
-					else 
-						printf( "scrool is \"%s\"\n", result );
+					else if (i == 4){
+
+						printf( "scroll is \"%s\"\n", result );
 				       		whell = atoi(result);
-		
+						printf("Scroll value is %d\n", whell);
+					}
+
 					result = strtok( NULL, delims );	
 				      
 				   }   
@@ -358,8 +360,8 @@ int main(int argc, char *argv[])
 		else if (strcmp(event, "02") == 0){
 			printf("mouse\n");
 
-			printf("atoi mov_x: %d\n",mov_x);
-			printf("atoi mov_y: %d\n",mov_y);
+			
+			printf("atoi whell: %d\n",whell);
 			send_mouse_event(is,btn,mov_x,mov_y,whell);
 		}
 		else{ 

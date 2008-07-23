@@ -32,7 +32,6 @@ import os
 
 from remoko import *
 
-
 def mouse_position(self,x1,y1):
 	
 	x = x1 - self.x_init
@@ -44,55 +43,16 @@ def mouse_position(self,x1,y1):
 	return x,y
 
 
-class Screen(edje.Edje):
+class Mouse_ui(edje.Edje):
     def __init__(self, canvas, file):
-        edje.Edje.__init__(self, canvas, file=file, group="layout")
+        edje.Edje.__init__(self, canvas, file=file, group="mouse_ui")
         self.x_init, self.y_init = 0,0
         self.mouse_down = False
         self.first_touch = True
+        self.button_hold = False
+	self.scroll_pos = 0
         #self.container = Container(self.evas)
         #self.part_swallow("contents", self.container)
-        
-	
-	#@edje.decorators.signal_callback("mouse,clicked,1", "*")
-	#def cb_on_btn_clicked(self,emisson, source):
-		
-		#if source == "bt_right":
-			
-			#connection.send_event("02:02:000:000:000")
-			
-		#elif source == "bt_left":
-			
-			#connection.send_event("02:01:000:000:000")
-			
-			
-		#elif source == "quit":
-			
-			#connection.send_event("quit")
-			#connection.terminate_connection
-			#ecore.main_loop_quit()
-	
-	#@edje.decorators.signal_callback("mouse,down,1", "*")
-	#def on_mouse_over(self, emission, source):
-		
-		#print "Down Down"
-				
-	#@edje.decorators.signal_callback("mouse,up,1", "*")
-	#def on_edje_signal_mouse_up_key(self, emission, source):
-		
-		#if self.mouse_down != None:
-			#self.mouse_down = False
-			#print "up up"
-    	
-	#@edje.decorators.signal_callback("mouse_area_pressed", "*")
-	#def on_edje_signal_mouse_down_key(self, emission, source):
-		#self.mouse_down = True
-		#print "cenas"
-		
-	#@edje.decorators.signal_callback("mouse,move", "*")
-	#def on_mouse_down(self, emission, source):
-		#self.mouse_down = True
-		#print "cenas2"
 
     @edje.decorators.signal_callback("mouse,down,1", "*")
     def on_mouse_down(self, emission, source):
@@ -106,8 +66,40 @@ class Screen(edje.Edje):
 		self.first_touch = True
 		self.x_init, self.y_init = 0,0
 
+    @edje.decorators.signal_callback("mouse_over_scroll", "*") 
+    def on_mouse_over_scroll(self, emission, source):
+
+		if self.mouse_down == True:
+			
+			if self.first_touch == True:
+
+				tmp,self.scroll_pos = canvas.pointer_canvas_xy			
+				self.first_touch = False
+			else:
+
+				tmp,y_scroll = canvas.pointer_canvas_xy	
+
+				if y_scroll > self.scroll_pos:
+
+					self.scroll_pos = y_scroll
+					connection.send_event("02:00:000:000:001")
+					print "Scroll_down"
+
+				elif y_scroll < self.scroll_pos:
+
+					self.scroll_pos = y_scroll
+					connection.send_event("02:00:000:000:255")
+					print "Scroll_up"
+				else:
+
+					pass
+
+		else:
+
+			print "mouse_over_scroll"
+
     @edje.decorators.signal_callback("mouse_over_area", "*")
-    def on_mouse_move(self, emission, source):
+    def on_mouse_over_area(self, emission, source):
 
 		if self.mouse_down == True:
 			
@@ -123,53 +115,83 @@ class Screen(edje.Edje):
 
 				print x1
 				print y1
+				
+				if self.button_hold == True:
 					
-				mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-				print mov
-				connection.send_event(mov)
+					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
+					print mov
+					connection.send_event(mov)
+					
+				else:	
+					
+					mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
+					print mov
+					connection.send_event(mov)
 
 		else:
 
 			print "333"
+
+   
 	
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_mouse_over(self, emission, source):
     	
 		print self.mouse_down
-		if source == "bt_right":
+		if source == "bt_right_icon":
 			print "bt"
 			connection.send_event("02:02:000:000:000")
 			
-		elif source == "bt_left":
+		elif source == "bt_left_icon":
 			
 			print "bt_l"
-			connection.send_event("02:01:000:000:000")
+			connection.send_event("02:01:000:000:00")
+			
+		elif source == "bt_hold_icon":
+			
+			if self.button_hold == True:
+				
+				self.button_hold = False
+				
+				self.signal_emit("hold_released", "")
+				
+			else:
+				
+				self.button_hold = True
+				self.signal_emit("hold_pressed", "")
+				
+		elif source == "bt_middle_icon":
+			
+			print "bt_m"
+			connection.send_event("02:04:000:000:000")
 			
 			
-		elif source == "quit":
-			
-			#connection.send_event("quit")
+		elif source == "quit_icon":
+	
 			connection.terminate_connection()
 			ecore.main_loop_quit()
 				
 		else:
 				
 			pass
+			
+			
 												
 connection = Connect()
 while connection.connect == False:
 	
-	print "Waiting"
+	print "Waiting ..."
 
 w, h = 480, 640
 ee = ecore.evas.SoftwareX11(w=w, h=h)
 
 # Load and setup UI
-ee.title = "Remoko test"
+ee.title = "Remoko"
 canvas = ee.evas
-edje_file = os.path.join(os.path.dirname(sys.argv[0]), "01-swallow.edj")
+edje_file = os.path.join(os.path.dirname(sys.argv[0]), "remoko_mouse.edj")
 
-screen = Screen(canvas, edje_file)
+screen = Mouse_ui(canvas, edje_file)
+
 screen.size = canvas.size
 screen.show()
 ee.data["screen"] = screen
