@@ -97,13 +97,58 @@ class main(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "main")
-	self.part_text_set("label_connect", "waiting ")
-	ecore.timer_add(3.0,self.main.transition_to,"mouse_ui")
+
+	#self.part_text_set("label_waiting", "Waiting for connection ... ")
+	ecore.timer_add(3.0,self.main.transition_to,"menu")
+
+	#ecore.timer_add(1.0,self.check_connection)
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
-	print "apssou"
-        self.main.transition_to(source)
+	if source == "quit_icon":
+		
+		self.main.connection.terminate_connection()
+		if self.main.connection.connect == False:
+			os.system("sudo pkill -9 hidclient")
+		ecore.main_loop_quit()
+		
 
+    def check_connection(self):
+
+		if self.main.connection.connect == False:
+			ecore.timer_add(1.0,self.check_connection)
+
+		else:
+			
+			ecore.timer_add(1.0,self.check_client)
+			
+    def check_client(self):
+		
+		if self.main.connection.client_name == None:
+			
+			ecore.timer_add(1.0,self.check_client)
+			
+		else:
+			
+			self.part_text_set("label_waiting", "")
+			self.part_text_set("label_connect_to", "Connect to: ")
+			self.part_text_set("label_client", self.main.connection.client_name)
+			ecore.timer_add(3.0,self.main.transition_to,"mouse_ui")
+			
+#----------------------------------------------------------------------------#
+class menu(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "menu")
+        
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+		if source == "back_icon":
+		
+			self.main.connection.terminate_connection()
+
+			if self.main.connection.connect == False:
+				os.system("sudo pkill -9 hidclient")
+			ecore.main_loop_quit()
 
 #----------------------------------------------------------------------------#
 class mouse_ui(edje_group):
@@ -145,13 +190,13 @@ class mouse_ui(edje_group):
 				if y_scroll > self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					#connection.send_event("02:00:000:000:001")
+					self.main.connection.send_event("02:00:000:000:001")
 					print "Scroll_down"
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					#connection.send_event("02:00:000:000:255")
+					self.main.connection.send_event("02:00:000:000:255")
 					print "Scroll_up"
 				else:
 
@@ -183,13 +228,13 @@ class mouse_ui(edje_group):
 					
 					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
 					print mov
-					#connection.send_event(mov)
+					self.main.connection.send_event(mov)
 					
 				else:	
 					
 					mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
 					print mov
-					#connection.send_event(mov)
+					self.main.connection.send_event(mov)
 
 		else:
 
@@ -203,12 +248,14 @@ class mouse_ui(edje_group):
 		print self.mouse_down
 		if source == "bt_right_icon":
 			print "bt"
-			#connection.send_event("02:02:000:000:000")
+			self.main.connection.send_event("02:02:000:000:000")
+			self.main.connection.send_event("02:00:000:000:000")
 			
 		elif source == "bt_left_icon":
 			
 			print "bt_l"
-			#connection.send_event("02:01:000:000:00")
+			self.main.connection.send_event("02:01:000:000:00")
+			self.main.connection.send_event("02:00:000:000:000")
 			
 		elif source == "bt_hold_icon":
 			
@@ -217,6 +264,8 @@ class mouse_ui(edje_group):
 				self.button_hold = False
 				
 				self.signal_emit("hold_released", "")
+				self.main.connection.send_event("02:00:000:000:000")
+
 				
 			else:
 				
@@ -226,29 +275,19 @@ class mouse_ui(edje_group):
 		elif source == "bt_middle_icon":
 			
 			print "bt_m"
-			#connection.send_event("02:04:000:000:000")
+			self.main.connection.send_event("02:04:000:000:000")
+			self.main.connection.send_event("02:00:000:000:000")
+
 			
 			
 		elif source == "back_icon":
 	
-			#connection.terminate_connection()
-			#ecore.main_loop_quit()
 			print self.main.previous_group
 			self.main.transition_to("main")
 				
 		else:
 				
 			pass
-			
-			
-												
-#connection = Connect()
-#while connection.connect == False:
-	
-	#print "Waiting ..."
-
-
-
 
 
 #----------------------------------------------------------------------------#
@@ -265,13 +304,16 @@ class GUI(object):
         )
 	
 	self.canvas = self.evas_canvas.evas_obj.evas
+	self.connection = Connect()
+	ecore.timer_add(1.0,self.connection.start_connection)
+
 
         self.groups = {}
 
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "connect_to"):
+        for page in ("main","mouse_ui", "menu"):
 		ctor = globals().get( page, None )
 		print ctor
 		if ctor:
@@ -285,10 +327,10 @@ class GUI(object):
         self.current_group = self.groups["main"]
         self.previous_group = self.groups["mouse_ui"]
         self.in_transition = False
-
+	
     def run( self ):
         ecore.main_loop_begin()
-
+	
     def shutdown( self ):
         ecore.main_loop_quit()
 
@@ -344,6 +386,7 @@ class EvasCanvas(object):
         evas_obj.data["swallow"].size = size
 
     def on_delete_request(self, evas_obj):
+	self.main.connection.terminate_connection()
         ecore.main_loop_quit()
 
 #----------------------------------------------------------------------------#
@@ -399,7 +442,6 @@ class MyOptionParser(OptionParser):
 if __name__ == "__main__":
 
     options, args = MyOptionParser().parse_args()
-    dbus_object = None
     gui = GUI( options, args )
     try:
         gui.run()

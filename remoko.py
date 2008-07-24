@@ -34,6 +34,7 @@ class Connect:
 		self.input_connect = False
 		self.connect = False
 		self.sock_open = False
+		self.client_name = None
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
@@ -50,6 +51,8 @@ class Connect:
 		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
 																'org.bluez.Database')
 		self.handle = self.database.AddServiceRecordFromXML(xml)
+		self.process_id = os.getpid()
+		print self.process_id
 
 		# Check if input service is running, if yes terminate the service
 		
@@ -66,29 +69,13 @@ class Connect:
 			
 			self.input_connect = False
 			
+	def start_connection(self):	
 		#os.popen("sudo ./hidclient")
-		self.deamon = start_deamon()
+		self.deamon = start_deamon(self)
 		self.deamon.start()
-		while self.sock_open == False:
-			try:
-				
-				self.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-				self.sock.connect(('localhost', 6543))
-				self.sock_open = True
-				
-			except:
-				print "waiting connection ..."
+		self.listener = start_listener(self)
+		self.listener.start()
 		
-		#catch errors	
-		reply = self.sock.recv(100)
-		print reply
-		self.connect = True
-		
-		input_status = self.adapter.ListConnections()
-		print input_status
-		print "You are connect to the address: " + str(input_status[-1])
-		client_name = self.adapter.GetRemoteName(input_status[-1])
-		print "connected to: " + str(client_name)
 	
 	def send_event(self,event):
 		
@@ -120,18 +107,59 @@ class Connect:
 				
 class start_deamon(Thread):
 	
-	def __init__(self):
+	def __init__(self,remoko):
 		
 		Thread.__init__(self)
+		self.remoko = remoko
 		print "initializing deamon ..."
 		
 	def run(self):
 		
 		try:
 			
+			
+			self.remoko.process_id2 = os.getpid()
 			os.system("sudo ./hidclient")
+			
 			
 		except:
 			
 			print "Error in the deamon"
+
+
+
+class start_listener(Thread):
+
+	def __init__(self,remoko):
+		
+		Thread.__init__(self)
+		self.remoko = remoko
+		print "initializing listener ..."
+		
+	def run(self):
+
+
+			while self.remoko.sock_open == False:
+
+				try:
+				
+					self.remoko.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+					self.remoko.sock.connect(('localhost', 6543))
+					self.remoko.sock_open = True
+				
+				except:
+					print "waiting connection ..."
+		
+			#catch errors	
+			reply = self.remoko.sock.recv(100)
+			print reply
+			self.remoko.connect = True
+			
+			input_status = self.remoko.adapter.ListConnections()
+			print input_status
+			print "You are connect to the address: " + str(input_status[-1])
+			client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
+			self.remoko.client_name = str(client_name)
+			print "connected to: " + str(client_name)
+			
 
