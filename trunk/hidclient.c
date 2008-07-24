@@ -211,11 +211,11 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 	
 
 	write(is, th, sizeof(th));
-	th[2] = 0x00; 
+	/*th[2] = 0x00; 
 	th[3] = 0x00;
 	th[4] = 0x00; 
 	th[5] = 0x00;
-	write(is, th, sizeof(th));
+	write(is, th, sizeof(th));*/
 }
 
 int main(int argc, char *argv[])
