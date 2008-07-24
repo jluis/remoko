@@ -98,17 +98,17 @@ class main(edje_group):
     def __init__(self, main):
         edje_group.__init__(self, main, "main")
 
-	#self.part_text_set("label_waiting", "Waiting for connection ... ")
-	ecore.timer_add(3.0,self.main.transition_to,"menu")
+	self.part_text_set("label_waiting", "Waiting for connection ... ")
+	#ecore.timer_add(3.0,self.main.transition_to,"menu")
 
-	#ecore.timer_add(1.0,self.check_connection)
+	ecore.timer_add(1.0,self.check_connection)
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "quit_icon":
 		
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("sudo pkill -9 hidclient")
+			os.system("sudo pkill  -9 hidclient")
 		ecore.main_loop_quit()
 		
 
@@ -132,7 +132,7 @@ class main(edje_group):
 			self.part_text_set("label_waiting", "")
 			self.part_text_set("label_connect_to", "Connect to: ")
 			self.part_text_set("label_client", self.main.connection.client_name)
-			ecore.timer_add(3.0,self.main.transition_to,"mouse_ui")
+			ecore.timer_add(3.0,self.main.transition_to,"menu")
 			
 #----------------------------------------------------------------------------#
 class menu(edje_group):
@@ -142,13 +142,22 @@ class menu(edje_group):
         
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
-		if source == "back_icon":
+ 
+		if source == "exit_icon":
 		
 			self.main.connection.terminate_connection()
 
 			if self.main.connection.connect == False:
 				os.system("sudo pkill -9 hidclient")
 			ecore.main_loop_quit()
+			
+		elif source == "mouse_icon":
+			
+			self.main.transition_to("mouse_ui")
+			
+		else:
+			
+			print "feature not implemented yet :) "
 
 #----------------------------------------------------------------------------#
 class mouse_ui(edje_group):
@@ -190,13 +199,15 @@ class mouse_ui(edje_group):
 				if y_scroll > self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:00:000:000:001")
+					#self.main.connection.send_event("02:00:000:000:001")
+					self.main.connection.send_event("01:00:78")
 					print "Scroll_down"
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:00:000:000:255")
+					#self.main.connection.send_event("02:00:000:000:255")
+					self.main.connection.send_event("01:00:75")
 					print "Scroll_up"
 				else:
 
@@ -243,7 +254,7 @@ class mouse_ui(edje_group):
    
 	
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_mouse_over(self, emission, source):
+    def on_mouse_click(self, emission, source):
     	
 		print self.mouse_down
 		if source == "bt_right_icon":
@@ -283,7 +294,7 @@ class mouse_ui(edje_group):
 		elif source == "back_icon":
 	
 			print self.main.previous_group
-			self.main.transition_to("main")
+			self.main.transition_to("menu")
 				
 		else:
 				

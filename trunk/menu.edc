@@ -1,18 +1,18 @@
 #define ICON(part_name, xpos, ypos)                         		 \
             part {                                                       \
-                name: "target_"part_name;                                \
+                name: part_name;                                	 \
                 mouse_events: 1;                                         \
                 type: IMAGE;                                             \
                 clip_to: "swallow_clip";                                 \
                 description {                                            \
                     state: "default" 0.0;                                \
                     rel1 {                                               \
-                        relative: 0.15+(xpos*0.5) 0.25+(ypos*0.2);       \
+                        relative: 0.05+(xpos*0.65) 0.15+(ypos*0.25);     \
                         offset: 0 0;                                     \
                         to: "swallow_clip";                              \
                     }                                                    \
                     rel2 {                                               \
-                        relative: 0.35+(xpos*0.5) 0.4+(ypos*0.2);        \
+                        relative: 0.32+(xpos*0.65) 0.35+(ypos*0.25);     \
                         offset: -1 -1;                                   \
                         to: "swallow_clip";                              \
                     }                                                    \
@@ -22,18 +22,16 @@
                     }                                                    \
                 }                                                        \
                 description {                                            \
-                    state: "active" 0.0;                                 \
+                    state: "clicked" 0.0;                                 \
                     inherit: "default" 0.0;                              \
-                    image {                                              \
-                        normal: "button_background_active.png";          \
-                        border: 27 27 27 27;                             \
-                    }                                                    \
+                    image {normal: "button_background_active.png";}      \
+			 fill { smooth: 0; }                            \
                 }                                                        \
-            }    
-/*                                                        \
+            }    							\
+	                                                      		 \
             part {                                                       \
-                name: "target_icon_"part_name;                           \
-                mouse_events: 0;                                         \
+                name: part_name"_icon";                           	\
+                mouse_events: 1;                                         \
                 type: IMAGE;                                             \
                 clip_to: "swallow_clip";                                 \
                 description {                                            \
@@ -43,18 +41,18 @@
                     rel1 {                                               \
                         relative: 0.0 0.0;                               \
                         offset: 0 0;                                     \
-                        to: "target_"part_name;                          \
+                        to: part_name;                         		 \
                     }                                                    \
                     rel2 {                                               \
                         relative: 1.0 1.0;                               \
                         offset: -1 -1;                                   \
-                        to: "target_"part_name;                          \
+                        to: part_name;                         		 \
                     }                                                    \
                     image {                                              \
-                        normal: "button_"part_name".png";                \
+                        normal: part_name"_icon.png";                	 \
                     }                                                    \
                 }                                                        \
-            }*/
+            }
 parts {
 
 	SWALLOWCLIP();
@@ -88,241 +86,10 @@ parts {
 	ICON("profile5",0,2);
 	ICON("profile6",0.5,2);
 	ICON("profile7",1,2);
-	
-	
-	/*
+
+
          part {
-            name: "bt_left";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.0 0.2;
-                  offset: 10 00;
-               }
-               rel2 {
-                  relative: 0.0 0.2;
-                  offset: 110 100;
-               }
-	      image { normal: "button_background.png"; }                  
-              fill { smooth: 0; } 
-            }
-           description {
-               state: "clicked" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.0 0.8;
-                  offset: 10 50;
-               }
-               rel2 {
-                  relative: 0.0 0.8;
-                  offset: 80 120;
-               }
-	      image { normal: "button_background_active.png"; }                  
-              fill { smooth: 0; } 
-            }
-         } */
-	/*
-	part {
-            name: "bt_left_icon";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.0 0.8;
-                  offset: 10 50;
-               }
-               rel2 {
-                  relative: 0.0 0.8;
-                  offset: 80 120;
-               }
-	      image { normal: "button_left.png"; }                  
-              fill { smooth: 0; } 
-            }
-         }
-	*/
-	/*
-	part {
-            name: "bt_middle";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.1 0.2;
-                  offset: 80 00;
-               }
-               rel2 {
-                  relative: 0.1 0.2;
-                  offset: 180 100;
-               }
-               image { normal: "button_background.png"; }                  
-               fill { smooth: 0; } 
-            }
-            description {
-               state: "clicked" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.1 0.8;
-                  offset: 50 50;
-               }
-               rel2 {
-                  relative: 0.1 0.8;
-                  offset: 120 120;
-               }
-               image { normal: "button_background_active.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }*/
-	/*
-	part {
-            name: "bt_middle_icon";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.1 0.8;
-                  offset: 50 50;
-               }
-               rel2 {
-                  relative: 0.1 0.8;
-                  offset: 120 120;
-               }
-               image { normal: "button_middle.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
-	*/
-	/*
-	part {
-            name: "bt_right";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.4 0.2;
-                  offset: 50 0;
-		  
-               }
-               rel2 {
-                  relative: 0.4 0.2;
-                  offset: 150 100;
-               }
-               image { normal: "button_background.png"; }                  
-               fill { smooth: 0; } 
-            }
-	    description {
-               state: "clicked" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.4 0.8;
-                  offset: -5 50;
-               }
-               rel2 {
-                  relative: 0.4 0.8;
-                  offset: 65 120;
-               }
-               image { normal: "button_background_active.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }*/
-	/*
-	part {
-            name: "bt_right_icon";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.4 0.8;
-                  offset: -5 50;
-               }
-               rel2 {
-                  relative: 0.4 0.8;
-                  offset: 65 120;
-               }
-               image { normal: "button_right.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
-	*/
-	/*
-	part {
-            name: "bt_hold";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.5 0.8;
-                  offset: 35 50;
-               }
-               rel2 {
-                  relative: 0.5 0.8;
-                  offset: 105 120;
-               }
-	      image { normal: "button_background.png"; }                  
-              fill { smooth: 0; } 
-            }
-	    description {
-               state: "clicked" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.5 0.8;
-                  offset: 35 50;
-               }
-               rel2 {
-                  relative: 0.5 0.8;
-                  offset: 105 120;
-               }
-	      image { normal: "button_background_active.png"; }                  
-              fill { smooth: 0; } 
-            }
-		
-         }
-	*/
-	/*
-	part {
-            name: "bt_hold_icon";
-            type: IMAGE;
-            mouse_events: 1;
-	    clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: 0.5 0.8;
-                  offset: 35 50;
-               }
-               rel2 {
-                  relative: 0.5 0.8;
-                  offset: 105 120;
-               }
-	      image { normal: "button_hold.png"; }                  
-              fill { smooth: 0; } 
-            }
-	}
-	*/
-         part {
-            name: "back";
+            name: "exit";
             type: IMAGE;
             mouse_events: 1;
             clip_to: "swallow_clip";   
@@ -357,7 +124,7 @@ parts {
          }
 
 	part {
-            name: "back_icon";
+            name: "exit_icon";
             type: IMAGE;
             mouse_events: 1;
             clip_to: "swallow_clip";   
@@ -372,7 +139,7 @@ parts {
                   relative: 0.9 0.8;
                   offset: 40 120;
                }
-	       image { normal: "back.png"; }                  
+	       image { normal: "quit.png"; }                  
                fill { smooth: 0; } 
             }
          }
@@ -383,7 +150,16 @@ parts {
 	
      programs {
 
-	
+	ACTIVATE("exit");
+	ACTIVATE("mouse");
+	ACTIVATE("keyboard");
+	ACTIVATE("profile1");
+	ACTIVATE("profile2");
+	ACTIVATE("profile3");
+	ACTIVATE("profile4");
+	ACTIVATE("profile5");
+	ACTIVATE("profile6");
+	ACTIVATE("profile7");
 	TRANSITION();
      }
  

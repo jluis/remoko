@@ -374,49 +374,6 @@ parts {
 		action: SIGNAL_EMIT "mouse_area_released" "mouse_area";       
         }
 	program {
-                name: "button_left_pressed";
-                signal: "mouse,down,1";
-                source: "bt_left_icon";
-		action: STATE_SET "clicked" 0.0;
-		target: "bt_left";   
-        }
-        program {
-                name: "button_left_released";
-                signal: "mouse,up,1";
-                source: "bt_left_icon";
-		action: STATE_SET "default" 0.0;   
-		target: "bt_left";       
-        }
-
-        program {
-                name: "button_middle_pressed";
-                signal: "mouse,down,1";
-                source: "bt_middle_icon";
-		action: STATE_SET "clicked" 0.0;
-		target: "bt_middle";   
-        }
-        program {
-                name: "button_middle_released";
-                signal: "mouse,up,1";
-                source: "bt_middle_icon";
-		action: STATE_SET "deafult" 0.0;   
-		target: "bt_middle";       
-        }
-	program {
-                name: "button_right_pressed";
-                signal: "mouse,down,1";
-                source: "bt_right_icon";
-		action: STATE_SET "clicked" 0.0;
-		target: "bt_right";   
-        }
-        program {
-                name: "button_right_released";
-                signal: "mouse,up,1";
-                source: "bt_right_icon";
-		action: STATE_SET "default" 0.0;   
-		target: "bt_right";       
-        }
-	program {
                 name: "button_hold_pressed";
                 signal: "hold_pressed";
 		action: STATE_SET "clicked" 0.0;
@@ -428,20 +385,11 @@ parts {
 		action: STATE_SET "default" 0.0;   
 		target: "bt_hold";       
         }
-	program {
-                name: "button_back_pressed";
-                signal: "mouse,down,1";
-                source: "back_icon";
-		action: STATE_SET "clicked" 0.0;
-		target: "back";   
-        }
-        program {
-                name: "button_back_released";
-                signal: "mouse,up,1";
-                source: "back_icon";
-		action: STATE_SET "default" 0.0;   
-		target: "back";       
-        }
+	
+	ACTIVATE("bt_left");
+	ACTIVATE("bt_right");
+	ACTIVATE("bt_middle");
+	ACTIVATE("back");
 	TRANSITION();
      }
  

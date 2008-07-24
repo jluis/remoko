@@ -13,6 +13,15 @@ images {
   image: "arrow_up.png" COMP;
   image: "arrow_down.png" COMP;
   image: "scroll_area.png" COMP;
+  image: "mouse_icon.png" COMP;
+  image: "keyboard_icon.png" COMP;
+  image: "profile1_icon.png" COMP;
+  image: "profile2_icon.png" COMP;
+  image: "profile3_icon.png" COMP;
+  image: "profile4_icon.png" COMP;
+  image: "profile5_icon.png" COMP;
+  image: "profile6_icon.png" COMP;
+  image: "profile7_icon.png" COMP;
 
 }
 
@@ -71,8 +80,30 @@ fonts {
     program {                                                           \
         name: "finish_fade";                                            \
         action: SIGNAL_EMIT "finished_transition" "main";               \
-    }
+    }												
 
+#define ACTIVATE(part_name)                                             \
+    program {                                                           \
+        name: "activate_"part_name;                                     \
+        signal: "mouse,down,1";                                         \
+        source: part_name"_icon";                                         \
+        action: STATE_SET "clicked" 0.0;                                 \
+        target: part_name;                                              \
+    }                                                                   \
+    program {                                                           \
+        name: "deactivate_"part_name;                                   \
+        signal: "mouse,up,1";                                           \
+        source: part_name"_icon";                                         \
+        action: STATE_SET "default" 0.0;                                \
+        target: part_name;                                              \
+    }     /*                                                              \
+    program {                                                           \
+        name: "leave_"part_name;                                        \
+        signal: "mouse,out";                                            \
+        source: part_name;                                              \
+        action: STATE_SET "default" 0.0;                                \
+        target: part_name;                                              \
+    } */
 
 collections {
 
@@ -263,20 +294,7 @@ collections {
 	
 	}
     programs {
-	program {
-                name: "button_quit_pressed";
-                signal: "mouse,down,1";
-                source: "quit_icon";
-		action: STATE_SET "clicked" 0.0;
-		target: "quit";   
-        }
-        program {
-                name: "button_back_released";
-                signal: "mouse,up,1";
-                source: "quit_icon";
-		action: STATE_SET "default" 0.0;   
-		target: "quit";       
-        }
+	ACTIVATE("quit");
     	TRANSITION();
     }
  }
