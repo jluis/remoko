@@ -77,6 +77,31 @@ parts {
                fill { smooth: 0; } 
             }
          }
+
+	part {
+        name: "label_title";
+        type: TEXT;
+        effect: SOFT_OUTLINE;
+        mouse_events: 0;
+        clip_to: "swallow_clip";
+        description {
+            state: "default" 0.0;
+            rel1 {
+                relative: 0.0 0.0;
+                offset: 0 0;
+            }
+            rel2 {
+                relative: 1.0 0.1;
+                offset: -1 -1;
+            }
+            text {
+                font: "Sans";
+                size: 1;
+                fit: 1 1;
+                align: 0.0 0.5;
+            }
+        }
+    }
 	ICON("mouse",0,0);
 	ICON("keyboard",0.5,0);
 	ICON("profile1",1,0);

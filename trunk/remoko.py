@@ -98,17 +98,17 @@ class main(edje_group):
     def __init__(self, main):
         edje_group.__init__(self, main, "main")
 
-	#self.part_text_set("label_waiting", "Waiting for connection ... ")
-	ecore.timer_add(1.0,self.main.transition_to,"passkey")
+	self.part_text_set("label_waiting", "Waiting for connection ... ")
+	#ecore.timer_add(1.0,self.main.transition_to,"menu")
 
-	#ecore.timer_add(1.0,self.check_connection)
+	ecore.timer_add(1.0,self.check_connection)
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "quit":
 		
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("sudo pkill  -9 hidclient")
+			os.system("pkill  -9 hidclient")
 		ecore.main_loop_quit()
 		
 
@@ -140,6 +140,19 @@ class passkey(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "passkey")
+	self.part_text_set( "label_description", "Enter Passkey " )
+	self.text = []
+
+    @edje.decorators.signal_callback("pin_button_pressed", "*")
+    def on_edje_signal_pin_button_pressed(self, emission, source):
+        key = source.split("_", 1)[1]
+        if key in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
+            self.text.append(key)
+            
+	    self.part_text_set("label", "".join(self.text)+" ")
+        elif key in "delete":
+            self.text = self.text[:-1]
+            self.part_text_set("label", "".join(self.text)+" ")
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
@@ -157,6 +170,7 @@ class menu(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "menu")
+	self.part_text_set( "label_title", "Remoko" )
         
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
@@ -187,19 +201,32 @@ class mouse_ui(edje_group):
         self.first_touch = True
         self.button_hold = False
 	self.scroll_pos = 0
+	self.tape_mouse_area = 0
         
 
     @edje.decorators.signal_callback("mouse,down,1", "*")
     def on_mouse_down(self, emission, source):
 		
 		self.mouse_down = True
+		self.tape_mouse_area = time.time()
+
+    		print self.tape_mouse_area
 
     @edje.decorators.signal_callback("mouse,up,1", "*")
     def on_mouse_up(self, emission, source):
-		
+
+		if source == "mouse_area":
+			tape_time = time.time() - self.tape_mouse_area
+			print tape_time
+			if tape_time < 0.2:
+
+				self.main.connection.send_mouse_event(1,0,0,0)
+				self.main.connection.send_event("btn_up")
+
 		self.mouse_down = False
 		self.first_touch = True
 		self.x_init, self.y_init = 0,0
+		
 
     @edje.decorators.signal_callback("mouse_over_scroll", "*") 
     def on_mouse_over_scroll(self, emission, source):
@@ -217,15 +244,15 @@ class mouse_ui(edje_group):
 				if y_scroll > self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					#self.main.connection.send_event("02:00:000:000:001")
-					self.main.connection.send_keyboard_event("00",78)
+					self.main.connection.send_event("02:03:000:000:000")
+					#self.main.connection.send_keyboard_event("00",78)
 					print "Scroll_down"
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					#self.main.connection.send_event("02:00:000:000:255")
-					self.main.connection.send_keyboard_event("00",75)
+					self.main.connection.send_event("02:05:000:000:00")
+					#self.main.connection.send_keyboard_event("00",75)
 					print "Scroll_up"
 				else:
 
@@ -249,6 +276,7 @@ class mouse_ui(edje_group):
 				
 				x,y = self.main.canvas.pointer_canvas_xy
 				x1,y1 = mouse_position(self,x,y)
+				self.mouse_hold_out = True
 
 				print x1
 				print y1
@@ -266,9 +294,8 @@ class mouse_ui(edje_group):
 					self.main.connection.send_mouse_event(00,x1,y1,00)
 
 		else:
-
+				
 			print "333"
-
    
 	
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
