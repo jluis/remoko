@@ -31,7 +31,7 @@
 	                                                      		 \
             part {                                                       \
                 name: part_name"_icon";                           	\
-                mouse_events: 1;                                         \
+                mouse_events: 0;                                         \
                 type: IMAGE;                                             \
                 clip_to: "swallow_clip";                                 \
                 description {                                            \
@@ -88,69 +88,14 @@ parts {
 	ICON("profile7",1,2);
 
 
-         part {
-            name: "exit";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-	       visible: 1;
-               rel1 {
-                  relative: 0.9 0.8;
-                  offset: -30 50;
-               }
-               rel2 {
-                  relative: 0.9 0.8;
-                  offset: 40 120;
-               }
-	       image { normal: "button_background.png"; }                  
-               fill { smooth: 0; } 
-            }
-	    description {
-               state: "clicked" 0.0;
-	       visible: 1;
-               rel1 {
-                  relative: 0.9 0.8;
-                  offset: -30 50;
-               }
-               rel2 {
-                  relative: 0.9 0.8;
-                  offset: 40 120;
-               }
-	       image { normal: "button_background_active.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
-
-	part {
-            name: "exit_icon";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-	       visible: 1;
-               rel1 {
-                  relative: 0.9 0.8;
-                  offset: -30 50;
-               }
-               rel2 {
-                  relative: 0.9 0.8;
-                  offset: 40 120;
-               }
-	       image { normal: "quit.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
-
+        QUIT();
 	
 	
 	
 	
      programs {
 
-	ACTIVATE("exit");
+	ACTIVATE("quit");
 	ACTIVATE("mouse");
 	ACTIVATE("keyboard");
 	ACTIVATE("profile1");

@@ -366,7 +366,7 @@ int main(int argc, char *argv[])
 		}
 		else{ 
 
-			if(!strcmp (buffer, "quit")){
+			if(strcmp (buffer, "quit") == 0){
 
 				set_device_class(hdev, default_class);
 				printf("Device class changed to: %s\n", default_class);
@@ -376,6 +376,11 @@ int main(int argc, char *argv[])
 				close(newsockfd);
 				exit(1);
 				
+			}
+			else if (strcmp (buffer,"btn_up") == 0){
+				
+				send_mouse_event(is,0,0,0,0);
+				printf("mouse up\n");
 			}
 			printf("invalid\n");
 		}
