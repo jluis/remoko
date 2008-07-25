@@ -22,6 +22,8 @@ images {
   image: "profile5_icon.png" COMP;
   image: "profile6_icon.png" COMP;
   image: "profile7_icon.png" COMP;
+  image: "icon_accept.png" COMP;
+  image: "icon_left.png" COMP;
 
 }
 
@@ -29,7 +31,7 @@ fonts {
    font: "VeraBd.ttf" "Sans";
 }
 
-
+#define BUTTON_BOTTOM_HEIGHT 0.12;
 #define SWALLOWCLIP()                                                   \
     part {                                                              \
         name: "swallow_clip";                                           \
@@ -55,6 +57,122 @@ fonts {
             color: 255 255 255 0;                                       \
         }                                                               \
     }                                                                   \
+									\
+     part {                                                             \
+        name: "swallow_main";                                           \
+        type: RECT;                                                     \
+        mouse_events: 0;                                                \
+        description {                                                   \
+            state: "default" 0.0;                                       \
+            rel1 {                                                      \
+                relative: 0.0 0.0;                                      \
+                offset: 0 0;                                            \
+            }                                                           \
+            rel2 {                                                      \
+                relative: 1.0 1.0-BUTTON_BOTTOM_HEIGHT;                 \
+                offset: -1 -1;                                          \
+            }                                                           \
+            color: 255 255 255 0;                                       \
+        }                                                               \
+    }
+
+#define QUIT()								\
+    part {								\
+            name: "quit";						\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";					\   
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.9 0.8;					\
+                  offset: -30 50;					\
+               }							\
+               rel2 {							\
+                  relative: 0.9 0.8;					\
+                  offset: 40 120;					\
+               }							\
+	       image { normal: "button_background.png"; }		\                  
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                              	\
+	       image { normal: "button_background_active.png"; }        \          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "quit_icon";						\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.9 0.8;					\
+                  offset: -30 50;					\
+               }							\
+               rel2 {							\
+                  relative: 0.9 0.8;					\
+                  offset: 40 120;					\
+               }							\
+	       image { normal: "quit.png"; }                  		\
+               fill { smooth: 0; } 					\
+            }								\
+         }								
+	
+#define BACK()								\
+   part {								\
+            name: "back";						\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.9 0.8;					\
+                  offset: -30 50;					\
+               }							\
+               rel2 {							\
+                  relative: 0.9 0.8;					\
+                  offset: 40 120;					\
+               }							\
+	       image { normal: "button_background.png"; }               \   
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "button_background_active.png"; }        \          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "back_icon";						\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.9 0.8;					\
+                  offset: -30 50;					\
+               }							\
+               rel2 {							\
+                  relative: 0.9 0.8;					\
+                  offset: 40 120;					\
+               }							\
+	       image { normal: "back.png"; }                  		\
+               fill { smooth: 0; } 					\
+            }								\
+         }								
 
 #define TRANSITION()                                                    \
     program {                                                           \
@@ -86,17 +204,17 @@ fonts {
     program {                                                           \
         name: "activate_"part_name;                                     \
         signal: "mouse,down,1";                                         \
-        source: part_name"_icon";                                         \
-        action: STATE_SET "clicked" 0.0;                                 \
+        source: part_name;                                       	\
+        action: STATE_SET "clicked" 0.0;                                \
         target: part_name;                                              \
     }                                                                   \
     program {                                                           \
         name: "deactivate_"part_name;                                   \
         signal: "mouse,up,1";                                           \
-        source: part_name"_icon";                                         \
+        source: part_name;                                       	\
         action: STATE_SET "default" 0.0;                                \
         target: part_name;                                              \
-    }     /*                                                              \
+    }     /*                                                            \
     program {                                                           \
         name: "leave_"part_name;                                        \
         signal: "mouse,out";                                            \
@@ -104,6 +222,8 @@ fonts {
         action: STATE_SET "default" 0.0;                                \
         target: part_name;                                              \
     } */
+
+
 
 collections {
 
@@ -174,6 +294,7 @@ collections {
 	part {
                 name: "label_waiting";
                 type: TEXT;
+		effect: SOFT_OUTLINE;
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
@@ -244,55 +365,9 @@ collections {
              }
 	}
 
-	part {
-            name: "quit";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-	       visible: 1;
-               rel1 {
-                  relative: 0.9 0.8;
-                  offset: -30 50;
-               }
-               rel2 {
-                  relative: 0.9 0.8;
-                  offset: 40 120;
-               }
-	       image { normal: "button_background.png"; }                  
-               fill { smooth: 0; } 
-            }
-	    description {
-               state: "clicked" 0.0;
-	       inherit: "default" 0.0;                              
-	       image { normal: "button_background_active.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
-
-	part {
-            name: "quit_icon";
-            type: IMAGE;
-            mouse_events: 1;
-            clip_to: "swallow_clip";   
-            description {
-               state: "default" 0.0;
-	       visible: 1;
-               rel1 {
-                  relative: 0.9 0.8;
-                  offset: -30 50;
-               }
-               rel2 {
-                  relative: 0.9 0.8;
-                  offset: 40 120;
-               }
-	       image { normal: "quit.png"; }                  
-               fill { smooth: 0; } 
-            }
-         }
+	QUIT();
 	
-	}
+    }
     programs {
 	ACTIVATE("quit");
     	TRANSITION();
@@ -309,5 +384,9 @@ collections {
  group {
       name: "menu";
       #include "menu.edc"
+  }
+ group {
+      name: "passkey";
+      #include "passkey.edc"
   }
   
