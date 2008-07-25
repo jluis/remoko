@@ -89,7 +89,7 @@ parts {
             }
             rel2 {
                 relative: 1.0 1.0;
-                offset: -1 -1;
+                offset: 0 0;
                 to: "label_background";
             }
             text {
@@ -157,12 +157,12 @@ parts {
             state: "default" 0.0;                                       \
             align: 0.5 0.5;                                             \
             rel1 {                                                      \
-                relative: 0.0 0.0;                                      \
+                relative: 0.0 0.1;                                      \
                 offset: 0 0;                                            \
                 to: "button_"part_name;                                 \
             }                                                           \
             rel2 {                                                      \
-                relative: 1.0 0.8;                                      \
+                relative: 1.0 0.9;                                      \
                 offset: -1 -1;                                          \
                 to: "button_"part_name;                                 \
             }                                                           \
@@ -283,6 +283,7 @@ parts {
     }
 
     QUIT();
+    LOGO();
 	
     
 }
