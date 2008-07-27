@@ -79,22 +79,39 @@ class Connect:
 	
 	def send_mouse_event(self,btn,mov_x,mov_y, scroll):
 		
-		event = "02:" + str(btn) + ":" + str(mov_x) + ":" + str(mov_y) + ":" + str(scroll)
-		self.sock.send(event)
+		try:
+			event = "02:" + str(btn) + ":" + str(mov_x) + ":" + str(mov_y) + ":" + str(scroll)
+			self.sock.send(event)
+		except:
+			self.connect = False
+			print "Disconnected"
 		
 	def send_keyboard_event(self,modifier,key):
 		
-		event = "01:" + str(modifier) + ":" + str(key)
-		self.sock.send(event)
-		
+		try:
+			event = "01:" + str(modifier) + ":" + str(key)
+			self.sock.send(event)
+		except:
+			self.connect = False
+			print "Disconnected"
+			
 	def send_event(self, event):
 		
-		self.sock.send(event)
-	
-	
+		try:
+			
+			self.sock.send(event)
+			
+		except:
+			self.connect = False
+			print "disconnected"
+			
 	def terminate_connection(self):
 		
-		self.sock.send("quit")
+		try:
+			self.sock.send("quit")
+		except:
+			self.connect = False
+			print "disconnected"
 
 		self.database.RemoveServiceRecord(self.handle)
 
@@ -160,11 +177,15 @@ class start_listener(Thread):
 				except:
 					print "waiting connection ..."
 		
-			#catch errors	
-			reply = self.remoko.sock.recv(100)
-			print reply
-			self.remoko.connect = True
+			#catch errors
 			
+			reply = self.remoko.sock.recv(100)
+			if reply == "connected":
+				print reply
+				self.remoko.connect = True
+			elif reply == "disconnected":
+				self.remoko.connect = False
+							
 			input_status = self.remoko.adapter.ListConnections()
 			print input_status
 			print "You are connect to the address: " + str(input_status[-1])

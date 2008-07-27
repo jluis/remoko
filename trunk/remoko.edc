@@ -24,6 +24,8 @@ images {
   image: "profile7_icon.png" COMP;
   image: "icon_accept.png" COMP;
   image: "icon_left.png" COMP;
+  image: "logo_openmoko.png" COMP;
+  image: "error.png" COMP;
 
 }
 
@@ -190,9 +192,9 @@ fonts {
                }							\
                rel2 {							\
                   relative: 0.0 0.8;					\
-                  offset: 80 120;					\
+                  offset: 130 120;					\
                }							\
-	      image { normal: "button_left.png"; }                  	\
+	      image { normal: "logo_openmoko.png"; }                  	\
               fill { smooth: 0; } 					\
             }								\
          }								
@@ -387,7 +389,7 @@ collections {
                     }
              }
 	}
-
+        LOGO();
 	QUIT();
 	
     }
@@ -409,7 +411,7 @@ collections {
       #include "menu.edc"
   }
  group {
-      name: "passkey";
-      #include "passkey.edc"
-  }
+      name: "disconnect";
+      #include "disconnect.edc"
+ }
   

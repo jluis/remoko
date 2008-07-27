@@ -24,12 +24,15 @@
 import os
 import sys
 import time
+import e_dbus
 import evas
 import evas.decorators
 import edje
 import edje.decorators
 import ecore
 import ecore.evas
+from dbus import SystemBus, Interface
+from dbus.exceptions import DBusException
 from optparse import OptionParser
 
 from remoko_server import *
@@ -99,27 +102,31 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"menu")
+	#ecore.timer_add(1.0,self.main.transition_to,"disconnect")
 
 	ecore.timer_add(1.0,self.check_connection)
+
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "quit":
 		
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("pkill  -9 hidclient")
+			os.system("sudo pkill  -9 hidclient")
 		ecore.main_loop_quit()
 		
 
     def check_connection(self):
 
-		if self.main.connection.connect == False:
-			ecore.timer_add(1.0,self.check_connection)
+		if self.main.connection_processed == True:
+			if self.main.connection.connect == False:
+				ecore.timer_add(1.0,self.check_connection)
 
-		else:
+			else:
 			
-			ecore.timer_add(1.0,self.check_client)
+				ecore.timer_add(1.0,self.check_client)
+		else:
+			ecore.timer_add(1.0,self.check_connection)
 			
     def check_client(self):
 		
@@ -132,39 +139,37 @@ class main(edje_group):
 			self.part_text_set("label_waiting", "")
 			self.part_text_set("label_connect_to", "Connect to: ")
 			self.part_text_set("label_client", self.main.connection.client_name)
+			ecore.idle_enterer_add( self.main.check_connection_status)
 			ecore.timer_add(3.0,self.main.transition_to,"menu")
-		
-		
+
 #----------------------------------------------------------------------------#
-class passkey(edje_group):
+class disconnect(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
-        edje_group.__init__(self, main, "passkey")
-	self.part_text_set( "label_description", "Enter Passkey " )
-	self.text = []
-
-    @edje.decorators.signal_callback("pin_button_pressed", "*")
-    def on_edje_signal_pin_button_pressed(self, emission, source):
-        key = source.split("_", 1)[1]
-        if key in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
-            self.text.append(key)
-            
-	    self.part_text_set("label", "".join(self.text)+" ")
-        elif key in "delete":
-            self.text = self.text[:-1]
-            self.part_text_set("label", "".join(self.text)+" ")
-
+        edje_group.__init__(self, main, "disconnect")
+	self.part_text_set("label_error","Error: Disconnected by remote device")
+	self.part_text_set("label_connect", "Open connection again ?")
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
- 
-		if source == "quit":
+	if source == "quit" or source == "no_option" :
 		
-			self.main.connection.terminate_connection()
+		self.main.connection.terminate_connection()
+		if self.main.connection.connect == False:
+			os.system("sudo pkill  -9 hidclient")
+		ecore.main_loop_quit()
 
-			if self.main.connection.connect == False:
-				os.system("sudo pkill -9 hidclient")
-			ecore.main_loop_quit()
-			
+	if source == "yes_option":
+
+		self.main.connection.terminate_connection()
+		if self.main.connection.connect == False:
+			os.system("sudo pkill  -9 hidclient")
+		self.main.initialize_remoko_server()
+		self.main.groups["main"].part_text_set("label_connect_to", "")
+		self.main.groups["main"].part_text_set("label_client", "")
+		self.main.groups["main"].part_text_set("label_waiting", "Waiting for connection ... ")
+		ecore.timer_add(1.0,self.main.groups["main"].check_client)
+		self.main.transition_to("main")
+		
 #----------------------------------------------------------------------------#
 class menu(edje_group):
 #----------------------------------------------------------------------------#
@@ -350,7 +355,8 @@ class mouse_ui(edje_group):
 class GUI(object):
 #----------------------------------------------------------------------------#
     def __init__( self, options, args ):
-
+	
+	
         edje.frametime_set(1.0 / options.fps)
 
         self.evas_canvas = EvasCanvas(
@@ -360,18 +366,17 @@ class GUI(object):
         )
 	
 	self.canvas = self.evas_canvas.evas_obj.evas
-	self.connection = Connect()
-	ecore.timer_add(1.0,self.connection.start_connection)
-
+	self.connection_processed = False
+	self.dbus_objectInit()	
+	
 
         self.groups = {}
 
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "passkey"):
+        for page in ("main","mouse_ui", "menu", "disconnect"):
 		ctor = globals().get( page, None )
-		print ctor
 		if ctor:
 			self.groups[page] = ctor( self )
 			self.evas_canvas.evas_obj.data[page] = self.groups[page]
@@ -383,6 +388,37 @@ class GUI(object):
         self.current_group = self.groups["main"]
         self.previous_group = self.groups["mouse_ui"]
         self.in_transition = False
+	self.initialize_remoko_server()
+	
+
+    def check_connection_status(self):
+	if self.connection.connect == False:
+		self.transition_to("disconnect")
+		print "->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DISC"
+
+	else:
+		ecore.timer_add( 10.0, self.check_connection_status)
+	
+	
+    def dbus_objectInit( self ):
+        print "dbus_objectInit..."
+        global dbus_object
+        if dbus_object is None:
+            self.dbus_object = DBusObject()
+        if not self.dbus_object.initialize():
+            ecore.timer_add( 0.1, self.dbus_objectInit )
+            return False
+        
+
+    def initialize_remoko_server(self):
+
+	if self.dbus_object.bluetooth_obj == True:
+
+		self.connection = Connect()
+		ecore.timer_add(1.0,self.connection.start_connection)
+		self.connection_processed = True
+        else:
+		ecore.timer_add(1.0,self.initialize_remoko_server)
 	
     def run( self ):
         ecore.main_loop_begin()
@@ -410,7 +446,87 @@ class GUI(object):
         self.previous_group.hide()
         self.groups["swallow"].part_swallow("area1", self.current_group)
         self.in_transition = False
+        
+       
 
+	
+#----------------------------------------------------------------------------#
+class DBusObject( object ):
+#----------------------------------------------------------------------------#
+
+    def __init__( self ):
+        self.objects = {}
+        self.onResourceChanged = []
+        self.onCallStatus = []
+        self.onNetworkStatus = []
+        self.onIdleStateChanged = []
+        self.ignoreSuspend = False
+
+        self.framework_obj = None
+        self.gsm_device_obj = None
+        self.gsm_device_iface = None
+        self.usage_iface = None
+        self.device_iface = None
+        self.device_power_iface = None
+        self.idlenotifier_obj = None
+        self.idlenotifier_iface = None
+        self.inputnotifier_obj = None
+        self.inputnotifier_iface = None
+        self.display_obj = None
+        self.display_iface = None
+
+        self.fullinit = False
+	self.bluetooth_obj = False
+
+    def tryGetProxy( self, busname, objname ):
+        object = None
+        try:
+            object = self.objects[ "%s:%s" % ( busname, objname ) ]
+        except KeyError:
+            try:
+                object = self.bus.get_object( busname, objname )
+            except DBusException, e:
+                print "could not create proxy for %s:%s" % ( busname, objname ), e
+            else:
+                self.objects[ "%s:%s" % ( busname, objname ) ] = object
+        return object
+
+    def initialize( self ):
+        if self.fullinit:
+            return True
+        try:
+            self.bus = SystemBus( mainloop=e_dbus.DBusEcoreMainLoop() )
+        except DBusException, e:
+            print "could not connect to dbus_object system bus:", e
+            return False
+	failcount = 0
+	
+
+        # Usage
+        self.usage_obj = self.tryGetProxy( 'org.freesmartphone.ousaged', '/org/freesmartphone/Usage' )
+        if ( self.usage_obj is not None ) and ( self.usage_iface is None ):
+            self.usage_iface = Interface(self.usage_obj, 'org.freesmartphone.Usage')
+            self.usage_iface.connect_to_signal( "ResourceChanged", self.cbResourceChanged )
+            self.usage_iface.RequestResource("Bluetooth")
+        if self.usage_obj is None:
+            failcount += 1
+        else:
+	    self.bluetooth_obj = True
+            print "usage ok", self.usage_iface
+
+        
+        print "failcount=", failcount
+        if failcount == 0:
+            self.fullinit = True
+        return self.fullinit
+
+    def cbResourceChanged( self, resourcename ):
+        for cb in self.onResourceChanged:
+            cb( resourcename=resourcename )
+
+    
+
+    
 #----------------------------------------------------------------------------#
 class EvasCanvas(object):
 #----------------------------------------------------------------------------#
@@ -498,6 +614,7 @@ class MyOptionParser(OptionParser):
 if __name__ == "__main__":
 
     options, args = MyOptionParser().parse_args()
+    dbus_object = None
     gui = GUI( options, args )
     try:
         gui.run()

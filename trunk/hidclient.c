@@ -174,10 +174,11 @@ static void set_device_class(int hdev, char* class)
 
 }
 
-static void send_event(int is, int modifiers, int val)
+static int send_event(int is, int modifiers, int val)
 {
 
         unsigned char th[10];
+	int n;
 	
 	th[0] = 0xa1;
 	th[1] = 0x01;
@@ -191,16 +192,18 @@ static void send_event(int is, int modifiers, int val)
 	th[9] = 0x00;
 	
 
-	write(is, th, sizeof(th));
+	n = write(is, th, sizeof(th));
 	//printf("%d\n", th[4]);
 	th[4] = 0x00;
-	write(is, th, sizeof(th));
+	n = write(is, th, sizeof(th));
+	return n;
 }
 
-static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
+static int send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 {
 
         unsigned char th[6];
+	int n;
 	
 	th[0] = 0xa1;
 	th[1] = 0x02;
@@ -210,7 +213,8 @@ static void send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 	th[5] = whell;
 	
 
-	write(is, th, sizeof(th));
+	n = write(is, th, sizeof(th));
+	return n;
 	/*th[2] = 0x00; 
 	th[3] = 0x00;
 	th[4] = 0x00; 
@@ -354,7 +358,11 @@ int main(int argc, char *argv[])
 			key_value[2] = '\0';
 			printf("key_value: %s\n", key_value);
 
-			send_event(is,atoi(modifiers),atoi(key_value));
+			n = send_event(is,atoi(modifiers),atoi(key_value));
+			if (n < 0){
+				write(newsockfd,"disconnected",13);
+				error("ERROR writing to bluetooth socket");
+			}
 
 		}
 		else if (strcmp(event, "02") == 0){
@@ -362,7 +370,11 @@ int main(int argc, char *argv[])
 
 			
 			printf("atoi whell: %d\n",whell);
-			send_mouse_event(is,btn,mov_x,mov_y,whell);
+			n = send_mouse_event(is,btn,mov_x,mov_y,whell);
+			if (n < 0){
+				write(newsockfd,"disconnected",13);
+				error("ERROR writing to bluetooth socket");
+			}
 		}
 		else{ 
 
@@ -379,7 +391,11 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp (buffer,"btn_up") == 0){
 				
-				send_mouse_event(is,0,0,0,0);
+				n = send_mouse_event(is,0,0,0,0);
+				if (n < 0){
+					write(newsockfd,"disconnected",13);
+					error("ERROR writing to bluetooth socket");
+				}
 				printf("mouse up\n");
 			}
 			printf("invalid\n");
