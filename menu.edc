@@ -112,7 +112,7 @@ parts {
 	ICON("profile6",0.5,2);
 	ICON("profile7",1,2);
 
-
+	LOGO();
         QUIT();
 	
 	
