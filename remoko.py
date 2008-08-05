@@ -36,6 +36,7 @@ from dbus.exceptions import DBusException
 from optparse import OptionParser
 
 from remoko_server import *
+from remoko_key_mapper import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -43,6 +44,12 @@ HEIGHT = 640
 TITLE = "remoko"
 WM_NAME = "remoko"
 WM_CLASS = "remoko"
+
+illume = None
+try:
+    import illume
+except:
+    print "could not load illume interface"
 
 edjepaths = "remoko.edj".split()
 
@@ -102,7 +109,7 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"disconnect")
+	#ecore.timer_add(1.0,self.main.transition_to,"connection_status")
 
 	ecore.timer_add(1.0,self.check_connection)
 
@@ -112,7 +119,7 @@ class main(edje_group):
 		
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("sudo pkill  -9 hidclient")
+			os.system("pkill  -9 hidclient")
 		ecore.main_loop_quit()
 		
 
@@ -147,6 +154,7 @@ class disconnect(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "disconnect")
+        
 	self.part_text_set("label_error","Error: Disconnected by remote device")
 	self.part_text_set("label_connect", "Open connection again ?")
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
@@ -155,14 +163,14 @@ class disconnect(edje_group):
 		
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("sudo pkill  -9 hidclient")
+			os.system("pkill  -9 hidclient")
 		ecore.main_loop_quit()
 
 	if source == "yes_option":
 
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
-			os.system("sudo pkill  -9 hidclient")
+			os.system("pkill  -9 hidclient")
 		self.main.initialize_remoko_server()
 		self.main.groups["main"].part_text_set("label_connect_to", "")
 		self.main.groups["main"].part_text_set("label_client", "")
@@ -170,6 +178,21 @@ class disconnect(edje_group):
 		ecore.timer_add(1.0,self.main.groups["main"].check_client)
 		self.main.transition_to("main")
 		
+#----------------------------------------------------------------------------#
+class connection_status(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "connection_status")
+
+        
+    	
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
+
+    
 #----------------------------------------------------------------------------#
 class menu(edje_group):
 #----------------------------------------------------------------------------#
@@ -185,12 +208,27 @@ class menu(edje_group):
 			self.main.connection.terminate_connection()
 
 			if self.main.connection.connect == False:
-				os.system("sudo pkill -9 hidclient")
+				os.system("pkill -9 hidclient")
 			ecore.main_loop_quit()
 			
 		elif source == "mouse":
 			
 			self.main.transition_to("mouse_ui")
+
+		elif source == "keyboard":
+			
+			self.main.transition_to("keyboard_ui")
+
+		elif source == "profile5":
+
+			if self.main.connection.connect == True:
+				self.main.groups["connection_status"].part_text_set("label_connect_to","Connect to:")
+    				self.main.groups["connection_status"].part_text_set("label_client", self.main.connection.client_name)
+				self.main.groups["connection_status"].part_text_set("label_addr",self.main.connection.client_addr)
+			else:
+				self.part_text_set("label_not_connect","You are not connect to any device")
+		
+			self.main.transition_to("connection_status")
 			
 		else:
 			
@@ -283,8 +321,8 @@ class mouse_ui(edje_group):
 				x1,y1 = mouse_position(self,x,y)
 				self.mouse_hold_out = True
 
-				print x1
-				print y1
+				#print x1
+				#print y1
 				
 				if self.button_hold == True:
 					
@@ -299,8 +337,8 @@ class mouse_ui(edje_group):
 					self.main.connection.send_mouse_event(00,x1,y1,00)
 
 		else:
-				
-			print "333"
+			pass	
+			#print "333"
    
 	
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
@@ -350,7 +388,38 @@ class mouse_ui(edje_group):
 				
 			pass
 
+#----------------------------------------------------------------------------#
+class keyboard_ui(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "keyboard_ui")
 
+    def onShow( self ):
+        self.focus = True
+        if illume:
+            illume.kbd_show()
+
+    def onHide( self ):
+        self.focus = False
+        if illume:
+            illume.kbd_hide()
+
+    @evas.decorators.key_down_callback
+    def on_key_down( self, event ):
+        key = event.keyname
+        print str(key)
+	value = self.main.key_mapper.mapper[str(key)]
+	try:
+		value = self.main.key_mapper.mapper[str(key)]
+		self.main.connection.send_keyboard_event("00",value)
+	except:
+		print "Key error --->>>"
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
 #----------------------------------------------------------------------------#
 class GUI(object):
 #----------------------------------------------------------------------------#
@@ -368,6 +437,7 @@ class GUI(object):
 	self.canvas = self.evas_canvas.evas_obj.evas
 	self.connection_processed = False
 	self.dbus_objectInit()	
+	self.key_mapper = key_mapper()
 	
 
         self.groups = {}
@@ -375,7 +445,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -406,7 +476,8 @@ class GUI(object):
         if dbus_object is None:
             self.dbus_object = DBusObject()
         if not self.dbus_object.initialize():
-            ecore.timer_add( 0.1, self.dbus_objectInit )
+            # try again later
+            ecore.timer_add( 1.0, self.dbus_objectInit )
             return False
         
 
@@ -499,8 +570,8 @@ class DBusObject( object ):
         except DBusException, e:
             print "could not connect to dbus_object system bus:", e
             return False
+
 	failcount = 0
-	
 
         # Usage
         self.usage_obj = self.tryGetProxy( 'org.freesmartphone.ousaged', '/org/freesmartphone/Usage' )
@@ -523,8 +594,6 @@ class DBusObject( object ):
     def cbResourceChanged( self, resourcename ):
         for cb in self.onResourceChanged:
             cb( resourcename=resourcename )
-
-    
 
     
 #----------------------------------------------------------------------------#

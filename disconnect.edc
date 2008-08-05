@@ -241,8 +241,7 @@ parts {
     programs {
 	ACTIVATE("quit");
 	ACTIVATE("no_option");
-	ACTIVATE("yes_option")
+	ACTIVATE("yes_option");
     	TRANSITION();
     }
- }
 

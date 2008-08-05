@@ -239,14 +239,7 @@ fonts {
         source: part_name;                                       	\
         action: STATE_SET "default" 0.0;                                \
         target: part_name;                                              \
-    }     /*                                                            \
-    program {                                                           \
-        name: "leave_"part_name;                                        \
-        signal: "mouse,out";                                            \
-        source: part_name;                                              \
-        action: STATE_SET "default" 0.0;                                \
-        target: part_name;                                              \
-    } */
+    }     
 
 
 
@@ -395,23 +388,34 @@ collections {
     }
     programs {
 	ACTIVATE("quit");
-    	TRANSITION();
+        TRANSITION();
     }
  }
 
 
+	
 
-  group {
-      name: "mouse_ui";
-      #include "mouse_ui.edc"
-  }
+	 group {
+		  name: "mouse_ui";
+		  #include "mouse_ui.edc"
+	 }
 
- group {
-      name: "menu";
-      #include "menu.edc"
-  }
- group {
-      name: "disconnect";
-      #include "disconnect.edc"
- }
-  
+	 group {
+		  name: "menu";
+		  #include "menu.edc"
+	 }
+	 group {
+		name: "disconnect";
+		#include "disconnect.edc"
+	 }
+	 group {
+		  name: "connection_status";
+		  #include "connection_status.edc"
+	 }
+	 group {
+		name: "keyboard_ui";
+		#include "keyboard_ui.edc"
+	 }
+	 
+
+ 
