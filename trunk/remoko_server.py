@@ -35,6 +35,7 @@ class Connect:
 		self.connect = False
 		self.sock_open = False
 		self.client_name = None
+		self.client_addr = None
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
@@ -89,7 +90,7 @@ class Connect:
 	def send_keyboard_event(self,modifier,key):
 		
 		try:
-			event = "01:" + str(modifier) + ":" + str(key)
+			event = "01:" + str(modifier) + ":" + str(key) + ":"
 			self.sock.send(event)
 		except:
 			self.connect = False
@@ -146,7 +147,7 @@ class start_deamon(Thread):
 			
 			
 			self.remoko.process_id2 = os.getpid()
-			os.system("sudo ./hidclient")
+			os.system("./hidclient")
 			
 			
 		except:
@@ -191,6 +192,7 @@ class start_listener(Thread):
 			print "You are connect to the address: " + str(input_status[-1])
 			client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
 			self.remoko.client_name = str(client_name)
+			self.remoko.client_addr = str(input_status[-1])
 			print "connected to: " + str(client_name)
 			
 

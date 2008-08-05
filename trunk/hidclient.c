@@ -237,6 +237,7 @@ int main(int argc, char *argv[])
      	char key_value[3];
 	char delims[] = ":";
    	char *result = NULL;
+	char tmp[2];
 
      	struct sockaddr_in serv_addr, cli_addr;
      
@@ -313,29 +314,29 @@ int main(int argc, char *argv[])
 	   			for(i=0; i < 5; i++) {
 					printf("I is %d\n", i);
 					if (i == 0){
-						printf( "event \"%s\"\n", result );
+						//printf( "event \"%s\"\n", result );
 	       		
 					}
 					else if (i == 1){
-						printf( "btn is \"%s\"\n", result );
+						//printf( "btn is \"%s\"\n", result );
 				       		 btn = atoi(result);
 		
 					}
 					else if (i == 2){
-						printf( "mov_x is \"%s\"\n", result );
+						//printf( "mov_x is \"%s\"\n", result );
 				       		mov_x = atoi(result);
 		
 					}
 					else if (i == 3){
-						printf( "mov_y is \"%s\"\n", result );
+						//printf( "mov_y is \"%s\"\n", result );
 						mov_y = atoi(result);
 					}
 
 					else if (i == 4){
 
-						printf( "scroll is \"%s\"\n", result );
+						//printf( "scroll is \"%s\"\n", result );
 				       		whell = atoi(result);
-						printf("Scroll value is %d\n", whell);
+						//printf("Scroll value is %d\n", whell);
 					}
 
 					result = strtok( NULL, delims );	
@@ -353,11 +354,21 @@ int main(int argc, char *argv[])
 			strncpy(modifiers, &buffer[3],2);
 			modifiers[2] = '\0';
 			printf("modifiers: %s\n", modifiers);
+			
+			strncpy(tmp, &buffer[7],1);
+			tmp[1] = '\0';
 
-			strncpy(key_value, &buffer[6],2);
-			key_value[2] = '\0';
-			printf("key_value: %s\n", key_value);
+			if (strcmp(tmp,":") == 0){
+				strncpy(key_value, &buffer[6],1);
+				key_value[1] = '\0';
+				printf("key_value: %s\n", key_value);
+			}
 
+			else {
+				strncpy(key_value, &buffer[6],2);
+				key_value[2] = '\0';
+				printf("key_value: %s\n", key_value);
+			}
 			n = send_event(is,atoi(modifiers),atoi(key_value));
 			if (n < 0){
 				write(newsockfd,"disconnected",13);
@@ -369,7 +380,7 @@ int main(int argc, char *argv[])
 			printf("mouse\n");
 
 			
-			printf("atoi whell: %d\n",whell);
+			//printf("atoi whell: %d\n",whell);
 			n = send_mouse_event(is,btn,mov_x,mov_y,whell);
 			if (n < 0){
 				write(newsockfd,"disconnected",13);
