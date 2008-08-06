@@ -51,7 +51,7 @@ try:
 except:
     print "could not load illume interface"
 
-edjepaths = "remoko.edj".split()
+edjepaths = "remoko.edj themes/remoko.edj".split()
 
 for i in edjepaths:
     if os.path.exists( i ):
