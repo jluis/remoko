@@ -367,12 +367,12 @@ collections {
                     state: "default" 0.0;
                     rel1 {
                         relative: 0.2 0.3;
-                        offset: 0 -50;
+                        offset: -10 -50;
                         
                     }
                     rel2 {
                         relative: 0.2 0.3;
-                        offset: 300 250;
+                        offset: 280 250;
                     }
                     text {
                         font: "Sans";

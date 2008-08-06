@@ -52,7 +52,7 @@ class key_mapper:
 		self.mapper['equal'] = 46 
 		self.mapper['bracketleft'] = 47
 		self.mapper['bracketright'] = 48
-		self.mapper['backslash'] = 50
+		self.mapper['backslash'] = 49
 		
 		self.mapper['semicolon'] = 51
 		self.mapper['apostrophe'] = 52
@@ -61,6 +61,7 @@ class key_mapper:
 		self.mapper['period'] = 55
 		self.mapper['slash'] = 56
 		
+		self.mapper['Insert'] = 73
 		self.mapper['Home'] = 74
 		self.mapper['Prior'] = 75
 		self.mapper['Delete'] = 76
