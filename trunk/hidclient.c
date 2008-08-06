@@ -195,6 +195,7 @@ static int send_event(int is, int modifiers, int val)
 	n = write(is, th, sizeof(th));
 	//printf("%d\n", th[4]);
 	th[4] = 0x00;
+	th[2] = 0x00;
 	n = write(is, th, sizeof(th));
 	return n;
 }
@@ -303,7 +304,7 @@ int main(int argc, char *argv[])
 			n = write(newsockfd,"Message received",17);
 			strncpy(event, &buffer[0],2);
 			event[2] = '\0';
-			printf("event: %s\n", event);
+			//printf("event: %s\n", event);
 
 			if (strcmp(event,"02") == 0){
 
@@ -312,7 +313,7 @@ int main(int argc, char *argv[])
 
 				result = strtok(event_msg, delims );
 	   			for(i=0; i < 5; i++) {
-					printf("I is %d\n", i);
+					//printf("I is %d\n", i);
 					if (i == 0){
 						//printf( "event \"%s\"\n", result );
 	       		
@@ -349,11 +350,11 @@ int main(int argc, char *argv[])
 		}
 
 		if (strcmp(event,"01") == 0){
-			printf("keyboard\n");
+			//printf("keyboard\n");
 
 			strncpy(modifiers, &buffer[3],2);
 			modifiers[2] = '\0';
-			printf("modifiers: %s\n", modifiers);
+			//printf("modifiers: %s\n", modifiers);
 			
 			strncpy(tmp, &buffer[7],1);
 			tmp[1] = '\0';
@@ -361,13 +362,13 @@ int main(int argc, char *argv[])
 			if (strcmp(tmp,":") == 0){
 				strncpy(key_value, &buffer[6],1);
 				key_value[1] = '\0';
-				printf("key_value: %s\n", key_value);
+				//printf("key_value: %s\n", key_value);
 			}
 
 			else {
 				strncpy(key_value, &buffer[6],2);
 				key_value[2] = '\0';
-				printf("key_value: %s\n", key_value);
+				//printf("key_value: %s\n", key_value);
 			}
 			n = send_event(is,atoi(modifiers),atoi(key_value));
 			if (n < 0){
@@ -377,7 +378,7 @@ int main(int argc, char *argv[])
 
 		}
 		else if (strcmp(event, "02") == 0){
-			printf("mouse\n");
+			//printf("mouse\n");
 
 			
 			//printf("atoi whell: %d\n",whell);

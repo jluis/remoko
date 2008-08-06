@@ -393,6 +393,9 @@ class keyboard_ui(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "keyboard_ui")
+        self.shift = False
+        self.alt = False
+        self.ctrl = False
 
     def onShow( self ):
         self.focus = True
@@ -408,10 +411,40 @@ class keyboard_ui(edje_group):
     def on_key_down( self, event ):
         key = event.keyname
         print str(key)
-	value = self.main.key_mapper.mapper[str(key)]
+	
 	try:
-		value = self.main.key_mapper.mapper[str(key)]
-		self.main.connection.send_keyboard_event("00",value)
+		if key == "Shift_L":
+			self.shift = True
+			
+		elif key == "Control_L":
+			self.ctrl = True
+			
+		elif key == "Alt_L":
+			self.alt = True
+			
+		else:
+			
+			value = self.main.key_mapper.mapper[str(key)]
+			
+			if self.shift == True:
+				self.main.connection.send_keyboard_event("02",value)
+				self.shift = False
+			
+			elif self.alt == True and self.ctrl == True:
+				self.main.connection.send_keyboard_event("05",value)
+				self.ctrl = False
+				self.alt = False
+				
+			elif self.ctrl == True:
+				self.main.connection.send_keyboard_event("01",value)
+				self.ctrl = False
+				
+			elif self.alt == True:
+				self.main.connection.send_keyboard_event("04",value) 	
+				self.alt = False
+			
+			else:
+				self.main.connection.send_keyboard_event("00",value)
 	except:
 		print "Key error --->>>"
 
