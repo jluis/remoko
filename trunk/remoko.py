@@ -51,7 +51,7 @@ try:
 except:
     print "could not load illume interface"
 
-edjepaths = "remoko.edj themes/remoko.edj".split()
+edjepaths = "remoko.edj".split()
 
 for i in edjepaths:
     if os.path.exists( i ):
@@ -80,7 +80,6 @@ class edje_group(edje.Edje):
         self.main = main
         self.parent_name = parent_name
         global edjepath
-        print edjepath
         f = edjepath
         try:
             edje.Edje.__init__(self, self.main.evas_canvas.evas_obj.evas, file=f, group=group)
@@ -253,14 +252,14 @@ class mouse_ui(edje_group):
 		self.mouse_down = True
 		self.tape_mouse_area = time.time()
 
-    		print self.tape_mouse_area
+    		#print self.tape_mouse_area
 
     @edje.decorators.signal_callback("mouse,up,1", "*")
     def on_mouse_up(self, emission, source):
 
 		if source == "mouse_area":
 			tape_time = time.time() - self.tape_mouse_area
-			print tape_time
+			#print tape_time
 			if tape_time < 0.2:
 
 				self.main.connection.send_mouse_event(1,0,0,0)
@@ -289,14 +288,14 @@ class mouse_ui(edje_group):
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:255")
 					#self.main.connection.send_keyboard_event("00",78)
-					print "Scroll_down"
+					#print "Scroll_down"
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:01")
 					#self.main.connection.send_keyboard_event("00",75)
-					print "Scroll_up"
+					#print "Scroll_up"
 				else:
 
 					pass
@@ -327,13 +326,13 @@ class mouse_ui(edje_group):
 				if self.button_hold == True:
 					
 					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
-					print mov
+					#print mov
 					self.main.connection.send_mouse_event(01,x1,y1,00)
 					
 				else:	
 					
 					mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-					print mov
+					#print mov
 					self.main.connection.send_mouse_event(00,x1,y1,00)
 
 		else:
@@ -344,15 +343,15 @@ class mouse_ui(edje_group):
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_mouse_click(self, emission, source):
     	
-		print self.mouse_down
+		#print self.mouse_down
 		if source == "bt_right":
-			print "bt_r"
+			#print "bt_r"
 			self.main.connection.send_mouse_event(2,0,0,0)
 			self.main.connection.send_event("btn_up")
 			
 		elif source == "bt_left":
 			
-			print "bt_l"
+			#print "bt_l"
 			self.main.connection.send_mouse_event(1,0,0,0)
 			self.main.connection.send_event("btn_up")
 			
@@ -373,7 +372,7 @@ class mouse_ui(edje_group):
 				
 		elif source == "bt_middle":
 			
-			print "bt_m"
+			#print "bt_m"
 			self.main.connection.send_mouse_event(4,0,0,0)
 			self.main.connection.send_event("btn_up")
 
