@@ -287,14 +287,14 @@ class mouse_ui(edje_group):
 				if y_scroll > self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:03:000:000:000")
+					self.main.connection.send_event("02:00:000:000:255")
 					#self.main.connection.send_keyboard_event("00",78)
 					print "Scroll_down"
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:05:000:000:00")
+					self.main.connection.send_event("02:00:000:000:01")
 					#self.main.connection.send_keyboard_event("00",75)
 					print "Scroll_up"
 				else:
