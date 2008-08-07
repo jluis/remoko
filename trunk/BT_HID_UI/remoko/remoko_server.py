@@ -147,7 +147,7 @@ class start_deamon(Thread):
 			
 			
 			self.remoko.process_id2 = os.getpid()
-			os.system("./hidclient")
+			os.system("hidclient")
 			
 			
 		except:

@@ -65,16 +65,13 @@ DIST_SOURCES = $(hidclient_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/valerio/toolchain/remoko/missing --run aclocal-1.10
-ALL_LINGUAS = 
-AMTAR = ${SHELL} /home/valerio/toolchain/remoko/missing --run tar
+ACLOCAL = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run aclocal-1.10
+AMTAR = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run tar
 AR = arm-angstrom-linux-gnueabi-ar
-AUTOCONF = ${SHELL} /home/valerio/toolchain/remoko/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/valerio/toolchain/remoko/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/valerio/toolchain/remoko/missing --run automake-1.10
+AUTOCONF = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run automake-1.10
 AWK = gawk
-CATALOGS = 
-CATOBJEXT = .gmo
 CC = ccache arm-angstrom-linux-gnueabi-gcc -march=armv4t -mtune=arm920t -std=gnu99
 CCDEPMODE = depmode=gcc3
 CFLAGS = -isystem/usr/local/openmoko/arm/arm-angstrom-linux-gnueabi/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os
@@ -85,7 +82,6 @@ CXXCPP = ccache arm-angstrom-linux-gnueabi-g++ -march=armv4t -mtune=arm920t -E
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -isystem/usr/local/openmoko/arm/arm-angstrom-linux-gnueabi/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden
 CYGPATH_W = echo
-DATADIRNAME = share
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 DEPENDENCIES = 
@@ -99,40 +95,12 @@ EGREP = /bin/grep -E
 EXEEXT = 
 F77 = ccache arm-angstrom-linux-gnueabi-g77 -march=armv4t -mtune=arm920t
 FFLAGS = 
-GETTEXT_PACKAGE = hidclient
-GMOFILES = 
-GMSGFMT = /usr/bin/msgfmt
 GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-INSTOBJEXT = .mo
-INTLLIBS = 
-INTLTOOL_CAVES_RULE = %.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_DESKTOP_RULE = %.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_DIRECTORY_RULE = %.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_EXTRACT = $(top_builddir)/intltool-extract
-INTLTOOL_KBD_RULE = %.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -m -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_KEYS_RULE = %.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -k -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_MERGE = $(top_builddir)/intltool-merge
-INTLTOOL_OAF_RULE = %.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -p $(top_srcdir)/po $< $@
-INTLTOOL_PERL = /usr/bin/perl
-INTLTOOL_POLICY_RULE = %.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_PONG_RULE = %.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_PROP_RULE = %.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_SCHEMAS_RULE = %.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_SERVER_RULE = %.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_SERVICE_RULE = %.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_SHEET_RULE = %.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_SOUNDLIST_RULE = %.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_THEME_RULE = %.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_UI_RULE = %.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_UPDATE = $(top_builddir)/intltool-update
-INTLTOOL_XAM_RULE = %.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-INTLTOOL_XML_NOMERGE_RULE = %.xml:       %.xml.in       $(INTLTOOL_MERGE) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< $@
-INTLTOOL_XML_RULE = %.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 LDFLAGS = -L/usr/local/openmoko/arm/arm-angstrom-linux-gnueabi/lib -Wl,-rpath-link,/usr/local/openmoko/arm/arm-angstrom-linux-gnueabi/lib -Wl,-O1
 LIBOBJS = 
 LIBS = 
@@ -140,11 +108,8 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/valerio/toolchain/remoko/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
-MKINSTALLDIRS = ./mkinstalldirs
-MSGFMT = /usr/bin/msgfmt
-MSGFMT_OPTS = -c
 OBJEXT = o
 PACKAGE = hidclient
 PACKAGE_BUGREPORT = http://www.openmoko.org/
@@ -154,22 +119,16 @@ PACKAGE_TARNAME = hidclient
 PACKAGE_VERSION = 0.0.1
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/local/openmoko/arm/bin/pkg-config
-POFILES = 
-POSUB = po
-PO_IN_DATADIR_FALSE = 
-PO_IN_DATADIR_TRUE = 
 RANLIB = arm-angstrom-linux-gnueabi-ranlib
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = arm-angstrom-linux-gnueabi-strip
-USE_NLS = yes
 VERSION = 0.0.1
-XGETTEXT = /usr/bin/xgettext
-abs_builddir = /home/valerio/toolchain/remoko/src
-abs_srcdir = /home/valerio/toolchain/remoko/src
-abs_top_builddir = /home/valerio/toolchain/remoko
-abs_top_srcdir = /home/valerio/toolchain/remoko
+abs_builddir = /home/valerio/remoko/BT_HID_Server/src
+abs_srcdir = /home/valerio/remoko/BT_HID_Server/src
+abs_top_builddir = /home/valerio/remoko/BT_HID_Server
+abs_top_srcdir = /home/valerio/remoko/BT_HID_Server
 ac_ct_CC = 
 ac_ct_CXX = 
 ac_ct_F77 = 
@@ -178,43 +137,43 @@ am__leading_dot = .
 am__quote = 
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
-bindir = /usr/bin
+bindir = ${exec_prefix}/bin
 build = i686-pc-linux-gnu
-build_alias = i686-linux
+build_alias = 
 build_cpu = i686
 build_os = linux-gnu
 build_vendor = pc
 builddir = .
-datadir = /usr/share
+datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
-exec_prefix = /usr
+exec_prefix = ${prefix}
 host = arm-angstrom-linux-gnueabi
 host_alias = arm-angstrom-linux-gnueabi
 host_cpu = arm
 host_os = linux-gnueabi
 host_vendor = angstrom
 htmldir = ${docdir}
-includedir = /usr/include
-infodir = /usr/share/info
-install_sh = $(SHELL) /home/valerio/toolchain/remoko/install-sh
-libdir = /usr/lib
-libexecdir = /usr/libexec
+includedir = ${prefix}/include
+infodir = ${datarootdir}/info
+install_sh = $(SHELL) /home/valerio/remoko/BT_HID_Server/install-sh
+libdir = ${exec_prefix}/lib
+libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
-localstatedir = /var
-mandir = /usr/share/man
+localstatedir = ${prefix}/var
+mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr
+prefix = /usr/local/openmoko/arm/arm-angstrom-linux-gnueabi/usr/
 program_transform_name = s,x,x,
 psdir = ${docdir}
-sbindir = /usr/sbin
-sharedstatedir = /usr/com
+sbindir = ${exec_prefix}/sbin
+sharedstatedir = ${prefix}/com
 srcdir = .
-sysconfdir = /etc
-target_alias = arm-angstrom-linux-gnueabi
+sysconfdir = ${prefix}/etc
+target_alias = 
 top_builddir = ..
 top_srcdir = ..
 INCLUDES = -I$(top_srcdir)
