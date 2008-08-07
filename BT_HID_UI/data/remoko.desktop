@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ReMoko
+Comment=BT HID client
+Exec=remoko
+Icon=remoko
+Terminal=false
+Type=Application
+Categories=Office;
+MimeType=text/x-vcard;
+SingleInstance=true
+StartupNotify=true
