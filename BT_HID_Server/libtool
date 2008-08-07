@@ -70,7 +70,7 @@ host=arm-angstrom-linux-gnueabi
 host_os=linux-gnueabi
 
 # The build system.
-build_alias=i686-linux
+build_alias=
 build=i686-pc-linux-gnu
 build_os=linux-gnu
 
@@ -7316,7 +7316,7 @@ host=arm-angstrom-linux-gnueabi
 host_os=linux-gnueabi
 
 # The build system.
-build_alias=i686-linux
+build_alias=
 build=i686-pc-linux-gnu
 build_os=linux-gnu
 
@@ -7621,7 +7621,7 @@ host=arm-angstrom-linux-gnueabi
 host_os=linux-gnueabi
 
 # The build system.
-build_alias=i686-linux
+build_alias=
 build=i686-pc-linux-gnu
 build_os=linux-gnu
 
