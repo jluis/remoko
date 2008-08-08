@@ -36,6 +36,7 @@ class Connect:
 		self.sock_open = False
 		self.client_name = None
 		self.client_addr = None
+		self.error = False
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
@@ -45,6 +46,7 @@ class Connect:
 		
 		# Read record file
 		file_read = open('../data/service_record.xml','r')
+		#file_read = open('/usr/share/remoko/data/service_record.xml','r')
 		xml = file_read.read()
 
 		# Add service record to the BlueZ database
@@ -175,13 +177,18 @@ class start_listener(Thread):
 				self.remoko.connect = True
 			elif reply == "disconnected":
 				self.remoko.connect = False
-							
-			input_status = self.remoko.adapter.ListConnections()
-			print input_status
-			print "You are connect to the address: " + str(input_status[-1])
-			client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
-			self.remoko.client_name = str(client_name)
-			self.remoko.client_addr = str(input_status[-1])
-			print "connected to: " + str(client_name)
+			try:	
+						
+				input_status = self.remoko.adapter.ListConnections()
+				print input_status
+				print "You are connect to the address: " + str(input_status[-1])
+				client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
+				self.remoko.client_name = str(client_name)
+				self.remoko.client_addr = str(input_status[-1])
+				print "connected to: " + str(client_name)
+			except:
+				
+				self.remoko.error = True
+				print 'ERROR: Bluetooth is off'
 			
 
