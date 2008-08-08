@@ -191,13 +191,24 @@ class connection_status(edje_group):
 		
 		self.main.transition_to("menu")
 
-    
+#----------------------------------------------------------------------------#
+class about(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "about")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
+
 #----------------------------------------------------------------------------#
 class menu(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "menu")
-	self.part_text_set( "label_title", "Remoko" )
+	self.part_text_set( "label_title", "ReMoko" )
         
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
@@ -228,7 +239,15 @@ class menu(edje_group):
 				self.part_text_set("label_not_connect","You are not connect to any device")
 		
 			self.main.transition_to("connection_status")
+
+		elif source == "profile6":
 			
+			self.main.groups["about"].part_text_set("label_version","ReMoko v0.1")
+			self.main.groups["about"].part_text_set("label_test_version","Test Version")
+			self.main.groups["about"].part_text_set("label_feeback","Send feedback to:")
+			self.main.groups["about"].part_text_set("label_mail_addr","<vdv100@gmail.com>")
+			
+			self.main.transition_to("about")	
 		else:
 			
 			print "feature not implemented yet :) "
@@ -252,14 +271,14 @@ class mouse_ui(edje_group):
 		self.mouse_down = True
 		self.tape_mouse_area = time.time()
 
-    		#print self.tape_mouse_area
+    		
 
     @edje.decorators.signal_callback("mouse,up,1", "*")
     def on_mouse_up(self, emission, source):
 
 		if source == "mouse_area":
 			tape_time = time.time() - self.tape_mouse_area
-			#print tape_time
+			
 			if tape_time < 0.2:
 
 				self.main.connection.send_mouse_event(1,0,0,0)
@@ -287,15 +306,15 @@ class mouse_ui(edje_group):
 
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:255")
-					#self.main.connection.send_keyboard_event("00",78)
-					#print "Scroll_down"
+					
+					
 
 				elif y_scroll < self.scroll_pos:
 
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:01")
-					#self.main.connection.send_keyboard_event("00",75)
-					#print "Scroll_up"
+					
+					
 				else:
 
 					pass
@@ -318,40 +337,36 @@ class mouse_ui(edje_group):
 				
 				x,y = self.main.canvas.pointer_canvas_xy
 				x1,y1 = mouse_position(self,x,y)
-				self.mouse_hold_out = True
-
-				#print x1
-				#print y1
+				
 				
 				if self.button_hold == True:
 					
 					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
-					#print mov
+					
 					self.main.connection.send_mouse_event(01,x1,y1,00)
 					
 				else:	
 					
 					mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-					#print mov
+					
 					self.main.connection.send_mouse_event(00,x1,y1,00)
 
 		else:
 			pass	
-			#print "333"
+			
    
 	
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_mouse_click(self, emission, source):
     	
-		#print self.mouse_down
+		
 		if source == "bt_right":
-			#print "bt_r"
+			
 			self.main.connection.send_mouse_event(2,0,0,0)
 			self.main.connection.send_event("btn_up")
 			
 		elif source == "bt_left":
 			
-			#print "bt_l"
 			self.main.connection.send_mouse_event(1,0,0,0)
 			self.main.connection.send_event("btn_up")
 			
@@ -372,7 +387,6 @@ class mouse_ui(edje_group):
 				
 		elif source == "bt_middle":
 			
-			#print "bt_m"
 			self.main.connection.send_mouse_event(4,0,0,0)
 			self.main.connection.send_event("btn_up")
 
@@ -452,6 +466,52 @@ class keyboard_ui(edje_group):
 	if source == "back":
 		
 		self.main.transition_to("menu")
+
+######## Mouse Area ##############################
+
+    @edje.decorators.signal_callback("mouse,down,1", "background")
+    def on_mouse_down(self, emission, source):
+		
+		self.mouse_down = True
+		self.tape_mouse_area = time.time()
+
+    @edje.decorators.signal_callback("mouse,up,1", "background")
+    def on_mouse_up(self, emission, source):
+
+		
+		tape_time = time.time() - self.tape_mouse_area
+		print tape_time
+		if tape_time < 0.2:
+
+			self.main.connection.send_mouse_event(1,0,0,0)
+			self.main.connection.send_event("btn_up")
+
+		self.mouse_down = False
+		self.first_touch = True
+		self.x_init, self.y_init = 0,0
+
+    @edje.decorators.signal_callback("mouse_over_area", "*")
+    def on_mouse_over_area(self, emission, source):
+
+		if self.mouse_down == True:
+			
+			if self.first_touch == True:
+				
+				self.first_touch = False
+				self.x_init, self.y_init = self.main.canvas.pointer_canvas_xy
+				
+			else:
+				
+				x,y = self.main.canvas.pointer_canvas_xy
+				x1,y1 = mouse_position(self,x,y)
+					
+				mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
+				self.main.connection.send_mouse_event(00,x1,y1,00)
+
+		else:
+			pass	
+			
+
 #----------------------------------------------------------------------------#
 class GUI(object):
 #----------------------------------------------------------------------------#
@@ -477,7 +537,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -605,7 +665,7 @@ class DBusObject( object ):
 
 	failcount = 0
 
-        # Usage
+        # request bluetooth services
         self.usage_obj = self.tryGetProxy( 'org.freesmartphone.ousaged', '/org/freesmartphone/Usage' )
         if ( self.usage_obj is not None ) and ( self.usage_iface is None ):
             self.usage_iface = Interface(self.usage_obj, 'org.freesmartphone.Usage')
