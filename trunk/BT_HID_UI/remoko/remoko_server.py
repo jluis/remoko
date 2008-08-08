@@ -52,8 +52,7 @@ class Connect:
 		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
 																'org.bluez.Database')
 		self.handle = self.database.AddServiceRecordFromXML(xml)
-		self.process_id = os.getpid()
-		print self.process_id
+		
 
 		# Check if input service is running, if yes terminate the service
 		
@@ -123,14 +122,6 @@ class Connect:
 			
 		print "Connection terminated"
 			
-	
-		
-	#while 1:
-		#s = raw_input()
-		#sock.send(s)
-		#print sock.recv(100)
-		#if s == "quit":
-			
 				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
 				
 class start_deamon(Thread):
@@ -139,20 +130,18 @@ class start_deamon(Thread):
 		
 		Thread.__init__(self)
 		self.remoko = remoko
-		print "initializing deamon ..."
+		print "initializing daemon ..."
 		
 	def run(self):
 		
 		try:
 			
-			
-			self.remoko.process_id2 = os.getpid()
 			os.system("hidclient")
 			
 			
 		except:
 			
-			print "Error in the deamon"
+			print "Error in the daemon"
 
 
 

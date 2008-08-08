@@ -416,6 +416,10 @@ collections {
 		name: "keyboard_ui";
 		#include "keyboard_ui.edc"
 	 }
+	 group {
+		name: "about";
+		#include "about.edc"
+	 }
 	 
 
  
