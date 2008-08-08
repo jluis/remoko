@@ -125,15 +125,20 @@ class main(edje_group):
     def check_connection(self):
 
 		if self.main.connection_processed == True:
-			if self.main.connection.connect == False:
-				ecore.timer_add(1.0,self.check_connection)
 
+			if self.main.connection.error == True:
+				
+				self.part_text_set("label_waiting", "ERROR: Bluetooth is off")
+
+			elif self.main.connection.connect == False:
+				ecore.timer_add(1.0,self.check_connection)
+				
 			else:
 			
 				ecore.timer_add(1.0,self.check_client)
 		else:
 			ecore.timer_add(1.0,self.check_connection)
-			
+
     def check_client(self):
 		
 		if self.main.connection.client_name == None:
@@ -528,6 +533,7 @@ class GUI(object):
 	
 	self.canvas = self.evas_canvas.evas_obj.evas
 	self.connection_processed = False
+	self.try_framework = 0
 	self.dbus_objectInit()	
 	self.key_mapper = key_mapper()
 	
@@ -565,11 +571,16 @@ class GUI(object):
     def dbus_objectInit( self ):
         print "dbus_objectInit..."
         global dbus_object
+	if self.try_framework == 2:
+		self.dbus_object.bluetooth_obj = True
+		print 'You are using ASU'
+		return False
         if dbus_object is None:
             self.dbus_object = DBusObject()
         if not self.dbus_object.initialize():
             # try again later
             ecore.timer_add( 1.0, self.dbus_objectInit )
+	    self.try_framework += 1 
             return False
         
 
