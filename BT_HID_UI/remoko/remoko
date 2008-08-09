@@ -31,6 +31,7 @@ import edje
 import edje.decorators
 import ecore
 import ecore.evas
+import ecore.x
 from dbus import SystemBus, Interface
 from dbus.exceptions import DBusException
 from optparse import OptionParser

@@ -76,9 +76,6 @@ parts {
                fill { smooth: 0; } 					
             }								
          }	
-				
-        LOGO();
-	
 	
     }
     programs {
