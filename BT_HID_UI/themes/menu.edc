@@ -104,13 +104,13 @@ parts {
     }
 	ICON("mouse",0,0);
 	ICON("keyboard",0.5,0);
-	ICON("profile1",1,0);
-	ICON("profile2",0,1);
-	ICON("profile3",0.5,1);
-	ICON("profile4",1,1);
-	ICON("profile5",0,2);
-	ICON("profile6",0.5,2);
-	ICON("profile7",1,2);
+	ICON("presentation",1,0);
+	ICON("multimedia",0,1);
+	ICON("games",0.5,1);
+	ICON("accelerometer",1,1);
+	ICON("conf",0,2);
+	ICON("connection",0.5,2);
+	ICON("about",1,2);
 
 	LOGO();
         QUIT();
@@ -123,13 +123,13 @@ parts {
 	ACTIVATE("quit");
 	ACTIVATE("mouse");
 	ACTIVATE("keyboard");
-	ACTIVATE("profile1");
-	ACTIVATE("profile2");
-	ACTIVATE("profile3");
-	ACTIVATE("profile4");
-	ACTIVATE("profile5");
-	ACTIVATE("profile6");
-	ACTIVATE("profile7");
+	ACTIVATE("presentation");
+	ACTIVATE("multimedia");
+	ACTIVATE("games");
+	ACTIVATE("accelerometer");
+	ACTIVATE("conf");
+	ACTIVATE("connection");
+	ACTIVATE("about");
 	TRANSITION();
      }
  

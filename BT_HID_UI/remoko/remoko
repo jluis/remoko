@@ -256,7 +256,7 @@ class menu(edje_group):
 			
 			self.main.transition_to("keyboard_ui")
 
-		elif source == "profile5":
+		elif source == "connection":
 
 			if self.main.connection.connect == True:
 				self.main.groups["connection_status"].part_text_set("label_connect_to","Connect to:")
@@ -267,7 +267,7 @@ class menu(edje_group):
 		
 			self.main.transition_to("connection_status")
 
-		elif source == "profile6":
+		elif source == "about":
 			
 			self.main.groups["about"].part_text_set("label_version","ReMoko v0.1")
 			self.main.groups["about"].part_text_set("label_test_version","Test Version")
