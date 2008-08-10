@@ -667,6 +667,10 @@ collections {
 		name: "about";
 		#include "about.edc"
 	 }
+	 group {
+		name: "bluetooth_off_alert";
+		#include "bluetooth_off_alert.edc"
+	 }
 	 
 
  
