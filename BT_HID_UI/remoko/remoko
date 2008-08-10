@@ -30,8 +30,8 @@ import evas.decorators
 import edje
 import edje.decorators
 import ecore
-import ecore.evas
 import ecore.x
+import ecore.evas
 from dbus import SystemBus, Interface
 from dbus.exceptions import DBusException
 from optparse import OptionParser
@@ -194,6 +194,28 @@ class connection_status(edje_group):
 	if source == "back":
 		
 		self.main.transition_to("menu")
+
+#----------------------------------------------------------------------------#
+class bluetooth_off_alert(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "bluetooth_off_alert")
+        
+	self.part_text_set("label_error","Error: Bluetooth is off")
+	self.part_text_set("label_connect", "Turn Bluetooth on ?")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+
+	if source == "quit" or source == "no_option" :
+
+		ecore.main_loop_quit()
+
+	if source == "yes_option":
+
+		self.main.power_on_bt()
+		self.main.dbus_object.bluetooth_obj = True
+		self.main.transition_to("main")
 
 #----------------------------------------------------------------------------#
 class about(edje_group):
@@ -414,16 +436,22 @@ class keyboard_ui(edje_group):
         self.shift = False
         self.alt = False
         self.ctrl = False
+	self.tape_mouse_area = 0
+	self.x_init, self.y_init = 0,0
+        self.mouse_down = False
+        self.first_touch = True
 
     def onShow( self ):
         self.focus = True
-        if illume:
-            illume.kbd_show()
+        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
+        #if illume:
+            #illume.kbd_show()
 
     def onHide( self ):
         self.focus = False
-        if illume:
-            illume.kbd_hide()
+        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
+        #if illume:
+            #illume.kbd_hide()
 
     @evas.decorators.key_down_callback
     def on_key_down( self, event ):
@@ -532,6 +560,7 @@ class GUI(object):
         )
 	
 	self.canvas = self.evas_canvas.evas_obj.evas
+	self.window = self.evas_canvas.evas_obj
 	self.connection_processed = False
 	self.restore_conditions = False
 	self.try_framework = 0
@@ -544,7 +573,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -569,7 +598,7 @@ class GUI(object):
 		ecore.timer_add( 10.0, self.check_connection_status)
 	
 	
-     def check_bt_status(self):
+    def check_bt_status(self):
 		
 	file = open("/sys/bus/platform/devices/neo1973-pm-bt.0/power_on")
 	status = file.readline()
