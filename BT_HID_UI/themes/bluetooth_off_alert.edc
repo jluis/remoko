@@ -98,7 +98,7 @@ parts {
                     }
              }
 	}
-
+	
 	part {								
             name: "no_option";						
             type: IMAGE;						

@@ -120,6 +120,7 @@ class main(edje_group):
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
 			os.system("pkill  -9 hidclient")
+		self.main.on_exit()
 		ecore.main_loop_quit()
 		
 
@@ -127,11 +128,7 @@ class main(edje_group):
 
 		if self.main.connection_processed == True:
 
-			if self.main.connection.error == True:
-				
-				self.part_text_set("label_waiting", "ERROR: Bluetooth is off")
-
-			elif self.main.connection.connect == False:
+			if self.main.connection.connect == False:
 				ecore.timer_add(1.0,self.check_connection)
 				
 			else:
@@ -169,6 +166,7 @@ class disconnect(edje_group):
 		self.main.connection.terminate_connection()
 		if self.main.connection.connect == False:
 			os.system("pkill  -9 hidclient")
+		self.main.on_exit()
 		ecore.main_loop_quit()
 
 	if source == "yes_option":
@@ -225,6 +223,7 @@ class menu(edje_group):
 
 			if self.main.connection.connect == False:
 				os.system("pkill -9 hidclient")
+			self.main.on_exit()
 			ecore.main_loop_quit()
 			
 		elif source == "mouse":
@@ -534,6 +533,7 @@ class GUI(object):
 	
 	self.canvas = self.evas_canvas.evas_obj.evas
 	self.connection_processed = False
+	self.restore_conditions = False
 	self.try_framework = 0
 	self.dbus_objectInit()	
 	self.key_mapper = key_mapper()
@@ -569,11 +569,34 @@ class GUI(object):
 		ecore.timer_add( 10.0, self.check_connection_status)
 	
 	
+     def check_bt_status(self):
+		
+	file = open("/sys/bus/platform/devices/neo1973-pm-bt.0/power_on")
+	status = file.readline()
+	if status.find('0') > -1:
+		print "off"
+		return "off"
+	else:
+		print "on"
+		return "on"
+		
+	file.close()
+
+    def power_on_bt(self):
+	
+	self.restore_conditions = True
+	os.system("echo 1 > /sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/neo1973-pm-bt.0/power_on")
+	os.system("echo 0 > /sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/neo1973-pm-bt.0/reset")
+	
     def dbus_objectInit( self ):
         print "dbus_objectInit..."
         global dbus_object
 	if self.try_framework == 2:
-		self.dbus_object.bluetooth_obj = True
+		status = self.check_bt_status()
+		if status == "off":
+			self.transition_to("bluetooth_off_alert")
+		else:
+			self.dbus_object.bluetooth_obj = True
 		print 'You are using ASU'
 		return False
         if dbus_object is None:
@@ -583,6 +606,14 @@ class GUI(object):
             ecore.timer_add( 1.0, self.dbus_objectInit )
 	    self.try_framework += 1 
             return False
+        
+	
+    def on_exit(self):
+	
+	if self.restore_conditions == True:
+
+		os.system("echo 1 > /sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/neo1973-pm-bt.0/reset")
+	
         
 
     def initialize_remoko_server(self):
