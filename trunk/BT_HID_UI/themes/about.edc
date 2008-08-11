@@ -37,19 +37,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.0;
-                        offset: -10 0;
+                        relative: 0.1 0.1;
+                        offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.2 0.0;
-                        offset: 290 200;
+                        relative: 0.9 0.9;
+                        offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.0 0.0;
                     }
              }
 	}
@@ -60,19 +60,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.3 0.1;
-                        offset: -10 0;
+                        relative: 0.2 0.1;
+                        offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.3 0.1;
-                        offset: 190 200;
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.0 0.2;
                     }
              }
 	}
@@ -84,19 +84,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.3;
-                        offset: -10 -50;
+                        relative: 0.2 0.1;
+                        offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.2 0.3;
-                        offset: 280 250;
+                        relative: 0.8 0.9;
+                        offset: 0 0;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.3 0.5;
                     }
              }
 	}
@@ -108,19 +108,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.4;
-                        offset: -10 -50;
+                        relative: 0.2 0.1;
+                        offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.2 0.4;
-                        offset: 280 250;
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.2 0.6;
                     }
              }
 	}
