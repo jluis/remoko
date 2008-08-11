@@ -1,0 +1,197 @@
+#define CLICK_ANIMATION(part_name,val_d_min,val_d_max,val_c_min,val_c_max)\
+part { 							\
+	name: part_name"_clicked_animation"; 		\
+	type: RECT; 					\
+	mouse_events: 0; 				\
+	description { 					\
+		state: "default" 0.0; 			\
+		color: 0 255 0 255; 			\
+		visible: 0; 				\
+		rel1 { 					\
+			relative: 0.0 val_d_min; 	\
+			offset: 0 0; 			\
+		} 					\
+		rel2 { 					\
+			relative: 1.0 val_d_max; 	\
+			offset: -1 -1; 			\
+		} 					\
+	} 						\
+	description { 					\
+		state: "clicked" 0.0; 			\
+		inherit: "default" 0.0; 		\
+		visible: 1; 				\
+		rel1 { 					\
+			relative: 0.0 val_c_max; 	\
+			offset: 0 0; 			\
+		} 					\
+		rel2 { 					\
+			relative: 1.0 val_c_max; 	\
+			offset: -1 -1; 			\
+		} 					\
+	} 						\
+} 							\
+
+
+#define CLICK_ANIMATION_PROG(part_name) 		\
+program { 						\
+	name: "animate_click"; 				\
+	signal: "mouse,clicked,1"; 			\
+	source: part_name; 				\
+	action: STATE_SET "clicked" 0.0; 		\
+	transition: LINEAR 0.16667; 			\
+	target: part_name"_clicked_animation"; 		\
+	after: "unanimate_click"; 			\
+} 							\
+program { 						\
+	name: "unanimate_click"; 			\
+	action: STATE_SET "default" 0.0; 		\
+	target: part_name"_clicked_animation"; 		\
+	after: "after_animation_signal"; 		\
+} 							\
+program { 						\
+	name: "after_animation_signal"; 		\
+	action: SIGNAL_EMIT "after_animate_click" "list_item"; \
+} 							\
+
+
+
+parts {
+
+	   SWALLOWCLIP();
+		
+	  part {
+            name: "background";
+            type: IMAGE;
+            mouse_events: 0;
+	    clip_to: "swallow_clip";   
+            description {
+               state: "default" 0.0;
+               visible: 1;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+	       image { normal: "background.png"; }                  
+               fill { smooth: 0; } 
+            }
+
+	    description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+
+	part {
+                name: "settings";
+                type: TEXT;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.02 0.02;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.2 0.1;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+			text: "Settings";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.0 0.0;
+                    }
+             }
+	}
+	CLICK_ANIMATION("fullscreen_option",0.09,0.18,0.12,0.13) 
+	part {
+		
+                name: "fullscreen";
+                type: TEXT;
+		effect: SOFT_OUTLINE;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.02 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.6 0.4;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+			text: "FullScreen Mode";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.0 0.0;
+                    }
+             }
+	}
+
+	part {
+                name: "fullscreen_option";
+                type: TEXT;
+                mouse_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.9 0.11;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.99 0.4;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.0 0.0;
+                    }
+             }
+	}
+	part {
+                name: "label_mail_addr";
+                type: TEXT;
+		effect: SOFT_OUTLINE;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.6;
+                    }
+             }
+	}
+	
+        LOGO();
+	BACK();
+	
+    }
+    programs {
+	CLICK_ANIMATION_PROG("fullscreen_option") 
+	ACTIVATE("back");
+    	TRANSITION();
+    }
