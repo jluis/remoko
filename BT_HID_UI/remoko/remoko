@@ -146,7 +146,7 @@ class main(edje_group):
 		else:
 			
 			self.part_text_set("label_waiting", "")
-			self.part_text_set("label_connect_to", "Connect to: ")
+			self.part_text_set("label_connect_to", "Connected to: ")
 			self.part_text_set("label_client", self.main.connection.client_name)
 			ecore.idle_enterer_add( self.main.check_connection_status)
 			ecore.timer_add(3.0,self.main.transition_to,"menu")
@@ -259,7 +259,7 @@ class menu(edje_group):
 		elif source == "connection":
 
 			if self.main.connection.connect == True:
-				self.main.groups["connection_status"].part_text_set("label_connect_to","Connect to:")
+				self.main.groups["connection_status"].part_text_set("label_connect_to","Connected to:")
     				self.main.groups["connection_status"].part_text_set("label_client", self.main.connection.client_name)
 				self.main.groups["connection_status"].part_text_set("label_addr",self.main.connection.client_addr)
 			else:
