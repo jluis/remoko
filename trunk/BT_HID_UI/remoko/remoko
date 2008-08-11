@@ -230,6 +230,18 @@ class about(edje_group):
 		self.main.transition_to("menu")
 
 #----------------------------------------------------------------------------#
+class settings(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "settings")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
+
+#----------------------------------------------------------------------------#
 class menu(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
@@ -275,6 +287,10 @@ class menu(edje_group):
 			self.main.groups["about"].part_text_set("label_mail_addr","<vdv100@gmail.com>")
 			
 			self.main.transition_to("about")	
+
+		elif source == "conf":
+
+			self.main.transition_to("settings")			
 		else:
 			
 			print "feature not implemented yet :) "
@@ -573,7 +589,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
