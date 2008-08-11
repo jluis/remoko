@@ -38,12 +38,12 @@ parts {
                state: "default" 0.0;					
                visible: 1;						
                rel1 {							
-                  relative: 0.3 0.0;					
-                  offset: 30 50;					
+                  relative: 0.4 0.1;					
+                  offset: 0 0;					
                }							
                rel2 {							
-                  relative: 0.3 0.0;					
-                  offset: 150 170;					
+                  relative: 0.6 0.27;					
+                  offset: -1 -1;					
                }							
 	      image { normal: "error.png"; }                  	
               fill { smooth: 0; } 					
@@ -58,19 +58,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.2;
+                        relative: 0.1 0.1;
                         offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.2 0.2;
-                        offset: 300 300;
+                        relative: 0.9 0.9;
+                        offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.45 0.45;
                     }
              }
 	}
@@ -82,19 +82,19 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.3 0.1;
-                        offset: -50 -30;
+                        relative: 0.1 0.1;
+                        offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.3 0.1;
-                        offset: 250 270;
+                        relative: 0.9 0.9;
+                        offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.5 0.5;
+                        align: 0.27 0.27;
                     }
              }
 	}
@@ -108,12 +108,12 @@ parts {
                state: "default" 0.0;					
 	       visible: 1;						
                rel1 {							
-                  relative: 0.3 0.5;					
-                  offset: -30 50;					
+                  relative: 0.22 0.57;					
+                  offset: 0 0;					
                }							
                rel2 {							
-                  relative: 0.3 0.5;					
-                  offset: 70 150;					
+                  relative: 0.44 0.74;					
+                  offset: -1 -1;					
                }							
 	       image { normal: "button_background.png"; }		                  
                fill { smooth: 0; } 					
@@ -164,12 +164,12 @@ parts {
                state: "default" 0.0;					
 	       visible: 1;						
                rel1 {							
-                  relative: 0.6 0.5;					
-                  offset: -30 50;					
+                  relative: 0.55 0.57;					
+                  offset: 0 0;					
                }							
                rel2 {							
-                  relative: 0.6 0.5;					
-                  offset: 70 150;					
+                  relative: 0.77 0.74;					
+                  offset: -1 -1;					
                }							
 	       image { normal: "button_background.png"; }		                  
                fill { smooth: 0; } 					
