@@ -36,8 +36,8 @@ parts {
                   offset: 0 0 ;
                }
                rel2 {
-                  relative: 0.0 0.0;
-                  offset:  480 560;
+                  relative: 1.0 1.0;
+                  offset:  -1 -1;
                }
 	       image { normal: "backdrop.png"; }                  
                fill { smooth: 0; } 
@@ -51,12 +51,12 @@ parts {
             description {
                state: "default" 0.0;
                rel1 {
-                  relative: 1.0 0.0;
-                  offset: -20 0 ;
+                  relative: 0.95 0.0;
+                  offset: 0 0 ;
                }
                rel2 {
-                  relative: 1.0 0.0;
-                  offset:  0 560;
+                  relative: 1.0 0.85;
+                  offset:  -1 -1;
                }
 	       image { normal: "scroll_area.png"; }                  
                fill { smooth: 0; } 

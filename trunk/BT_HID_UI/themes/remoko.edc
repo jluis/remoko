@@ -187,12 +187,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.0 0.8;					\
-                  offset: 10 50;					\
+                  relative: 0.01 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.0 0.8;					\
-                  offset: 80 120;					\
+                  relative: 0.17 0.99;					\
+                  offset: -1 -1;					\
                }							\
 	      image { normal: "button_background.png"; }                \ 
               fill { smooth: 0; } 					\
@@ -214,12 +214,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.0 0.8;					\
-                  offset: 10 50;					\
+                  relative: 0.01 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.0 0.8;					\
-                  offset: 80 120;					\
+                  relative: 0.17 0.99;					\
+                  offset: -1 -1;					\
                }							\
 	      image { normal: "button_left.png"; }                  	\
               fill { smooth: 0; } 					\
@@ -236,12 +236,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.1 0.8;					\
-                  offset: 50 50;					\
+                  relative: 0.22 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.1 0.8;					\
-                  offset: 120 120;					\
+                  relative: 0.38 0.99;					\
+                  offset: -1 -1;					\
                }							\
                image { normal: "button_background.png"; }               \   
                fill { smooth: 0; } 					\
@@ -263,12 +263,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.1 0.8;					\
-                  offset: 50 50;					\
+                  relative: 0.22 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.1 0.8;					\
-                  offset: 120 120;					\
+                  relative: 0.38 0.99;					\
+                  offset: -1 -1;					\
                }							\
                image { normal: "button_middle.png"; }                  	\
                fill { smooth: 0; } 					\
@@ -288,13 +288,13 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.4 0.8;					\
-                  offset: -5 50;					\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
 		  							\
                }							\
                rel2 {							\
-                  relative: 0.4 0.8;					\
-                  offset: 65 120;					\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
                }							\
                image { normal: "button_background.png"; }               \  
                fill { smooth: 0; } 					\
@@ -316,12 +316,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\		
                rel1 {							\
-                  relative: 0.4 0.8;					\
-                  offset: -5 50;					\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.4 0.8;					\
-                  offset: 65 120;					\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
                }							\
                image { normal: "button_right.png"; }                  	\	
                fill { smooth: 0; } 					\
@@ -339,12 +339,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.5 0.8;					\
-                  offset: 35 50;					\
+                  relative: 0.64 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.5 0.8;					\
-                  offset: 105 120;					\
+                  relative: 0.80 0.99;					\
+                  offset: -1 -1;					\
                }							\
 	      image { normal: "button_background.png"; }                \ 
               fill { smooth: 0; } 					\
@@ -367,12 +367,12 @@ fonts {
                state: "default" 0.0;					\
                visible: 1;						\
                rel1 {							\
-                  relative: 0.5 0.8;					\
-                  offset: 35 50;					\
+                  relative: 0.64 0.87;					\
+                  offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.5 0.8;					\
-                  offset: 105 120;					\
+                  relative: 0.80 0.99;					\
+                  offset: -1 -1;					\
                }							\
 	      image { normal: "button_hold.png"; }                  	\
               fill { smooth: 0; } 					\
@@ -389,12 +389,12 @@ fonts {
             description {						\
                state: "default" 0.0;					\
                rel1 {							\
-                  relative: 1.0 0.0;					\
-                  offset: -20 0 ;					\
+                  relative: 0.95 0.0;					\
+                  offset:    0 0 ;					\
                }							\
                rel2 {							\
-                  relative: 1.0 0.0;					\
-                  offset:  0 20;					\
+                  relative: 1.0 0.05;					\
+                  offset:  -1 -1;					\
                }							\
 	       image { normal: "arrow_up.png"; }                  	\
                fill { smooth: 0; } 					\
@@ -409,12 +409,12 @@ fonts {
             description {						\
                state: "default" 0.0;					\
                rel1 {							\
-                  relative: 1.0 0.8;					\
-                  offset: -20 30 ;					\
+                  relative: 0.95 0.8;					\
+                  offset:  0 0;						\
                }							\
                rel2 {							\
-                  relative: 1.0 0.8;					\
-                  offset:  0 50;					\					
+                  relative: 1.0 0.85;					\
+                  offset:  -1 -1;					\					
                }							\
 	       image { normal: "arrow_down.png"; }                  	\
                fill { smooth: 0; } 					\
