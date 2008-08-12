@@ -51,7 +51,7 @@ program { 						\
 program { 						\
 	name: part_name"after_animation_signal"; 	\
 	action: SIGNAL_EMIT "after_animate_click" "list_item"; \
-} 							\
+} 							
 
 
 
@@ -87,7 +87,7 @@ parts {
          }
 
 	
-	SCREEN_TEXT("settings","Settings","conf_icon.png")	
+	SCREEN_TEXT("Settings","conf_icon.png",0.2);
 	CLICK_ANIMATION("fullscreen_option",0.03,0.22,0.10,0.17);
 	
 	part {

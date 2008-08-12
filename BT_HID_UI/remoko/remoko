@@ -334,7 +334,7 @@ class menu(edje_group):
 
 		elif source == "about":
 			
-			self.main.groups["about"].part_text_set("label_version","ReMoko v0.1")
+			self.main.groups["about"].part_text_set("label_version","ReMoko v0.2")
 			self.main.groups["about"].part_text_set("label_test_version","Test Version")
 			self.main.groups["about"].part_text_set("label_feeback","Send feedback to:")
 			self.main.groups["about"].part_text_set("label_mail_addr","<vdv100@gmail.com>")
@@ -667,16 +667,20 @@ class GUI(object):
 #----------------------------------------------------------------------------#
     def __init__( self, options, args ):
 	
-	
+	self.remoko_conf = remoko_conf()
+	self.fullscreen = self.remoko_conf.fullscreen
+	if self.fullscreen == "Yes":
+		opt_fullscreen = True
+	else:
+		opt_fullscreen = False 
         edje.frametime_set(1.0 / options.fps)
 
         self.evas_canvas = EvasCanvas(
-            fullscreen = options.fullscreen,
+            fullscreen = opt_fullscreen,
             engine = options.engine,
             size = options.geometry
         )
 	self.evas_canvas.main = self
-	self.remoko_conf = remoko_conf()
 	self.canvas = self.evas_canvas.evas_obj.evas
 	self.window = self.evas_canvas.evas_obj
 	self.connection_processed = False
@@ -684,7 +688,6 @@ class GUI(object):
 	self.try_framework = 0
 	self.dbus_objectInit()	
 	self.key_mapper = key_mapper()
-	self.fullscreen = self.remoko_conf.fullscreen
 	self.scroll = self.remoko_conf.scroll
 	
 

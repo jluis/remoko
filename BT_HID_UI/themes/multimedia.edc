@@ -29,7 +29,7 @@ parts {
             }
          }
 
-	
+	SCREEN_TEXT("Multimedia","multimedia_icon.png",0.25);
         LOGO();
 	BACK();
 	
