@@ -29,7 +29,7 @@ parts {
             }
          }
 
-	
+	SCREEN_TEXT("Accelerometer","accelerometer_icon.png",0.28);
         LOGO();
 	BACK();
 	

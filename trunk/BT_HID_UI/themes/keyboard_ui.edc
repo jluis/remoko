@@ -28,7 +28,7 @@ parts {
                visible: 0;
             }
          }
-	
+   SCREEN_TEXT("Keyboard","keyboard_icon.png",0.2);
    part {								
             name: "back";						
             type: IMAGE;						

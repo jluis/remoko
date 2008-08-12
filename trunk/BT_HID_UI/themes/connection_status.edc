@@ -28,7 +28,8 @@ parts {
                visible: 0;
             }
          }
-
+	
+	SCREEN_TEXT("Connection","connection_icon.png",0.25);
 	part {
                 name: "label_connect_to";
                 type: TEXT;

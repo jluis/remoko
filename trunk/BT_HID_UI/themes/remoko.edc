@@ -80,10 +80,10 @@ fonts {
         }                                                               \
     }									
 									
-#define SCREEN_TEXT(PART_NAME,PART_LABEL, PART_ICON)			\
+#define SCREEN_TEXT(part_label, part_icon,part_comp)			\
 									\
     part {								\
-                name: PART_NAME"_text";					\
+                name: part_label"_text";				\
                 type: TEXT;						\
                 mouse_events: 0;					\
                 description {						\
@@ -94,12 +94,12 @@ fonts {
                         						\
                     }							\
                     rel2 {						\
-                        relative: 0.2 0.1;				\
+                        relative: part_comp 0.1;			\
                         offset: -1 -1;					\
                     }							\
                     text {						\
                         font: "Sans";					\
-			text: PART_LABEL;				\
+			text: part_label;				\
                         size: 1;					\
                         fit: 1 1;					\
                         align: 0.0 0.0;					\
@@ -108,7 +108,7 @@ fonts {
 	}								\									
 									\
     part {								\
-            name: PART_NAME"_icon";					\
+            name: part_label"_icon";					\
             type: IMAGE;						\
             mouse_events: 0;						\
             clip_to: "swallow_clip";   					\
@@ -116,19 +116,18 @@ fonts {
                state: "default" 0.0;					\
 	       visible: 1;						\
                rel1 {							\
-                  relative: 0.22 0.00;					\
+                  relative: (part_comp +0.02) 0.00;			\
                   offset: 0 0;						\
                }							\
                rel2 {							\
-                  relative: 0.30 0.1;					\
+                  relative: (part_comp + 0.1) 0.07;			\
                   offset: -1 -1;					\
                }							\
-	       image { normal: PART_ICON; }                  		\
+	       image { normal:part_icon; }                  		\
                fill { smooth: 0; } 					\
             }								\
          }				
 	
-								
 							
 #define QUIT()								\
     part {								\
