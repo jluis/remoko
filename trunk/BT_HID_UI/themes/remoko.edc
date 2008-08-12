@@ -12,6 +12,8 @@ images {
   image: "button_hold.png" COMP;
   image: "arrow_up.png" COMP;
   image: "arrow_down.png" COMP;
+  image: "arrow_left.png" COMP;
+  image: "arrow_right.png" COMP;
   image: "scroll_area.png" COMP;
   image: "mouse_icon.png" COMP;
   image: "keyboard_icon.png" COMP;
@@ -76,8 +78,58 @@ fonts {
             }                                                           \
             color: 255 255 255 0;                                       \
         }                                                               \
-    }
-
+    }									
+									
+#define SCREEN_TEXT(PART_NAME,PART_LABEL, PART_ICON)			\
+									\
+    part {								\
+                name: PART_NAME"_text";					\
+                type: TEXT;						\
+                mouse_events: 0;					\
+                description {						\
+                    state: "default" 0.0;				\
+                    rel1 {						\
+                        relative: 0.02 0.02;				\
+                        offset: 0 0;					\
+                        						\
+                    }							\
+                    rel2 {						\
+                        relative: 0.2 0.1;				\
+                        offset: -1 -1;					\
+                    }							\
+                    text {						\
+                        font: "Sans";					\
+			text: PART_LABEL;				\
+                        size: 1;					\
+                        fit: 1 1;					\
+                        align: 0.0 0.0;					\
+                    }							\
+             }								\
+	}								\									
+									\
+    part {								\
+            name: PART_NAME"_icon";					\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.22 0.00;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.30 0.1;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: PART_ICON; }                  		\
+               fill { smooth: 0; } 					\
+            }								\
+         }				
+	
+								
+							
 #define QUIT()								\
     part {								\
             name: "quit";						\
@@ -384,7 +436,7 @@ fonts {
   part {								\
             name: "scroll_area_up_icon";				\
             type: IMAGE;						\
-            mouse_events: 1;						\
+            mouse_events: 0;						\
 	    clip_to: "swallow_clip";   					\
             description {						\
                state: "default" 0.0;					\
@@ -404,7 +456,7 @@ fonts {
 	part {								\
             name: "scroll_area_down_icon";				\
             type: IMAGE;						\
-            mouse_events: 1;						\
+            mouse_events: 0;						\
 	    clip_to: "swallow_clip";   					\
             description {						\
                state: "default" 0.0;					\
@@ -641,15 +693,34 @@ collections {
 
 
 	
+	 group {
+		  name: "menu";
+		  #include "menu.edc"
+	 }
 
 	 group {
 		  name: "mouse_ui";
 		  #include "mouse_ui.edc"
 	 }
-
 	 group {
-		  name: "menu";
-		  #include "menu.edc"
+		name: "keyboard_ui";
+		#include "keyboard_ui.edc"
+	 }
+	 group {
+		name: "presentation";
+		#include "presentation.edc"
+	 }
+	 group {
+		name: "multimedia";
+		#include "multimedia.edc"
+	 }
+	 group {
+		name: "games";
+		#include "games.edc"
+	 }
+	 group {
+		name: "accelerometer";
+		#include "accelerometer.edc"
 	 }
 	 group {
 		name: "disconnect";
@@ -659,10 +730,7 @@ collections {
 		  name: "connection_status";
 		  #include "connection_status.edc"
 	 }
-	 group {
-		name: "keyboard_ui";
-		#include "keyboard_ui.edc"
-	 }
+	 
 	 group {
 		name: "about";
 		#include "about.edc"
