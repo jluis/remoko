@@ -38,6 +38,7 @@ from optparse import OptionParser
 
 from remoko.remoko_server import *
 from remoko.remoko_key_mapper import *
+from remoko.remoko_conf import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -234,12 +235,48 @@ class settings(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "settings")
+        self.part_text_set("fullscreen_option",str(self.main.remoko_conf.fullscreen))
+	self.part_text_set("scroll_option", str(self.main.remoko_conf.scroll))
+	self.scroll_value = int(self.main.remoko_conf.scroll)
+	self.fscreen_option = str(self.main.remoko_conf.fullscreen)
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
+	print str(source)
+
 	if source == "back":
 		
+		self.main.remoko_conf.set_option("user","fullscreen",self.fscreen_option)
+		self.main.remoko_conf.set_option("user","scroll",self.scroll_value)
+		self.main.remoko_conf.save_options()
+		self.main.scroll = self.scroll_value
 		self.main.transition_to("menu")
+
+	if source == "fullscreen_option":
+		
+		if self.fscreen_option == "Yes":
+			
+			self.part_text_set("fullscreen_option","No")
+			self.fscreen_option = "No"
+			self.main.window.fullscreen = False
+
+		elif self.fscreen_option == "No":
+			
+			self.part_text_set("fullscreen_option","Yes")
+			self.fscreen_option = "Yes"
+			self.main.window.fullscreen = True
+
+	if source == "scroll_right_icon":
+		
+		if self.scroll_value < 9:
+			self.scroll_value += 1
+			self.part_text_set("scroll_option", str(self.scroll_value))
+	
+	if source == "scroll_left_icon":
+		
+		if self.scroll_value >= 1:
+			self.scroll_value -= 1
+			self.part_text_set("scroll_option", str(self.scroll_value))
 
 #----------------------------------------------------------------------------#
 class menu(edje_group):
@@ -267,6 +304,22 @@ class menu(edje_group):
 		elif source == "keyboard":
 			
 			self.main.transition_to("keyboard_ui")
+
+		elif source == "presentation":
+			
+			self.main.transition_to("presentation")
+
+		elif source == "multimedia":
+			
+			self.main.transition_to("multimedia")
+
+		elif source == "games":
+			
+			self.main.transition_to("games")
+
+		elif source == "accelerometer":
+			
+			self.main.transition_to("accelerometer")
 
 		elif source == "connection":
 
@@ -306,7 +359,7 @@ class mouse_ui(edje_group):
         self.button_hold = False
 	self.scroll_pos = 0
 	self.tape_mouse_area = 0
-        
+	
 
     @edje.decorators.signal_callback("mouse,down,1", "*")
     def on_mouse_down(self, emission, source):
@@ -345,14 +398,14 @@ class mouse_ui(edje_group):
 
 				tmp,y_scroll = self.main.canvas.pointer_canvas_xy	
 
-				if y_scroll > self.scroll_pos:
+				if y_scroll > self.scroll_pos + self.main.scroll:
 
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:255")
 					
 					
 
-				elif y_scroll < self.scroll_pos:
+				elif y_scroll < self.scroll_pos - self.main.scroll:
 
 					self.scroll_pos = y_scroll
 					self.main.connection.send_event("02:00:000:000:01")
@@ -559,7 +612,55 @@ class keyboard_ui(edje_group):
 
 		else:
 			pass	
-			
+
+
+#----------------------------------------------------------------------------#
+class presentation(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "presentation")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")		
+
+#----------------------------------------------------------------------------#
+class multimedia(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "multimedia")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")	
+
+#----------------------------------------------------------------------------#
+class games(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "games")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
+
+#----------------------------------------------------------------------------#
+class accelerometer(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "accelerometer")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("menu")
 
 #----------------------------------------------------------------------------#
 class GUI(object):
@@ -574,7 +675,8 @@ class GUI(object):
             engine = options.engine,
             size = options.geometry
         )
-	
+	self.evas_canvas.main = self
+	self.remoko_conf = remoko_conf()
 	self.canvas = self.evas_canvas.evas_obj.evas
 	self.window = self.evas_canvas.evas_obj
 	self.connection_processed = False
@@ -582,6 +684,8 @@ class GUI(object):
 	self.try_framework = 0
 	self.dbus_objectInit()	
 	self.key_mapper = key_mapper()
+	self.fullscreen = self.remoko_conf.fullscreen
+	self.scroll = self.remoko_conf.scroll
 	
 
         self.groups = {}
@@ -589,7 +693,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","presentation"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -603,7 +707,6 @@ class GUI(object):
         self.previous_group = self.groups["mouse_ui"]
         self.in_transition = False
 	self.initialize_remoko_server()
-	
 
     def check_connection_status(self):
 	if self.connection.connect == False:
@@ -807,9 +910,13 @@ class EvasCanvas(object):
         evas_obj.data["swallow"].size = size
 
     def on_delete_request(self, evas_obj):
-	self.main.connection.terminate_connection()
-        ecore.main_loop_quit()
 
+	self.main.connection.terminate_connection()
+
+	if self.main.connection.connect == False:
+		os.system("pkill  -9 hidclient")
+	self.main.on_exit()
+	ecore.main_loop_quit()
 #----------------------------------------------------------------------------#
 class MyOptionParser(OptionParser):
 #----------------------------------------------------------------------------#
