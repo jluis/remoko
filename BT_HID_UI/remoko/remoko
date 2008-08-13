@@ -624,7 +624,24 @@ class presentation(edje_group):
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
 		
-		self.main.transition_to("menu")		
+		self.main.transition_to("menu")
+
+	elif source ==	"conf":
+		
+		self.main.transition_to("presentation_conf")
+
+#----------------------------------------------------------------------------#
+class presentation_conf(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "presentation_conf")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("presentation")		
+	
 
 #----------------------------------------------------------------------------#
 class multimedia(edje_group):
@@ -696,7 +713,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","presentation"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","presentation","presentation_conf"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
