@@ -120,12 +120,12 @@ fonts {
                 description {                                            \
                     state: "default" 0.0;                                \
                     rel1 {                                               \
-                        relative: 0.85 0.12+(ypos*0.1);	                 \
+                        relative: 0.71 0.12+(ypos*0.1);	                 \
                         offset: 0 0;                                     \
                         to: "swallow_clip";                              \
                     }                                                    \
                     rel2 {                                               \
-                        relative: 0.99 0.2+(ypos*0.1);    		 \
+                        relative: 0.99 0.21+(ypos*0.1);    		 \
                         offset: -1 -1;                                   \
                         to: "swallow_clip";                              \
                     }                                                    \
@@ -145,7 +145,7 @@ fonts {
             part {                                                       \
                 name: part_name"_icon";                           	 \
                 mouse_events: 0;                                         \
-                type: IMAGE;                                             \
+                type: TEXT;                                              \
                 clip_to: "swallow_clip";                                 \
                 description {                                            \
                     state: "default" 0.0;                                \
@@ -161,9 +161,13 @@ fonts {
                         offset: -1 -1;                                   \
                         to: part_name;                         		 \
                     }                                                    \
-                    image {                                              \
-                        normal: keyboard_icon.png;                	 \
-                    }                                                    \
+                   text {						 \
+                	font: "Sans";					 \
+                	size: 1;					 \
+                	fit: 1 1;					 \
+			text: "G";					 \
+                	align: 0.5 0.5;					 \
+              }								 \
                 }                                                        \
             }
 									
@@ -315,9 +319,9 @@ fonts {
             }								\
          }
 
-#define CONF()								\
+#define CONF_KEYS()							\
    part {								\
-            name: "conf";						\
+            name: "conf_keys";						\
             type: IMAGE;						\
             mouse_events: 1;						\
             clip_to: "swallow_clip";   					\
@@ -344,7 +348,7 @@ fonts {
          }								\
 									\
 	part {								\
-            name: "conf_icon";						\
+            name: "conf_keys_icon";					\
             type: IMAGE;						\
             mouse_events: 0;						\
             clip_to: "swallow_clip";   					\
@@ -359,8 +363,62 @@ fonts {
                   relative: 0.79 0.99;					\
                   offset: -1 -1;					\
                }							\
-	       image { normal: "conf_icon.png"; }                  	\
+	       image { normal: "keyboard_icon.png"; }                  	\
                fill { smooth: 0; } 					\
+            }								\
+         }
+	
+#define CONF_GESTURES()							\
+   part {								\
+            name: "conf_gestures";					\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "button_background.png"; }               \   
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "button_background_active.png"; }        \          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "conf_gestures_icon";					\
+            type: TEXT;							\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       text {							\
+                font: "Sans";						\
+                size: 1;						\
+                fit: 1 1;						\
+		text: "G";						\
+                align: 0.5 0.5;						\
+              }								\
             }								\
          }
 	
@@ -872,7 +930,10 @@ collections {
 		  name: "connection_status";
 		  #include "connection_status.edc"
 	 }
-	 
+	 group {
+		name: "conf_keys";
+		#include "conf_keys.edc"
+	 }
 	 group {
 		name: "about";
 		#include "about.edc"

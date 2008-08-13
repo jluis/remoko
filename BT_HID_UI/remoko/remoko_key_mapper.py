@@ -61,6 +61,19 @@ class key_mapper:
 		self.mapper['period'] = 55
 		self.mapper['slash'] = 56
 		
+		self.mapper['f1'] = 58
+		self.mapper['f2'] = 59
+		self.mapper['f3'] = 60
+		self.mapper['f4'] = 61
+		self.mapper['f5'] = 62
+		self.mapper['f6'] = 63
+		self.mapper['f7'] = 64
+		self.mapper['f8'] = 65
+		self.mapper['f9'] = 66
+		self.mapper['f10'] = 67
+		self.mapper['f11'] = 68
+		self.mapper['f12'] = 69
+		
 		self.mapper['Insert'] = 73
 		self.mapper['Home'] = 74
 		self.mapper['Prior'] = 75

@@ -78,7 +78,7 @@ parts {
             }
          }
 
-	part {
+    part {
         name: "label_title";
         type: TEXT;
         effect: OUTLINE_SOFT_SHADOW;
