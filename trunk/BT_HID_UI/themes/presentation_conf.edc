@@ -44,5 +44,9 @@ parts {
     }
     programs {
 	ACTIVATE("back");
+	ACTIVATE("previous_key");
+	ACTIVATE("next_key");
+	ACTIVATE("fullscreen_key");
+	ACTIVATE("no_fullscreen_key");
     	TRANSITION();
     }
