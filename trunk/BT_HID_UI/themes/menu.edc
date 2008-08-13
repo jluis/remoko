@@ -81,7 +81,7 @@ parts {
 	part {
         name: "label_title";
         type: TEXT;
-        effect: SOFT_OUTLINE;
+        effect: OUTLINE_SOFT_SHADOW;
         mouse_events: 0;
         clip_to: "swallow_clip";
         description {
