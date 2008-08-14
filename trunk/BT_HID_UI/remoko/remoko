@@ -626,32 +626,70 @@ class presentation(edje_group):
 		self.main.transition_to("presentation_conf")
 
 	elif source == "previous":
-		self.main.connection.send_keyboard_event("00","75")
+
+
+		key = self.main.previous_key
+		value = self.main.key_mapper.mapper[str(key)]
+		self.main.connection.send_keyboard_event("00",value)
 
 	elif source == "next":
-		self.main.connection.send_keyboard_event("00","78")
+
+		key = self.main.next_key
+		value = self.main.key_mapper.mapper[str(key)]
+		self.main.connection.send_keyboard_event("00",value)
 
 	elif source == "fullscreen":
-		self.main.connection.send_keyboard_event("00","62")
+
+		key = self.main.fullscreen_key
+		value = self.main.key_mapper.mapper[str(key)]
+		self.main.connection.send_keyboard_event("00",value)
 
 	elif source == "no_fullscreen":
-		self.main.connection.send_keyboard_event("00","41")
+
+		key = self.main.no_fullscreen_key
+		value = self.main.key_mapper.mapper[str(key)]
+		self.main.connection.send_keyboard_event("00",value)
 
 #----------------------------------------------------------------------------#
 class presentation_conf(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "presentation_conf")
+	self.part_text_set("previous_key_icon", self.main.previous_key)
+	self.part_text_set("next_key_icon", self.main.next_key)
+	self.part_text_set("fullscreen_key_icon", self.main.fullscreen_key)
+	self.part_text_set("no_fullscreen_key_icon", self.main.no_fullscreen_key)
+	self.key_value = ""
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
-		
+		self.main.remoko_conf.save_options()
 		self.main.transition_to("presentation")	
 	else:
+		if source == "previous_key":
+
+			self.key_value = self.part_text_get("previous_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "next_key":
+
+			self.key_value = self.part_text_get("next_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "fullscreen_key":
+
+			self.key_value = self.part_text_get("fullscreen_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "no_fullscreen_key":
+
+			self.key_value = self.part_text_get("no_fullscreen_key_icon")
+			self.main.key_text = self.key_value
 
 		self.main.current_conf_screen = "presentation"
 		self.main.current_source = source
+		self.main.groups["conf_keys"].part_text_set("value",self.key_value)
 		self.main.transition_to("conf_keys")	
 	
 
@@ -696,7 +734,6 @@ class conf_keys(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "conf_keys")
-	self.key_text = None
 	self.shift = False
 	self.ctrl = False
 	self.alt = False
@@ -718,7 +755,7 @@ class conf_keys(edje_group):
 	if source == "back":
 		prev = self.main.current_conf_screen + "_conf"
 		prev_source = self.main.current_source + "_icon"
-		self.main.groups[prev].part_text_set(prev_source,self.key_text)
+		self.main.groups[prev].part_text_set(prev_source,self.main.key_text)
 		self.main.transition_to(prev)
 
     @evas.decorators.key_down_callback
@@ -738,35 +775,42 @@ class conf_keys(edje_group):
 	elif key_value == "Alt_L":
 		self.alt = True
 
+	elif key_value == "space":
+		pass
+
 	else:
 			
 		if self.shift == True:
 			
 			self.part_text_set("value",str(key))
 			self.shift = False
-			self.key_text = str(key)
+			self.main.key_text = str(key)
 		
 		elif self.alt == True and self.ctrl == True:
 
 			self.part_text_set("value","ctrl+alt+" + str(key_key))
 			self.ctrl = False
 			self.alt = False
-			self.key_text = "ctrl+alt+" + str(key_key)
+			self.main.key_text = "ctrl+alt+" + str(key_key)
 
 		elif self.ctrl == True:
 
 			self.part_text_set("value","ctrl+" + str(key_key))
 			self.ctrl = False
-			self.key_text = "ctrl+" + str(key_key)			
+			self.main.key_text = "ctrl+" + str(key_key)			
 
 		elif self.alt == True:
 			self.part_text_set("value","alt+" + str(key))	
 			self.alt = False
-			self.key_text = "alt+" + str(key)			
+			self.main.key_text = "alt+" + str(key)			
 
 		else:
-			self.part_text_set("value",str(key))
-			self.key_text = str(key)
+			self.main.key_text = str(key)
+			self.part_text_set("value",self.main.key_text+" ")
+			local_key = str(self.main.current_source)
+			self.main.save_local_conf(local_key,self.main.key_text)
+			print "@@@ " + self.main.key_text
+			print self.main.previous_key
 	
 
 #----------------------------------------------------------------------------#
@@ -793,6 +837,7 @@ class GUI(object):
 	self.connection_processed = False
 	self.restore_conditions = False
 	self.try_framework = 0
+	self.key_text = ""
 	self.dbus_objectInit()	
 	self.key_mapper = key_mapper()
 	
@@ -889,7 +934,34 @@ class GUI(object):
 	#settings
 	self.fullscreen = self.remoko_conf.fullscreen
 	self.scroll = int(self.remoko_conf.scroll)
-		
+	#presentation
+	self.previous_key = self.remoko_conf.previous_key
+	self.next_key = self.remoko_conf.next_key
+	self.fullscreen_key = self.remoko_conf.fullscreen_key
+	self.no_fullscreen_key = self.remoko_conf.no_fullscreen_key
+
+    def save_local_conf(self, button_name, key):
+	
+	if button_name == "previous_key":
+
+		self.previous_key = key
+		self.remoko_conf.set_option("presentation","previous_key",key)
+
+	elif button_name == "next_key":
+
+		self.next_key = key
+		self.remoko_conf.set_option("presentation","next_key",key)
+
+	elif button_name == "fullscreen_key":
+
+		self.fullscreen_key = key
+		self.remoko_conf.set_option("presentation","fullscreen_key",key)
+
+	elif button_name == "no_fullscreen_key":
+
+		self.no_fullscreen_key = key
+		self.remoko_conf.set_option("presentation","no_fullscreen_key",key)
+	
     def run( self ):
         ecore.main_loop_begin()
 	
