@@ -86,7 +86,7 @@ parts {
         description {
             state: "default" 0.0;
             rel1 {
-                relative: 0.1 0.19;
+                relative: 0.01 0.19;
                 offset: 0 0;
             }
             rel2 {
