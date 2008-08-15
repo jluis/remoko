@@ -32,6 +32,13 @@ images {
   image: "previous_icon.png" COMP;
   image: "fullscreen_icon.png" COMP;
   image: "no_fullscreen_icon.png" COMP;
+  image: "play_icon.png" COMP;
+  image: "pause_icon.png" COMP;
+  image: "stop_icon.png" COMP;
+  image: "backward_icon.png" COMP;
+  image: "forward_icon.png" COMP;
+  image: "volume-_icon.png" COMP;
+  image: "volume+_icon.png" COMP;
 
 }
 
