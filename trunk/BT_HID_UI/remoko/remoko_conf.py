@@ -60,8 +60,3 @@ class remoko_conf:
 
 		
 		
-
-
-#cenas = remoko_conf()
-#print cenas.fullscreen
-#cenas.set_option("user", "fullscreen", "No")
