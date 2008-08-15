@@ -49,17 +49,28 @@ class key_mapper:
 		self.mapper['Tab'] = 43
 		self.mapper['space'] = 44
 		self.mapper['minus'] = 45
+		self.mapper['-'] = 45
 		self.mapper['equal'] = 46 
+		self.mapper['='] = 46
 		self.mapper['bracketleft'] = 47
+		self.mapper['['] = 47
 		self.mapper['bracketright'] = 48
+		self.mapper[']'] = 48
 		self.mapper['backslash'] = 49
+		self.mapper['\\'] = 49
 		
 		self.mapper['semicolon'] = 51
+		self.mapper[';'] = 51
 		self.mapper['apostrophe'] = 52
+		self.mapper['\''] = 52
 		self.mapper['grave'] = 53
+		self.mapper['`'] = 53
 		self.mapper['comma'] = 54
+		self.mapper[','] = 54
 		self.mapper['period'] = 55
+		self.mapper['.'] = 55
 		self.mapper['slash'] = 56
+		self.mapper['/'] = 56
 		
 		self.mapper['f1'] = 58
 		self.mapper['f2'] = 59
