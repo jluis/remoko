@@ -755,10 +755,34 @@ class presentation_conf(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "presentation_conf")
-	self.part_text_set("previous_key_icon", self.main.previous_key)
-	self.part_text_set("next_key_icon", self.main.next_key)
-	self.part_text_set("fullscreen_key_icon", self.main.fullscreen_key)
-	self.part_text_set("no_fullscreen_key_icon", self.main.no_fullscreen_key)
+	count = 0
+	self.prev_key = ""
+	self.next_key = ""
+	self.full_key = ""
+	self.no_full_key = ""
+	for i in (self.main.previous_key,self.main.next_key,self.main.fullscreen_key, self.main.no_fullscreen_key):
+		if len(i) > 6:
+			#shift translation
+			if i[0] == "s":
+				text_value = self.main.key_mapper.mapper[i]
+				count +=1
+		else:
+			text_value = i
+			count +=1
+		if count == 1:
+			self.prev_key = text_value
+		elif count == 2:
+			self.next_key = text_value
+		elif count == 3:
+			self.full_key = text_value
+		elif count == 4:
+			self.no_full_key = text_value
+				
+		 
+	self.part_text_set("previous_key_icon", self.prev_key)
+	self.part_text_set("next_key_icon", self.next_key)
+	self.part_text_set("fullscreen_key_icon", self.full_key)
+	self.part_text_set("no_fullscreen_key_icon", self.no_full_key)
 	self.key_value = ""
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
@@ -839,6 +863,7 @@ class conf_keys(edje_group):
 	self.alt = False
 	self.press_f = False
 	self.press_fpp = False
+	self.hit = False
     
     def onShow( self ):
         self.focus = True
@@ -859,12 +884,27 @@ class conf_keys(edje_group):
 		prev_source = self.main.current_source + "_icon"
 		local_key = str(self.main.current_source)
 		
-		if self.main.key_text == "-":
+		if self.hit == False:
+
+			self.hit = False
+			self.main.transition_to(prev)
+		
+		elif len(self.main.key_text) > 6:
+			#shift translation
+			if self.main.key_text[0] == "s":
+				text_value = self.main.key_mapper.mapper[self.main.key_text]
+				self.main.groups[prev].part_text_set(prev_source,text_value + " ")
+				self.main.save_local_conf(local_key,self.main.key_text)	
+			else:
+				self.main.groups[prev].part_text_set(prev_source,self.main.key_text + " ")
+				self.main.save_local_conf(local_key,self.main.key_text)	
+		elif self.main.key_text == "-":
 			self.main.groups[prev].part_text_set(prev_source,"minus")
 			self.main.save_local_conf(local_key,"minus")
 		else:
 			self.main.groups[prev].part_text_set(prev_source,self.main.key_text + " ")
 			self.main.save_local_conf(local_key,self.main.key_text)
+		self.hit = False
 		self.main.transition_to(prev)
 
     @evas.decorators.key_down_callback
@@ -872,8 +912,10 @@ class conf_keys(edje_group):
         key = event.string
 	key_key = event.key
 	key_value = event.keyname
+	self.hit = True
 	print event
         print str(key)
+	
 
 	if key_value == "Shift_L":
 		self.shift = True
@@ -888,7 +930,7 @@ class conf_keys(edje_group):
 		pass
 
 	else:
-			
+	
 		if self.shift == True:
 			
 			self.part_text_set("value"," "+ str(key)+ " ")
@@ -926,8 +968,7 @@ class conf_keys(edje_group):
 			if self.main.key_text == "f":
 				self.press_f = True
 				self.part_text_set("value"," " + self.main.key_text+" ")
-				print "@@@ " + self.main.key_text
-
+				
 			elif self.press_f == True:
 				if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
 					if self.main.key_text == "1":
@@ -935,28 +976,28 @@ class conf_keys(edje_group):
 					self.main.key_text = "f" + self.main.key_text
 					self.part_text_set("value"," " + self.main.key_text+" ")
 					self.press_f = False
-					print "@@@ " + self.main.key_text
+					
 				else:
 					
 					self.press_f = False
 					self.part_text_set("value"," " + self.main.key_text+" ")
-					print "@@@ " + self.main.key_text
+					
 					
 			elif self.press_fpp == True:
 				if self.main.key_text in ("0", "1", "2"):
 					self.main.key_text = "f1" + self.main.key_text
 					self.part_text_set("value"," " + self.main.key_text+" ")
 					self.press_fpp = False
-					print "@@@ " + self.main.key_text	
+						
 				else:
 					
 					self.press_fpp = False
 					self.part_text_set("value"," " + self.main.key_text+" ")
-					print "@@@ " + self.main.key_text
+					
 				
 			else:
 				self.part_text_set("value"," " + self.main.key_text+" ")
-				print "@@@ " + self.main.key_text
+				
 	
 
 #----------------------------------------------------------------------------#

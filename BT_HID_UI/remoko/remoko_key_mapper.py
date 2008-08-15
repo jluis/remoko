@@ -97,8 +97,58 @@ class key_mapper:
 		self.mapper['Up'] = 82
 		
 		
-		
+		#include tilde ~
 		#self.mapper['minus'] = 86
+		
+		
+		self.mapper['shift+a'] = "A"
+		self.mapper['shift+b'] = "B"
+		self.mapper['shift+c'] = "C"
+		self.mapper['shift+d'] = "D"
+		self.mapper['shift+e'] = "E"
+		self.mapper['shift+f'] = "F"
+		self.mapper['shift+g'] = "G"
+		self.mapper['shift+h'] = "H"
+		self.mapper['shift+i'] = "I"
+		self.mapper['shift+j'] = "J"
+		self.mapper['shift+k'] = "K"
+		self.mapper['shift+l'] = "L"
+		self.mapper['shift+m'] = "M"
+		self.mapper['shift+n'] = "N"
+		self.mapper['shift+o'] = "O"
+		self.mapper['shift+p'] = "P"
+		self.mapper['shift+q'] = "Q"
+		self.mapper['shift+r'] = "R"
+		self.mapper['shift+s'] = "S"
+		self.mapper['shift+t'] = "T"
+		self.mapper['shift+u'] = "U"
+		self.mapper['shift+v'] = "V"
+		self.mapper['shift+w'] = "W"
+		self.mapper['shift+x'] = "X"
+		self.mapper['shift+y'] = "Y"
+		self.mapper['shift+z'] = "Z"
+		
+		#self.mapper['Shift+grave'] =
+		self.mapper['shift+1'] = "!"
+		self.mapper['shift+2'] = "@"
+		self.mapper['shift+3'] = "#"
+		self.mapper['shift+4'] = "$"
+		self.mapper['shift+5'] = "%"
+		self.mapper['shift+6'] = "^"
+		self.mapper['shift+7'] = "&"
+		self.mapper['shift+8'] = "*"
+		self.mapper['shift+9'] = "("
+		self.mapper['shift+0'] = ")"
+		self.mapper['shift+-'] = "_"
+		self.mapper['shift+='] = "+"
+		self.mapper['shift+bracketleft'] = "{"
+		self.mapper['shift+bracketriht'] = "}"
+		self.mapper['shift+backslash'] = "|"
+		self.mapper['shift+semicolon'] = ":"
+		self.mapper['shift+apostrophe'] = "\""
+		self.mapper['shift+comma'] = "<"
+		self.mapper['shift+period'] = ">"
+		self.mapper['shift+slash'] = "?"
 		
 		
 		
