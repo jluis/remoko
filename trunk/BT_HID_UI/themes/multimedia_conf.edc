@@ -41,13 +41,13 @@ parts {
 	CONF_TEXT("Backward",4);
 	CONF_KEY_ICON("backward_key",4);
 	CONF_TEXT("Fullscreen",0);
-	CONF_KEY_ICON("fullscreen_key",0);
+	CONF_KEY_ICON("fullscreen_key_m",0);
 	CONF_TEXT("Volume +",1);
-	CONF_KEY_ICON("volume+_key",1);
+	CONF_KEY_ICON("volume_p_key",1);
 	CONF_TEXT("Volume -",2);
-	CONF_KEY_ICON("volume-_key",2);
+	CONF_KEY_ICON("volume_m_key",2);
 	CONF_TEXT("No Fullscreen",3);
-	CONF_KEY_ICON("no_fullscreen_key",3);
+	CONF_KEY_ICON("no_fullscreen_key_m",3);
 	SCREEN_NUMBER("1",0);
 	SCREEN_NUMBER("2",1);
         LOGO();
@@ -175,14 +175,14 @@ parts {
         	name: "hide_fullscreen_key";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "fullscreen_key";                                         
+        	target: "fullscreen_key_m";                                         
         	after: "hide_fullscreen_icon";                                           
         }
 	program {                                                          
         	name: "hide_fullscreen_icon";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "fullscreen_key_icon";                                         
+        	target: "fullscreen_key_m_icon";                                         
         	after: "hide_volume+";                                           
         }
 	program {                                                          
@@ -196,14 +196,14 @@ parts {
         	name: "hide_volume+_key";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume+_key";                                         
+        	target: "volume_p_key";                                         
         	after: "hide_volume+_icon";                                           
         }
 	program {                                                          
         	name: "hide_volume+_icon";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume+_key_icon";                                         
+        	target: "volume_p_key_icon";                                         
         	after: "hide_volume-";                                           
         }
 	program {                                                          
@@ -217,14 +217,14 @@ parts {
         	name: "hide_volume-_key";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume-_key";                                         
+        	target: "volume_m_key";                                         
         	after: "hide_volume-_icon";                                           
         }
 	program {                                                          
         	name: "hide_volume-_icon";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume-_key_icon";                                         
+        	target: "volume_m_key_icon";                                         
         	after: "hide_no_fullscreen";                                           
         }
 	program {                                                          
@@ -238,14 +238,14 @@ parts {
         	name: "hide_no_fullscreen_key";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "no_fullscreen_key";                                         
+        	target: "no_fullscreen_key_m";                                         
         	after: "hide_no_fullscreen_icon";                                           
         }
 	program {                                                          
         	name: "hide_no_fullscreen_icon";                                                                                              
         	action: STATE_SET "invisible" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "no_fullscreen_key_icon";                                                                                  
+        	target: "no_fullscreen_key_m_icon";                                                                                  
         }
 	//Show Sceen 1
 	program {                                                          
@@ -382,14 +382,14 @@ parts {
         	name: "show_fullscreen_key";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "fullscreen_key";                                         
+        	target: "fullscreen_key_m";                                         
         	after: "show_fullscreen_icon";                                           
         }
 	program {                                                          
         	name: "show_fullscreen_icon";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "fullscreen_key_icon";                                         
+        	target: "fullscreen_key_m_icon";                                         
         	after: "show_volume+";                                           
         }
 	program {                                                          
@@ -403,14 +403,14 @@ parts {
         	name: "show_volume+_key";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume+_key";                                         
+        	target: "volume_p_key";                                         
         	after: "show_volume+_icon";                                           
         }
 	program {                                                          
         	name: "show_volume+_icon";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume+_key_icon";                                         
+        	target: "volume_p_key_icon";                                         
         	after: "show_volume-";                                           
         }
 	program {                                                          
@@ -424,14 +424,14 @@ parts {
         	name: "show_volume-_key";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume-_key";                                         
+        	target: "volume_m_key";                                         
         	after: "show_volume-_icon";                                           
         }
 	program {                                                          
         	name: "show_volume-_icon";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "volume-_key_icon";                                         
+        	target: "volume_m_key_icon";                                         
         	after: "show_no_fullscreen";                                           
         }
 	program {                                                          
@@ -445,14 +445,14 @@ parts {
         	name: "show_no_fullscreen_key";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "no_fullscreen_key";                                         
+        	target: "no_fullscreen_key_m";                                         
         	after: "show_no_fullscreen_icon";                                           
         }
 	program {                                                          
         	name: "show_no_fullscreen_icon";                                                                                              
         	action: STATE_SET "default" 0.0;                              
         	transition: LINEAR 0.0;                                         
-        	target: "no_fullscreen_key_icon";
+        	target: "no_fullscreen_key_m_icon";
 		after: "button2_clicked";                                                                               
         }
 	program {
@@ -477,9 +477,9 @@ parts {
 	ACTIVATE("stop_key");
 	ACTIVATE("forward_key");
 	ACTIVATE("backward_key");
-	ACTIVATE("fullscreen_key");
-	ACTIVATE("volume+_key");
-	ACTIVATE("volume-_key");
-	ACTIVATE("no_fullscreen_key");
+	ACTIVATE("fullscreen_key_m");
+	ACTIVATE("volume_p_key");
+	ACTIVATE("volume_m_key");
+	ACTIVATE("no_fullscreen_key_m");
     	TRANSITION();
     }

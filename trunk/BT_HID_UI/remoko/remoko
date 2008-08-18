@@ -75,6 +75,7 @@ def key_dec(self,key):
 	self.shift = False
 	self.ctrl = False
 	self.alt = False
+	self.win = False
 	self.modif = ""
 	self.val = ""
 	if len(key) < 5:
@@ -95,6 +96,8 @@ def key_dec(self,key):
 			
 			elif i == "alt":
 				self.alt = True
+			elif i == "win":
+				self.win = True
 			
 			else:
 			
@@ -102,6 +105,12 @@ def key_dec(self,key):
 
 					self.modif = "02"
 					self.shift = False
+					self.val = str(i)
+
+				if self.win == True:
+
+					self.modif = "08"
+					self.win = False
 					self.val = str(i)
 
 				elif self.ctrl == True and self.alt == True:
@@ -423,8 +432,8 @@ class menu(edje_group):
 
 		elif source == "about":
 			
-			self.main.groups["about"].part_text_set("label_version","ReMoko v0.2")
-			self.main.groups["about"].part_text_set("label_test_version","Test Version")
+			self.main.groups["about"].part_text_set("label_version","ReMoko v0.3")
+			self.main.groups["about"].part_text_set("label_test_version","Beta Version")
 			self.main.groups["about"].part_text_set("label_feeback","Send feedback to:")
 			self.main.groups["about"].part_text_set("label_mail_addr","<vdv100@gmail.com>")
 			
@@ -813,7 +822,7 @@ class presentation_conf(edje_group):
 
 		self.main.current_conf_screen = "presentation"
 		self.main.current_source = source
-		self.main.groups["conf_keys"].part_text_set("value",self.key_value)
+		self.main.groups["conf_keys"].part_text_set("value"," "+self.key_value+ " ")
 		self.main.transition_to("conf_keys")	
 	
 
@@ -833,18 +842,133 @@ class multimedia(edje_group):
 		
 		self.main.transition_to("multimedia_conf")
 
+	elif source == "play":
+
+		key = self.main.play_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "pause":
+
+		key = self.main.pause_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "stop":
+
+		key = self.main.stop_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "forward":
+
+		key = self.main.forward_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "backward":
+
+		key = self.main.backward_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "volume-":
+
+		key = self.main.volume_m_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "volume+":
+
+		key = self.main.volume_p_key
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "fullscreen":
+
+		key = self.main.fullscreen_key_m
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+	elif source == "no_fullscreen":
+
+		key = self.main.no_fullscreen_key_m
+		modif, val = key_dec(self,key)
+		value = self.main.key_mapper.mapper[str(val)]
+		self.main.connection.send_keyboard_event(modif,value)
+
+
 #----------------------------------------------------------------------------#
 class multimedia_conf(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
         edje_group.__init__(self, main, "multimedia_conf")
+	count = 0
+	self.play_key = ""
+	self.pause_key = ""
+	self.stop_key = ""
+	self.forw_key = ""
+	self.backw_key = ""
+	self.vol_m_key = ""
+	self.vol_p_key = ""
+	self.full_key = ""
+	self.no_full_key = ""
+
+	for i in (self.main.play_key,self.main.pause_key,self.main.stop_key,self.main.forward_key,self.main.backward_key, self.main.volume_m_key,self.main.volume_p_key,self.main.fullscreen_key_m, self.main.no_fullscreen_key_m):
+		if len(i) > 6:
+			#shift translation
+			if i[0] == "s":
+				text_value = self.main.key_mapper.mapper[i]
+				count +=1
+		else:
+			text_value = i
+			count +=1
+		if count == 1:
+			self.play_key = text_value
+		elif count == 2:
+			self.pause_key = text_value
+		elif count == 3:
+			self.stop_key = text_value
+		elif count == 4:
+			self.forw_key = text_value
+		elif count == 5:
+			self.backw_key = text_value
+		elif count == 6:
+			self.vol_m_key = text_value
+		elif count == 7:
+			self.vol_p_key = text_value
+		elif count == 8:
+			self.full_key = text_value
+		elif count == 9:
+			self.no_full_key = text_value
+				
+		 
+	self.part_text_set("play_key_icon", self.play_key)
+	self.part_text_set("pause_key_icon", self.pause_key)
+	self.part_text_set("stop_key_icon", self.stop_key)
+	self.part_text_set("forward_key_icon", self.forw_key)
+	self.part_text_set("backward_key_icon", self.backw_key)
+	self.part_text_set("volume_m_key_icon", self.vol_m_key)
+	self.part_text_set("volume_p_key_icon", self.vol_p_key)
+	self.part_text_set("fullscreen_key_m_icon", self.full_key)
+	self.part_text_set("no_fullscreen_key_m_icon", self.no_full_key)
+	self.key_value = ""
 	self.signal_emit("hide_screen_2", "")
 	self.signal_emit("show_screen_1", "")
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
-		
+
+		self.main.remoko_conf.save_options()
 		self.main.transition_to("multimedia")	
 
 	elif source == "1":
@@ -857,7 +981,59 @@ class multimedia_conf(edje_group):
 		self.signal_emit("hide_screen_1", "")
 		self.signal_emit("show_screen_2", "")
 	
+	else:
+		print source
+		if source == "play_key":
 
+			self.key_value = self.part_text_get("play_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "pause_key":
+
+			self.key_value = self.part_text_get("pause_key_icon")
+			self.main.key_text = self.key_value
+
+		if source == "stop_key":
+
+			self.key_value = self.part_text_get("stop_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "forward_key":
+
+			self.key_value = self.part_text_get("forward_key_icon")
+			self.main.key_text = self.key_value
+
+		if source == "backward_key":
+
+			self.key_value = self.part_text_get("backward_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "volume_m_key":
+
+			self.key_value = self.part_text_get("volume_m_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "volume_p_key":
+
+			self.key_value = self.part_text_get("volume_p_key_icon")
+			self.main.key_text = self.key_value
+
+
+		elif source == "fullscreen_key_m":
+
+			self.key_value = self.part_text_get("fullscreen_key_m_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "no_fullscreen_key_m":
+
+			self.key_value = self.part_text_get("no_fullscreen_key_m_icon")
+			self.main.key_text = self.key_value
+
+		self.main.current_conf_screen = "multimedia"
+		self.main.current_source = source
+		self.main.groups["conf_keys"].part_text_set("value"," "+self.key_value + " ")
+		self.main.transition_to("conf_keys")	
+	
 #----------------------------------------------------------------------------#
 class games(edje_group):
 #----------------------------------------------------------------------------#
@@ -892,6 +1068,9 @@ class conf_keys(edje_group):
 	self.alt = False
 	self.press_f = False
 	self.press_fpp = False
+	self.press_w = False
+	self.press_wi = False
+	self.press_win = False
 	self.hit = False
     
     def onShow( self ):
@@ -914,7 +1093,7 @@ class conf_keys(edje_group):
 		local_key = str(self.main.current_source)
 		
 		if self.hit == False:
-
+			print "saiu no hit"
 			self.hit = False
 			self.main.transition_to(prev)
 		
@@ -987,10 +1166,46 @@ class conf_keys(edje_group):
 				self.alt = False
 				self.main.key_text = "alt+" + str(key_value)	
 			else:
-	
-				self.part_text_set("value","alt+" + str(key))	
-				self.alt = False
-				self.main.key_text = "alt+" + str(key)			
+				
+
+				self.main.key_text = translate_key(self,key_value,key)
+				if self.main.key_text == "f":
+					self.press_f = True
+					self.part_text_set("value","alt+" + self.main.key_text)
+				
+				elif self.press_f == True:
+					if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
+						if self.main.key_text == "1":
+							self.press_fpp = True
+						self.main.key_text = "alt+f" + self.main.key_text
+						self.part_text_set("value",self.main.key_text)
+						self.press_f = False
+					
+					else:
+					
+						self.press_f = False
+						self.alt = False
+						self.part_text_set("value","  " +self.main.key_text+ " ")
+					
+					
+				elif self.press_fpp == True:
+					if self.main.key_text in ("0", "1", "2"):
+						self.main.key_text = "alt+f1" + self.main.key_text
+						self.part_text_set("value",self.main.key_text)
+						self.press_fpp = False
+						self.alt = False
+						
+					else:
+					
+						self.press_fpp = False
+						self.alt = False
+						self.part_text_set("value","  " + self.main.key_text+" ")
+					
+				
+				else:
+					self.part_text_set("value","alt+" + str(key))	
+					self.alt = False
+					self.main.key_text = "alt+" + str(key)			
 
 		else:
 			self.main.key_text = translate_key(self,key_value,key)
@@ -1022,8 +1237,38 @@ class conf_keys(edje_group):
 					
 					self.press_fpp = False
 					self.part_text_set("value","  " + self.main.key_text+" ")
+
+			elif self.main.key_text =="w":
+				self.press_w = True
+				self.part_text_set("value","  " + self.main.key_text+" ")
+
+			elif self.press_w == True:
+
+				if self.main.key_text == "i":
+					self.press_wi = True
+					self.press_w = False
+					self.part_text_set("value","w" + self.main.key_text+" ")
+				else:
 					
-				
+					self.press_w = False
+					self.part_text_set("value","  " + self.main.key_text+" ")
+
+			elif self.press_wi == True:	
+
+				if self.main.key_text == "n":
+					self.press_win = True
+					self.press_wi = False
+					self.part_text_set("value","wi" + self.main.key_text+" ")
+				else:
+					
+					self.press_w = False
+					self.part_text_set("value","  " + self.main.key_text+" ")
+
+			elif self.press_win == True:
+
+				self.press_win = False	
+				self.part_text_set("value","win+" + self.main.key_text+" ")
+				self.main.key_text = "win+" + self.main.key_text
 			else:
 				self.part_text_set("value","  " + self.main.key_text+" ")
 				
@@ -1155,6 +1400,17 @@ class GUI(object):
 	self.next_key = self.remoko_conf.next_key
 	self.fullscreen_key = self.remoko_conf.fullscreen_key
 	self.no_fullscreen_key = self.remoko_conf.no_fullscreen_key
+	#multimedia profile
+	self.play_key = self.remoko_conf.play_key
+	self.pause_key = self.remoko_conf.pause_key
+	self.stop_key = self.remoko_conf.stop_key
+	self.forward_key = self.remoko_conf.forward_key
+	self.backward_key = self.remoko_conf.backward_key
+	self.volume_m_key = self.remoko_conf.volume_m_key
+	self.volume_p_key = self.remoko_conf.volume_p_key
+	self.fullscreen_key_m = self.remoko_conf.fullscreen_key_m
+	self.no_fullscreen_key_m = self.remoko_conf.no_fullscreen_key_m
+	
 
     def save_local_conf(self, button_name, key):
 	
@@ -1177,6 +1433,53 @@ class GUI(object):
 
 		self.no_fullscreen_key = key
 		self.remoko_conf.set_option("presentation","no_fullscreen_key",key)
+
+	elif button_name == "play_key":
+
+		self.play_key = key
+		self.remoko_conf.set_option("multimedia","play_key",key)
+
+	elif button_name == "pause_key":
+
+		self.pause_key = key
+		self.remoko_conf.set_option("multimedia","pause_key",key)
+
+	elif button_name == "stop_key":
+
+		self.stop_key = key
+		self.remoko_conf.set_option("multimedia","stop_key",key)
+
+	elif button_name == "forward_key":
+
+		self.forward_key = key
+		self.remoko_conf.set_option("multimedia","forward_key",key)
+
+	elif button_name == "backward_key":
+
+		self.backward_key = key
+		self.remoko_conf.set_option("multimedia","backward_key",key)
+
+	elif button_name == "volume_p_key":
+
+		self.volume_p_key = key
+		self.remoko_conf.set_option("multimedia","volume_p_key",key)
+
+	elif button_name == "volume_m_key":
+
+		self.volume_m_key = key
+		self.remoko_conf.set_option("multimedia","volume_m_key",key)
+	
+	
+	elif button_name == "fullscreen_key_m":
+
+		self.fullscreen_key_m = key
+		self.remoko_conf.set_option("multimedia","fullscreen_key_m",key)
+
+	elif button_name == "no_fullscreen_key_m":
+
+		self.no_fullscreen_key_m = key
+		self.remoko_conf.set_option("multimedia","no_fullscreen_key_m",key)
+	
 	
     def run( self ):
         ecore.main_loop_begin()
