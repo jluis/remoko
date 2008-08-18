@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
 	char event_msg[18];
     	char event[3];
      	char modifiers[3];
-     	char key_value[3];
+     	char key_value[4];
 	char delims[] = ":";
    	char *result = NULL;
 	char tmp[2];
@@ -358,6 +358,7 @@ int main(int argc, char *argv[])
 			
 			strncpy(tmp, &buffer[7],1);
 			tmp[1] = '\0';
+			
 
 			if (strcmp(tmp,":") == 0){
 				strncpy(key_value, &buffer[6],1);
@@ -366,9 +367,19 @@ int main(int argc, char *argv[])
 			}
 
 			else {
-				strncpy(key_value, &buffer[6],2);
-				key_value[2] = '\0';
-				//printf("key_value: %s\n", key_value);
+				bzero(tmp,2);
+				strncpy(tmp, &buffer[8],1);
+				tmp[1] = '\0';
+
+				if (strcmp(tmp,":") == 0){
+					strncpy(key_value, &buffer[6],2);
+					key_value[2] = '\0';
+					//printf("key_value: %s\n", key_value);
+				}
+				else {	
+					strncpy(key_value, &buffer[6],3);
+					key_value[3] = '\0'; 
+				}
 			}
 			n = send_event(is,atoi(modifiers),atoi(key_value));
 			if (n < 0){

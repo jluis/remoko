@@ -56,8 +56,8 @@ class key_mapper:
 		self.mapper['['] = 47
 		self.mapper['bracketright'] = 48
 		self.mapper[']'] = 48
-		self.mapper['backslash'] = 49
-		self.mapper['\\'] = 49
+		self.mapper['backslash'] = 100
+		self.mapper['\\'] = 100
 		
 		self.mapper['semicolon'] = 51
 		self.mapper[';'] = 51
@@ -95,6 +95,9 @@ class key_mapper:
 		self.mapper['Left'] = 80
 		self.mapper['Down'] = 81
 		self.mapper['Up'] = 82
+		
+		self.mapper["v+"] = 128
+		self.mapper["v-"] = 129
 		
 		
 		#include tilde ~
@@ -139,8 +142,8 @@ class key_mapper:
 		self.mapper['shift+8'] = "*"
 		self.mapper['shift+9'] = "("
 		self.mapper['shift+0'] = ")"
-		self.mapper['shift+-'] = "_"
-		self.mapper['shift+='] = "+"
+		self.mapper['shift+minus'] = "_"
+		self.mapper['shift+equal'] = "+"
 		self.mapper['shift+bracketleft'] = "{"
 		self.mapper['shift+bracketriht'] = "}"
 		self.mapper['shift+backslash'] = "|"
