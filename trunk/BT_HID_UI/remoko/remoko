@@ -199,7 +199,7 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"presentation")
+	#ecore.timer_add(1.0,self.main.transition_to,"multimedia")
 
 	ecore.timer_add(1.0,self.check_connection)
 
@@ -828,6 +828,35 @@ class multimedia(edje_group):
 	if source == "back":
 		
 		self.main.transition_to("menu")	
+		
+	elif source ==	"conf_keys":
+		
+		self.main.transition_to("multimedia_conf")
+
+#----------------------------------------------------------------------------#
+class multimedia_conf(edje_group):
+#----------------------------------------------------------------------------#
+    def __init__(self, main):
+        edje_group.__init__(self, main, "multimedia_conf")
+	self.signal_emit("hide_screen_2", "")
+	self.signal_emit("show_screen_1", "")
+
+    @edje.decorators.signal_callback("mouse,clicked,1", "*")
+    def on_edje_signal_button_pressed(self, emission, source):
+	if source == "back":
+		
+		self.main.transition_to("multimedia")	
+
+	elif source == "1":
+
+		self.signal_emit("hide_screen_2", "")
+		self.signal_emit("show_screen_1", "")
+
+	elif source == "2":
+
+		self.signal_emit("hide_screen_1", "")
+		self.signal_emit("show_screen_2", "")
+	
 
 #----------------------------------------------------------------------------#
 class games(edje_group):
@@ -933,7 +962,7 @@ class conf_keys(edje_group):
 	
 		if self.shift == True:
 			
-			self.part_text_set("value"," "+ str(key)+ " ")
+			self.part_text_set("value","  "+ str(key)+ " ")
 			self.shift = False
 			self.main.key_text = "shift+"+str(key_value)
 		
@@ -967,36 +996,36 @@ class conf_keys(edje_group):
 			self.main.key_text = translate_key(self,key_value,key)
 			if self.main.key_text == "f":
 				self.press_f = True
-				self.part_text_set("value"," " + self.main.key_text+" ")
+				self.part_text_set("value","  " + self.main.key_text+" ")
 				
 			elif self.press_f == True:
 				if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
 					if self.main.key_text == "1":
 						self.press_fpp = True
 					self.main.key_text = "f" + self.main.key_text
-					self.part_text_set("value"," " + self.main.key_text+" ")
+					self.part_text_set("value","  " + self.main.key_text+" ")
 					self.press_f = False
 					
 				else:
 					
 					self.press_f = False
-					self.part_text_set("value"," " + self.main.key_text+" ")
+					self.part_text_set("value","  " + self.main.key_text+" ")
 					
 					
 			elif self.press_fpp == True:
 				if self.main.key_text in ("0", "1", "2"):
 					self.main.key_text = "f1" + self.main.key_text
-					self.part_text_set("value"," " + self.main.key_text+" ")
+					self.part_text_set("value","  " + self.main.key_text+" ")
 					self.press_fpp = False
 						
 				else:
 					
 					self.press_fpp = False
-					self.part_text_set("value"," " + self.main.key_text+" ")
+					self.part_text_set("value","  " + self.main.key_text+" ")
 					
 				
 			else:
-				self.part_text_set("value"," " + self.main.key_text+" ")
+				self.part_text_set("value","  " + self.main.key_text+" ")
 				
 	
 
@@ -1034,7 +1063,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","presentation","presentation_conf","conf_keys"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","multimedia_conf","presentation","presentation_conf","conf_keys"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
