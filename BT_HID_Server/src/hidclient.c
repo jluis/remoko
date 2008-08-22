@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
 		 error("ERROR reading from socket");
 		}
 
-			printf("The message: %s\n",buffer);
+			//printf("The message: %s\n",buffer);
 			n = write(newsockfd,"Message received",17);
 			strncpy(event, &buffer[0],2);
 			event[2] = '\0';
@@ -419,9 +419,9 @@ int main(int argc, char *argv[])
 					write(newsockfd,"disconnected",13);
 					error("ERROR writing to bluetooth socket");
 				}
-				printf("mouse up\n");
+				//printf("mouse up\n");
 			}
-			printf("invalid\n");
+			//printf("invalid\n");
 		}
      }
      close(cs);

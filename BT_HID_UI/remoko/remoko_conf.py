@@ -15,6 +15,7 @@ class remoko_conf:
 				#settings
 				self.fullscreen = self.config.get("user","fullscreen")
 				self.scroll = self.config.get("user","scroll")
+				self.accelerometer = self.config.get("user","accelerometer")
 				#presentation profile
 				self.previous_key = self.config.get("presentation","previous_key")
 				self.next_key = self.config.get("presentation","next_key")
@@ -30,6 +31,19 @@ class remoko_conf:
 				self.volume_m_key = self.config.get("multimedia","volume_m_key")
 				self.volume_p_key = self.config.get("multimedia","volume_p_key")
 				self.no_fullscreen_key_m = self.config.get("multimedia", "no_fullscreen_key_m")
+				#accelerometer profile
+				self.up_key = self.config.get("accelerometer","up_key")
+				self.up_down_key = self.config.get("accelerometer","up_down_key")
+				self.right_key = self.config.get("accelerometer","right_key")
+				self.right_left_key = self.config.get("accelerometer","right_left_key")
+				self.left_key = self.config.get("accelerometer","left_key")
+				self.left_right_key = self.config.get("accelerometer","left_right_key")
+				self.down_key = self.config.get("accelerometer","down_key")
+				self.down_up_key = self.config.get("accelerometer","down_up_key")
+				self.forw_backw_key = self.config.get("accelerometer", "forw_backw_key")
+				self.shake_shake_key = self.config.get("accelerometer","shake_shake_key")
+				self.z_key = self.config.get("accelerometer","z_key")
+				self.horizontal_circle_key = self.config.get("accelerometer", "horizontal_circle_key")
 				
 			except:
 				print "ERROR: \'settings.ctg\' is damaged"
@@ -37,6 +51,7 @@ class remoko_conf:
 				print "Error: Non such file or directory \'settings.cfg\'"
 				self.fullscreen = "Yes"
 				self.scroll = 0
+				self.accelerometer = "Yes"
 				self.previous_key = "Prior"
 				self.next_key = "Next"
 				self.fullscreen_key = "f5"
@@ -51,11 +66,26 @@ class remoko_conf:
 				self.volume_m_key = "minus"
 				self.volume_p_key = "plus"
 				self.no_fullscreen_key_m = "Escape"
+				#accelerometer profile
+				self.up_key = "f"
+				self.up_down_key = "f5"
+				self.right_key = "Next"
+				self.right_left_key = "Right"
+				self.left_key = "Prior"
+				self.left_right_key = "Left"
+				self.down_key = "d"
+				self.down_up_key = "Escape"
+				self.forw_backw_key = "b"
+				self.shake_shake_key = "a"
+				self.z_key = "s"
+				self.horizontal_circle_key = "p"
+
 		except:
 			#put some error, to show in the UI
 			print "Error: Non such file or directory \'settings.cfg\'"
 			self.fullscreen = "Yes"
 			self.scroll = 0
+			self.accelerometer = "Yes"
 			self.previous_key = "Prior"
 			self.next_key = "Next"
 			self.fullscreen_key = "f5"
@@ -70,6 +100,20 @@ class remoko_conf:
 			self.volume_m_key = "minus"
 			self.volume_p_key = "plus"
 			self.no_fullscreen_key_m = "Escape"
+			#accelerometer profile
+			self.up_key = "f"
+			self.up_down_key = "f5"
+			self.right_key = "Next"
+			self.right_left_key = "Right"
+			self.left_key = "Prior"
+			self.left_right_key = "Left"
+			self.down_key = "d"
+			self.down_up_key = "Escape"
+			self.forw_backw_key = "b"
+			self.shake_shake_key = "a"
+			self.z_key = "s"
+			self.horizontal_circle_key = "p"
+
 
 	def set_option(self,seccion,opt,value):
 		
