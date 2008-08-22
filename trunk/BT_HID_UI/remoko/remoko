@@ -85,9 +85,9 @@ def key_dec(self,key):
 	else:
 
 		key_split = key.split("+")
-		print key_split
+		
 		for i in key_split:
-			print i
+			
 			if i == "shift":
 				self.shift = True
 			
@@ -136,8 +136,7 @@ def key_dec(self,key):
 				else:	
 					self.modif = "00"
 					self.val = str(i)
-	print self.modif
-	print self.val
+	
 	return self.modif,self.val
 #----------------------------------------------------------------------------#
 def translate_key(self,keyname, keystring):
@@ -208,7 +207,7 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"multimedia")
+	#ecore.timer_add(1.0,self.main.transition_to,"settings")
 
 	ecore.timer_add(1.0,self.check_connection)
 
@@ -335,12 +334,14 @@ class settings(edje_group):
         edje_group.__init__(self, main, "settings")
         self.part_text_set("fullscreen_option",str(self.main.remoko_conf.fullscreen))
 	self.part_text_set("scroll_option", str(self.main.remoko_conf.scroll))
+	self.part_text_set("accelerometer_option",self.main.accelerometer)
 	self.scroll_value = int(self.main.remoko_conf.scroll)
 	self.fscreen_option = str(self.main.remoko_conf.fullscreen)
+	self.accelerometer_option = self.main.accelerometer
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
-	print str(source)
+	 
 
 	if source == "back":
 		
@@ -350,7 +351,7 @@ class settings(edje_group):
 		self.main.scroll = self.scroll_value
 		self.main.transition_to("menu")
 
-	if source == "fullscreen_option":
+	elif source == "fullscreen_option":
 		
 		if self.fscreen_option == "Yes":
 			
@@ -364,17 +365,32 @@ class settings(edje_group):
 			self.fscreen_option = "Yes"
 			self.main.window.fullscreen = True
 
-	if source == "scroll_right_icon":
+	elif source == "scroll_right_icon":
 		
 		if self.scroll_value < 9:
 			self.scroll_value += 1
 			self.part_text_set("scroll_option", str(self.scroll_value))
 	
-	if source == "scroll_left_icon":
+	elif source == "scroll_left_icon":
 		
 		if self.scroll_value >= 1:
 			self.scroll_value -= 1
 			self.part_text_set("scroll_option", str(self.scroll_value))
+
+	elif source == "accelerometer_option":
+		
+		if self.accelerometer_option == "Yes":
+			
+			self.part_text_set("accelerometer_option","No")
+			self.accelerometer_option = "No"
+			self.main.accelerometer = "No"
+			
+
+		elif self.fscreen_option == "No":
+			
+			self.part_text_set("accelerometer_option","Yes")
+			self.accelerometer_option = "Yes"
+			self.main.accelerometer = "Yes"
 
 #----------------------------------------------------------------------------#
 class menu(edje_group):
@@ -416,8 +432,8 @@ class menu(edje_group):
 			self.main.transition_to("games")
 
 		elif source == "accelerometer":
-			
-			self.main.transition_to("accelerometer")
+
+			self.main.transition_to("accelerometer_conf")
 
 		elif source == "connection":
 
@@ -623,7 +639,6 @@ class keyboard_ui(edje_group):
     @evas.decorators.key_down_callback
     def on_key_down( self, event ):
         key = event.keyname
-        print str(key)
 	
 	try:
 		if key == "Shift_L":
@@ -680,7 +695,7 @@ class keyboard_ui(edje_group):
 
 		
 		tape_time = time.time() - self.tape_mouse_area
-		print tape_time
+		
 		if tape_time < 0.2:
 
 			self.main.connection.send_mouse_event(1,0,0,0)
@@ -733,8 +748,7 @@ class presentation(edje_group):
 
 		key = self.main.previous_key
 		modif, val = key_dec(self,key)
-		print modif
-		print val
+		
 		value = self.main.key_mapper.mapper[str(val)]
 		self.main.connection.send_keyboard_event(modif,value)
 
@@ -982,7 +996,7 @@ class multimedia_conf(edje_group):
 		self.signal_emit("show_screen_2", "")
 	
 	else:
-		print source
+		
 		if source == "play_key":
 
 			self.key_value = self.part_text_get("play_key_icon")
@@ -1047,16 +1061,169 @@ class games(edje_group):
 		self.main.transition_to("menu")
 
 #----------------------------------------------------------------------------#
-class accelerometer(edje_group):
+class accelerometer_conf(edje_group):
 #----------------------------------------------------------------------------#
     def __init__(self, main):
-        edje_group.__init__(self, main, "accelerometer")
+        edje_group.__init__(self, main, "accelerometer_conf")
+	count = 0
+	self.up_key = ""
+	self.up_down_key = ""
+	self.right_key = ""
+	self.right_left_key = ""
+	self.left_key = ""
+	self.left_right_key = ""
+	self.down_key = ""
+	self.down_up_key = ""
+	self.forw_backw_key = ""
+	self.shake_shake_key = ""
+	self.z_key = ""
+	self.horizontal_circle_key = ""
+
+	for i in (self.main.up_key,self.main.up_down_key,self.main.right_key,self.main.right_left_key,self.main.left_key, self.main.down_key,self.main.down_up_key,self.main.left_right_key, self.main.forw_backw_key, self.main.shake_shake_key, self.main.z_key, self.main.horizontal_circle_key):
+
+		if len(i) > 6:
+			#shift translation
+			if i[0] == "s":
+				text_value = self.main.key_mapper.mapper[i]
+				count +=1
+		else:
+			text_value = i
+			count +=1
+		if count == 1:
+			self.up_key = text_value
+		elif count == 2:
+			self.up_down_key = text_value
+		elif count == 3:
+			self.right_key = text_value
+		elif count == 4:
+			self.right_left_key = text_value
+		elif count == 5:
+			self.left_key = text_value
+		elif count == 6:
+			self.left_right_key = text_value
+		elif count == 7:
+			self.down_key = text_value
+		elif count == 8:
+			self.down_up_key = text_value
+		elif count == 9:
+			self.forw_backw_key = text_value
+		elif count == 10:
+			self.shake_shake_key = text_value
+		elif count == 11:
+			self.z_key = text_value
+		elif count == 12:
+			self.horizontal_circle_key = text_value
+				
+		 
+	self.part_text_set("up_key_icon", self.up_key)
+	self.part_text_set("up_down_key_icon", self.up_down_key)
+	self.part_text_set("right_key_icon", self.right_key)
+	self.part_text_set("right_left_key_icon", self.right_left_key)
+	self.part_text_set("left_key_icon", self.left_key)
+	self.part_text_set("left_right_key_icon", self.left_right_key)
+	self.part_text_set("down_key_icon", self.down_key)
+	self.part_text_set("down_up_key_icon", self.down_up_key)
+	self.part_text_set("forw_backw_key_icon", self.forw_backw_key)
+	self.part_text_set("shake_shake_key_icon", self.shake_shake_key)
+	self.part_text_set("z_key_icon", self.z_key)
+	self.part_text_set("horizontal_circle_key_icon", self.horizontal_circle_key)
+	
+	self.key_value = ""
+	self.signal_emit("hide_screen_2", "")
+	self.signal_emit("hide_screen_3", "")
+	self.signal_emit("show_screen_1", "")
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
-		
+		self.main.remoko_conf.save_options()
 		self.main.transition_to("menu")
+
+	elif source == "1":
+
+		self.signal_emit("hide_screen_2", "")
+		self.signal_emit("hide_screen_3", "")
+		self.signal_emit("show_screen_1", "")
+
+	elif source == "2":
+
+		self.signal_emit("hide_screen_1", "")
+		self.signal_emit("hide_screen_3", "")
+		self.signal_emit("show_screen_2", "")
+
+	elif source == "3":
+		
+		self.signal_emit("hide_screen_1", "")
+		self.signal_emit("hide_screen_2", "")
+		self.signal_emit("show_screen_3", "")
+
+	else:
+		
+		if source == "up_key":
+
+			self.key_value = self.part_text_get("up_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "up_down_key":
+
+			self.key_value = self.part_text_get("up_down_key_icon")
+			self.main.key_text = self.key_value
+
+		if source == "right_key":
+
+			self.key_value = self.part_text_get("right_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "right_left_key":
+
+			self.key_value = self.part_text_get("right_left_key_icon")
+			self.main.key_text = self.key_value
+
+		if source == "left_key":
+
+			self.key_value = self.part_text_get("left_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "left_right_key":
+
+			self.key_value = self.part_text_get("left_right_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "down_key":
+
+			self.key_value = self.part_text_get("down_key_icon")
+			self.main.key_text = self.key_value
+
+
+		elif source == "down_up_key":
+
+			self.key_value = self.part_text_get("down_up_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "forw_back_key":
+
+			self.key_value = self.part_text_get("forw_back_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "shake_shake_key":
+
+			self.key_value = self.part_text_get("shake_shake_key_icon")
+			self.main.key_text = self.key_value
+
+		elif source == "z_key":
+
+			self.key_value = self.part_text_get("z_key_icon")
+			self.main.key_text = self.key_value
+		
+		elif source == "horizontal_circle_key":
+
+			self.key_value = self.part_text_get("horizontal_circle_key_icon")
+			self.main.key_text = self.key_value
+
+		self.main.current_conf_screen = "accelerometer_conf"
+		self.main.current_source = source
+		self.main.groups["conf_keys"].part_text_set("value"," "+self.key_value + " ")
+		self.main.transition_to("conf_keys")	
 
 #----------------------------------------------------------------------------#
 class conf_keys(edje_group):
@@ -1088,12 +1255,16 @@ class conf_keys(edje_group):
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
-		prev = self.main.current_conf_screen + "_conf"
+		if self.main.current_conf_screen == "accelerometer_conf":
+			prev = self.main.current_conf_screen
+		else:
+			prev = self.main.current_conf_screen + "_conf"
+
 		prev_source = self.main.current_source + "_icon"
 		local_key = str(self.main.current_source)
 		
 		if self.hit == False:
-			print "saiu no hit"
+			
 			self.hit = False
 			self.main.transition_to(prev)
 		
@@ -1121,9 +1292,6 @@ class conf_keys(edje_group):
 	key_key = event.key
 	key_value = event.keyname
 	self.hit = True
-	print event
-        print str(key)
-	
 
 	if key_value == "Shift_L":
 		self.shift = True
@@ -1299,7 +1467,9 @@ class GUI(object):
 	self.restore_conditions = False
 	self.try_framework = 0
 	self.key_text = ""
-	self.dbus_objectInit()	
+	self.dbus_accel()
+	self.dbus_objectInit()
+		
 	self.key_mapper = key_mapper()
 	
 
@@ -1308,7 +1478,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","games","multimedia","multimedia_conf","presentation","presentation_conf","conf_keys"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer_conf","games","multimedia","multimedia_conf","presentation","presentation_conf","conf_keys"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -1365,12 +1535,22 @@ class GUI(object):
 		print 'You are using ASU'
 		return False
         if dbus_object is None:
-            self.dbus_object = DBusObject()
+            self.dbus_object = DBusObject(self)
         if not self.dbus_object.initialize():
             # try again later
             ecore.timer_add( 1.0, self.dbus_objectInit )
 	    self.try_framework += 1 
             return False
+
+    def dbus_accel( self ):
+       print "dbus_objectInit..."
+       global dbus_object
+	
+       if dbus_object is None:
+           self.dbus_object = DBusObject(self)
+       if not self.dbus_object.initialize_accel():
+           print "accel error"
+           return False
         
 	
     def on_exit(self):
@@ -1395,6 +1575,7 @@ class GUI(object):
 	#settings
 	self.fullscreen = self.remoko_conf.fullscreen
 	self.scroll = int(self.remoko_conf.scroll)
+	self.accelerometer = self.remoko_conf.accelerometer
 	#presentation
 	self.previous_key = self.remoko_conf.previous_key
 	self.next_key = self.remoko_conf.next_key
@@ -1410,6 +1591,19 @@ class GUI(object):
 	self.volume_p_key = self.remoko_conf.volume_p_key
 	self.fullscreen_key_m = self.remoko_conf.fullscreen_key_m
 	self.no_fullscreen_key_m = self.remoko_conf.no_fullscreen_key_m
+	#accelerometer profile
+	self.up_key = self.remoko_conf.up_key
+	self.up_down_key = self.remoko_conf.up_down_key
+	self.right_key = self.remoko_conf.right_key
+	self.right_left_key = self.remoko_conf.right_left_key
+	self.left_key = self.remoko_conf.left_key
+	self.left_right_key = self.remoko_conf.left_right_key
+	self.down_key = self.remoko_conf.down_key
+	self.down_up_key = self.remoko_conf.down_up_key
+	self.forw_backw_key = self.remoko_conf.forw_backw_key
+	self.shake_shake_key = self.remoko_conf.shake_shake_key
+	self.z_key = self.remoko_conf.z_key
+	self.horizontal_circle_key = self.remoko_conf.horizontal_circle_key
 	
 
     def save_local_conf(self, button_name, key):
@@ -1479,8 +1673,67 @@ class GUI(object):
 
 		self.no_fullscreen_key_m = key
 		self.remoko_conf.set_option("multimedia","no_fullscreen_key_m",key)
+
+	elif button_name == "up_key":
+
+		self.up_key = key
+		self.remoko_conf.set_option("accelerometer","up_key",key)
+
+	elif button_name == "up_down_key":
+
+		self.up_down_key = key
+		self.remoko_conf.set_option("accelerometer","up_down_key",key)
+
+	elif button_name == "right_key":
+
+		self.right_key = key
+		self.remoko_conf.set_option("accelerometer","right_key",key)
+
+	elif button_name == "right_left_key":
+
+		self.right_left_key = key
+		self.remoko_conf.set_option("accelerometer","right_left_key",key)
 	
+	elif button_name == "left_key":
+
+		self.left_key = key
+		self.remoko_conf.set_option("accelerometer","left_key",key)
+
+	elif button_name == "left_right_key":
+
+		self.left_right_key = key
+		self.remoko_conf.set_option("accelerometer","left_right_key",key)
 	
+	elif button_name == "down_key":
+
+		self.down_key = key
+		self.remoko_conf.set_option("accelerometer","down_key",key)
+
+	elif button_name == "down_up_key":
+
+		self.down_up_key = key
+		self.remoko_conf.set_option("accelerometer","down_up_key",key)
+
+	elif button_name == "forw_backw_key":
+
+		self.forw_backw_key = key
+		self.remoko_conf.set_option("accelerometer","forw_backw_key",key)
+
+	elif button_name == "shake_shake_key":
+
+		self.shake_shake_key = key
+		self.remoko_conf.set_option("accelerometer","shake_shake_key",key)
+	
+	elif button_name == "z_key":
+
+		self.z_key = key
+		self.remoko_conf.set_option("accelerometer","z_key",key)
+
+	elif button_name == "horizontal_circle_key":
+
+		self.horizontal_circle_key = key
+		self.remoko_conf.set_option("accelerometer","horizontal_circle_key",key)
+
     def run( self ):
         ecore.main_loop_begin()
 	
@@ -1515,7 +1768,7 @@ class GUI(object):
 class DBusObject( object ):
 #----------------------------------------------------------------------------#
 
-    def __init__( self ):
+    def __init__( self,main ):
         self.objects = {}
         self.onResourceChanged = []
         self.onCallStatus = []
@@ -1538,6 +1791,7 @@ class DBusObject( object ):
 
         self.fullinit = False
 	self.bluetooth_obj = False
+	self.main = main
 
     def tryGetProxy( self, busname, objname ):
         object = None
@@ -1571,19 +1825,144 @@ class DBusObject( object ):
             self.usage_iface.RequestResource("Bluetooth")
         if self.usage_obj is None:
             failcount += 1
+
         else:
 	    self.bluetooth_obj = True
             print "usage ok", self.usage_iface
-
         
         print "failcount=", failcount
         if failcount == 0:
             self.fullinit = True
-        return self.fullinit
+        return self.fullinit	
+
+    def initialize_accel( self ):
+        if self.fullinit:
+            return True
+        try:
+            self.bus = SystemBus( mainloop=e_dbus.DBusEcoreMainLoop() )
+        except DBusException, e:
+            print "could not connect to dbus_object system bus:", e
+            return False
+
+	failcount = 0
+
+	#accel
+	self.accel_obj = self.tryGetProxy( 'org.openmoko.accelges', '/org/openmoko/accelges/Recognizer' )
+	if self.accel_obj is None:
+		print "error in proxy"
+	else:
+		print "proxy ok"
+		try:
+			self.accel_iface = Interface(self.accel_obj, 'org.openmoko.accelges.Recognizer')
+    			self.accel_iface.connect_to_signal( "Recognized", self.cbReconizedGest )
+			print "interface ok"
+			
+		except  DBusException, e:
+	    		print "error in interface"
+        
+        print "failcount=", failcount
+        if failcount == 0:
+            self.fullinit = True
+        return self.fullinit	
+
 
     def cbResourceChanged( self, resourcename ):
         for cb in self.onResourceChanged:
             cb( resourcename=resourcename )
+
+    def cbReconizedGest(self,id):
+		if self.main.accelerometer == "No":
+			pass
+		else:
+			
+			if id == "right, and return":
+
+				key = self.main.right_left_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id =="horizontal circle":
+
+				key = self.main.horizontal_circle_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+				
+			elif id =="forward, backward":
+
+				key = self.main.forw_backw_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+				
+			elif id =="shake, shake":
+
+				key = self.main.shake_shake_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id =="left, and return":
+
+				key = self.main.left_right_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id == "up, and return":
+
+				key = self.main.up_down_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id =="down":
+
+				key = self.main.down_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id == "up":
+
+				key = self.main.up_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id =="down, and return":
+				
+				key = self.main.down_up_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+			
+			elif id == "right":
+				
+				key = self.main.right_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id == "left":
+
+				key = self.main.left_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+
+			elif id == "z":
+
+				key = self.main.z_key
+				modif, val = key_dec(self,key)
+				value = self.main.key_mapper.mapper[str(val)]
+				self.main.connection.send_keyboard_event(modif,value)
+				
+			else:
+				pass
+		
+		
 
     
 #----------------------------------------------------------------------------#

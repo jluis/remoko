@@ -235,30 +235,60 @@ parts {
                     }
              }
 	}
+	
+	CLICK_ANIMATION("accelerometer_option",0.23,0.42,0.3,0.37);
+	
 	part {
-                name: "label_mail_addr";
+		
+                name: "accelerometer";
                 type: TEXT;
 		effect: SOFT_OUTLINE;
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.1;
+                        relative: 0.02 0.1;
                         offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.8 0.9;
+                        relative: 0.6 0.4;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+			text: "Accelerometer Gest.";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.9 0.9;
+                    }
+             }
+	}
+
+	part {
+                name: "accelerometer_option";
+                type: TEXT;
+                mouse_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.9 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.99 0.4;
                         offset: -1 -1;
                     }
                     text {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.2 0.6;
+                        align: 0.9 0.9;
                     }
              }
 	}
+
 	
         LOGO();
 	BACK();
@@ -267,7 +297,8 @@ parts {
     programs {
 	CLICK_ANIMATION_PROG("fullscreen_option");
 	CLICK_ANIMATION_PROG("scroll_left_icon"); 
-	CLICK_ANIMATION_PROG("scroll_right_icon"); 
+	CLICK_ANIMATION_PROG("scroll_right_icon");
+	CLICK_ANIMATION_PROG("accelerometer_option");
 	ACTIVATE("back");
     	TRANSITION();
     }
