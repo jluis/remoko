@@ -109,12 +109,12 @@ parts {
                 description {
                     state: "default" 0.0;
                     rel1 {
-                        relative: 0.2 0.1;
+                        relative: 0.25 0.1;
                         offset: 0 0;
                         
                     }
                     rel2 {
-                        relative: 0.7 0.9;
+                        relative: 0.75 0.9;
                         offset: -1 -1;
                     }
                     text {

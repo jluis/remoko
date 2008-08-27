@@ -207,7 +207,7 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"settings")
+	#ecore.timer_add(1.0,self.main.transition_to,"about")
 
 	ecore.timer_add(1.0,self.check_connection)
 
@@ -432,7 +432,7 @@ class menu(edje_group):
 			self.main.transition_to("games")
 
 		elif source == "accelerometer":
-
+			self.main.accelerometer_prev = "menu"
 			self.main.transition_to("accelerometer_conf")
 
 		elif source == "connection":
@@ -452,6 +452,9 @@ class menu(edje_group):
 			self.main.groups["about"].part_text_set("label_test_version","Beta Version")
 			self.main.groups["about"].part_text_set("label_feeback","Send feedback to:")
 			self.main.groups["about"].part_text_set("label_mail_addr","<vdv100@gmail.com>")
+			self.main.groups["about"].part_text_set("label_developed","Developed by:")
+			self.main.groups["about"].part_text_set("label_name","Valerio Valerio")
+			
 			
 			self.main.transition_to("about")	
 
@@ -742,6 +745,11 @@ class presentation(edje_group):
 	elif source ==	"conf_keys":
 		
 		self.main.transition_to("presentation_conf")
+	
+	elif source == "conf_gestures":
+
+		self.main.accelerometer_prev = "presentation"
+		self.main.transition_to("accelerometer_conf")
 
 	elif source == "previous":
 
@@ -855,6 +863,11 @@ class multimedia(edje_group):
 	elif source ==	"conf_keys":
 		
 		self.main.transition_to("multimedia_conf")
+
+	elif source == "conf_gestures":
+
+		self.main.accelerometer_prev = "multimedia"
+		self.main.transition_to("accelerometer_conf")
 
 	elif source == "play":
 
@@ -1129,15 +1142,23 @@ class accelerometer_conf(edje_group):
 	self.part_text_set("horizontal_circle_key_icon", self.horizontal_circle_key)
 	
 	self.key_value = ""
-	self.signal_emit("hide_screen_2", "")
-	self.signal_emit("hide_screen_3", "")
-	self.signal_emit("show_screen_1", "")
+	if self.main.gestures == False:
+		self.signal_emit("hide_screen_2", "")
+		self.signal_emit("hide_screen_3", "")
+		self.signal_emit("hide_screen_1", "")
+		self.signal_emit("hide_screen_numbers","")
+		self.part_text_set("label_gestures_off", "Gestures daemon isn't running")
+	else:
+		self.signal_emit("hide_screen_2", "")
+		self.signal_emit("hide_screen_3", "")
+		self.signal_emit("show_screen_1", "")
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
 	if source == "back":
+
 		self.main.remoko_conf.save_options()
-		self.main.transition_to("menu")
+		self.main.transition_to(self.main.accelerometer_prev)
 
 	elif source == "1":
 
@@ -1467,6 +1488,8 @@ class GUI(object):
 	self.restore_conditions = False
 	self.try_framework = 0
 	self.key_text = ""
+	self.gestures = False
+	self.accelerometer_prev = "menu"
 	self.dbus_accel()
 	self.dbus_objectInit()
 		
@@ -1856,6 +1879,7 @@ class DBusObject( object ):
 			self.accel_iface = Interface(self.accel_obj, 'org.openmoko.accelges.Recognizer')
     			self.accel_iface.connect_to_signal( "Recognized", self.cbReconizedGest )
 			print "interface ok"
+			self.main.gestures = True
 			
 		except  DBusException, e:
 	    		print "error in interface"
