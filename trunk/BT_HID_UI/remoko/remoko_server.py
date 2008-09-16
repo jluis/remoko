@@ -1,5 +1,5 @@
 #
-#      remoko.py
+#      remoko_server.py
 #
 #      Copyright 2008 	Valerio Valerio <vdv100@gmail.com>
 #						
@@ -45,8 +45,8 @@ class Connect:
 		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
 		
 		# Read record file
-		file_read = open('../data/service_record.xml','r')
-		#file_read = open('/usr/share/remoko/data/service_record.xml','r')
+		#file_read = open('../data/service_record.xml','r')
+		file_read = open('/usr/share/remoko/data/service_record.xml','r')
 		xml = file_read.read()
 
 		# Add service record to the BlueZ database
@@ -58,9 +58,19 @@ class Connect:
 
 		# Check if input service is running, if yes terminate the service
 		
-		input_status = self.input.IsRunning()
+		#input_status = self.input.IsRunning()
+		try:
+
+                     input_status = self.input.IsRunning()
+
+                except dbus.exceptions.DBusException:
+
+                      input_status = False
+
+                      self.input_connect = False
 
 		if input_status == True:
+
 			self.input_connect = True
 			cenas = self.input.Stop()
 			
@@ -167,7 +177,7 @@ class start_listener(Thread):
 					self.remoko.sock_open = True
 				
 				except:
-					print "waiting connection ..."
+					print "waiting connection to remoko-server ..."
 		
 			#catch errors
 			
