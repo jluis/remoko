@@ -48,7 +48,7 @@ WM_NAME = "remoko"
 WM_CLASS = "remoko"
 
 
-edjepaths = "remoko.edj themes/remoko.edj /usr/share/remoko/themes/remoko.edj".split()
+edjepaths = "remoko.edj themes/remoko.edj /usr/share/remoko/remoko.edj /usr/share/remoko/themes/remoko.edj".split()
 
 for i in edjepaths:
     if os.path.exists( i ):
