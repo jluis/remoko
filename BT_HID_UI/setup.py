@@ -27,12 +27,17 @@ setup(
     version = "0.3.2",
     author = "Valerio Valerio",
     author_email = "vdv100@gmail.com",
-    url = "http://code.google.com/p/remoko/",
-		packages = [ "remoko/" ],
+    cmdclass = { 'build'    : my_build  ,
+                 'clean'    : my_clean  },
+    url = "",
+    cmdclass = { 'build'    : my_build  ,
+                 'clean'    : my_clean  },
+    packages = [ "remoko/" ],
     scripts = [ "remoko/remoko" ],
     data_files = [
-        ( "remoko/", ["themes/remoko.edj", "data/service_record.xml"] ),
-        ( "pixmaps", ["images/remoko.png"] ),
-        ( "applications", ["data/remoko.desktop"] ),
+        ( "share/remoko/", ["themes/remoko.edj", "data/service_record.xml"] ),
+        ( "share/pixmaps", ["images/remoko.png"] ),
+        ( "share/applications", ["data/remoko.desktop"] ),
         ]
 )
+
