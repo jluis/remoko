@@ -1,6 +1,9 @@
 import ConfigParser
 import os
+import os.path
 
+defaultsfile = "/usr/share/remoko/settings.cfg"
+configfile = os.path.expanduser('~/.remoko.cfg')
 
 class remoko_conf:
 
@@ -10,7 +13,8 @@ class remoko_conf:
 		
 		try:
 			
-			self.config.readfp(open('settings.cfg'))
+			self.config.readfp(open(defaultsfile))
+			self.config.read(configfile)
 			try:
 				#settings
 				self.fullscreen = self.config.get("user","fullscreen")
@@ -46,9 +50,9 @@ class remoko_conf:
 				self.horizontal_circle_key = self.config.get("accelerometer", "horizontal_circle_key")
 				
 			except:
-				print "ERROR: \'settings.ctg\' is damaged"
+				print "ERROR: \'" + configfile + "\' is damaged"
 				#put some error, to show in the UI
-				print "Error: Non such file or directory \'settings.cfg\'"
+				print "Error: Non such file or directory \'" + configfile + "\'"
 				self.fullscreen = "Yes"
 				self.scroll = 0
 				self.accelerometer = "Yes"
@@ -82,7 +86,7 @@ class remoko_conf:
 
 		except:
 			#put some error, to show in the UI
-			print "Error: Non such file or directory \'settings.cfg\'"
+			print "Error: Non such file or directory \'" + configfile + "\'"
 			self.fullscreen = "Yes"
 			self.scroll = 0
 			self.accelerometer = "Yes"
@@ -124,19 +128,17 @@ class remoko_conf:
 	
 		try:
 			
-			file = open('settings.cfg', 'w')
+			file = open(configfile, 'w')
 			self.config.write(file)
 			file.close()
 			print "Options saved"
 			
 		except:
 			
-			print "Error: Non such file or directory \'settings.cfg\'"
+			print "Error: Non such file or directory \'" + configfile + "\'"
 
 		
 		
 
 
-#cenas = remoko_conf()
-#print cenas.fullscreen
-#cenas.set_option("user", "fullscreen", "No")
+
