@@ -25,7 +25,7 @@ import ConfigParser
 import os
 import os.path
 
-defaultsfile = "/usr/share/remoko/settings.cfg"
+defaultsfile = "/usr/share/remoko/data/settings.cfg"
 configfile = os.path.expanduser('~/.remoko.cfg')
 
 class remoko_conf:
