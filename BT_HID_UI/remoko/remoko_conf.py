@@ -1,3 +1,26 @@
+#
+#      remoko_conf.py
+#
+#      Copyright 2008 	Valerio Valerio <vdv100@gmail.com>
+#						
+#
+#      This program is free software; you can redistribute it and/or modify
+#      it under the terms of the GNU General Public License as published by
+#      the Free Software Foundation; either version 2 of the License, or
+#      (at your option) any later version.
+#
+#      This program is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#      GNU General Public License for more details.
+#
+#      You should have received a copy of the GNU General Public License
+#      along with this program; if not, write to the Free Software
+#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+
+
+
 import ConfigParser
 import os
 import os.path
@@ -11,113 +34,42 @@ class remoko_conf:
 
 		self.config = ConfigParser.ConfigParser()
 		
-		try:
-			
-			self.config.readfp(open(defaultsfile))
-			self.config.read(configfile)
-			try:
-				#settings
-				self.fullscreen = self.config.get("user","fullscreen")
-				self.scroll = self.config.get("user","scroll")
-				self.accelerometer = self.config.get("user","accelerometer")
-				#presentation profile
-				self.previous_key = self.config.get("presentation","previous_key")
-				self.next_key = self.config.get("presentation","next_key")
-				self.fullscreen_key = self.config.get("presentation","fullscreen_key")
-				self.no_fullscreen_key = self.config.get("presentation","no_fullscreen_key")
-				#multimedia profile
-				self.play_key = self.config.get("multimedia","play_key")
-				self.pause_key = self.config.get("multimedia","pause_key")
-				self.stop_key = self.config.get("multimedia","stop_key")
-				self.forward_key = self.config.get("multimedia","forward_key")
-				self.backward_key = self.config.get("multimedia","backward_key")
-				self.fullscreen_key_m = self.config.get("multimedia","fullscreen_key_m")
-				self.volume_m_key = self.config.get("multimedia","volume_m_key")
-				self.volume_p_key = self.config.get("multimedia","volume_p_key")
-				self.no_fullscreen_key_m = self.config.get("multimedia", "no_fullscreen_key_m")
-				#accelerometer profile
-				self.up_key = self.config.get("accelerometer","up_key")
-				self.up_down_key = self.config.get("accelerometer","up_down_key")
-				self.right_key = self.config.get("accelerometer","right_key")
-				self.right_left_key = self.config.get("accelerometer","right_left_key")
-				self.left_key = self.config.get("accelerometer","left_key")
-				self.left_right_key = self.config.get("accelerometer","left_right_key")
-				self.down_key = self.config.get("accelerometer","down_key")
-				self.down_up_key = self.config.get("accelerometer","down_up_key")
-				self.forw_backw_key = self.config.get("accelerometer", "forw_backw_key")
-				self.shake_shake_key = self.config.get("accelerometer","shake_shake_key")
-				self.z_key = self.config.get("accelerometer","z_key")
-				self.horizontal_circle_key = self.config.get("accelerometer", "horizontal_circle_key")
+		self.config.readfp(open(defaultsfile))
+		self.config.read(configfile)
+
+		#settings
+		self.fullscreen = self.config.get("user","fullscreen")
+		self.scroll = self.config.get("user","scroll")
+		self.accelerometer = self.config.get("user","accelerometer")
+		#presentation profile
+		self.previous_key = self.config.get("presentation","previous_key")
+		self.next_key = self.config.get("presentation","next_key")
+		self.fullscreen_key = self.config.get("presentation","fullscreen_key")
+		self.no_fullscreen_key = self.config.get("presentation","no_fullscreen_key")
+		#multimedia profile
+		self.play_key = self.config.get("multimedia","play_key")
+		self.pause_key = self.config.get("multimedia","pause_key")
+		self.stop_key = self.config.get("multimedia","stop_key")
+		self.forward_key = self.config.get("multimedia","forward_key")
+		self.backward_key = self.config.get("multimedia","backward_key")
+		self.fullscreen_key_m = self.config.get("multimedia","fullscreen_key_m")
+		self.volume_m_key = self.config.get("multimedia","volume_m_key")
+		self.volume_p_key = self.config.get("multimedia","volume_p_key")
+		self.no_fullscreen_key_m = self.config.get("multimedia", "no_fullscreen_key_m")
+		#accelerometer profile
+		self.up_key = self.config.get("accelerometer","up_key")
+		self.up_down_key = self.config.get("accelerometer","up_down_key")
+		self.right_key = self.config.get("accelerometer","right_key")
+		self.right_left_key = self.config.get("accelerometer","right_left_key")
+		self.left_key = self.config.get("accelerometer","left_key")
+		self.left_right_key = self.config.get("accelerometer","left_right_key")
+		self.down_key = self.config.get("accelerometer","down_key")
+		self.down_up_key = self.config.get("accelerometer","down_up_key")
+		self.forw_backw_key = self.config.get("accelerometer", "forw_backw_key")
+		self.shake_shake_key = self.config.get("accelerometer","shake_shake_key")
+		self.z_key = self.config.get("accelerometer","z_key")
+		self.horizontal_circle_key = self.config.get("accelerometer", "horizontal_circle_key")
 				
-			except:
-				print "ERROR: \'" + configfile + "\' is damaged"
-				#put some error, to show in the UI
-				print "Error: Non such file or directory \'" + configfile + "\'"
-				self.fullscreen = "Yes"
-				self.scroll = 0
-				self.accelerometer = "Yes"
-				self.previous_key = "Prior"
-				self.next_key = "Next"
-				self.fullscreen_key = "f5"
-				self.no_fullscreen_key = "Escape"
-				#multimedia profile
-				self.play_key = "p"
-				self.pause_key = "p"
-				self.stop_key = "s"
-				self.forward_key = "right"
-				self.backward_key = "left"
-				self.fullscreen_key_m = "f"
-				self.volume_m_key = "minus"
-				self.volume_p_key = "plus"
-				self.no_fullscreen_key_m = "Escape"
-				#accelerometer profile
-				self.up_key = "f"
-				self.up_down_key = "f5"
-				self.right_key = "Next"
-				self.right_left_key = "Right"
-				self.left_key = "Prior"
-				self.left_right_key = "Left"
-				self.down_key = "d"
-				self.down_up_key = "Escape"
-				self.forw_backw_key = "b"
-				self.shake_shake_key = "a"
-				self.z_key = "s"
-				self.horizontal_circle_key = "p"
-
-		except:
-			#put some error, to show in the UI
-			print "Error: Non such file or directory \'" + configfile + "\'"
-			self.fullscreen = "Yes"
-			self.scroll = 0
-			self.accelerometer = "Yes"
-			self.previous_key = "Prior"
-			self.next_key = "Next"
-			self.fullscreen_key = "f5"
-			self.no_fullscreen_key = "Escape"
-			#multimedia profile
-			self.play_key = "p"
-			self.pause_key = "p"
-			self.stop_key = "s"
-			self.forward_key = "right"
-			self.backward_key = "left"
-			self.fullscreen_key_m = "f"
-			self.volume_m_key = "minus"
-			self.volume_p_key = "plus"
-			self.no_fullscreen_key_m = "Escape"
-			#accelerometer profile
-			self.up_key = "f"
-			self.up_down_key = "f5"
-			self.right_key = "Next"
-			self.right_left_key = "Right"
-			self.left_key = "Prior"
-			self.left_right_key = "Left"
-			self.down_key = "d"
-			self.down_up_key = "Escape"
-			self.forw_backw_key = "b"
-			self.shake_shake_key = "a"
-			self.z_key = "s"
-			self.horizontal_circle_key = "p"
-
 
 	def set_option(self,seccion,opt,value):
 		
@@ -139,6 +91,3 @@ class remoko_conf:
 
 		
 		
-
-
-
