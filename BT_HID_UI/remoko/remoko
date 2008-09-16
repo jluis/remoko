@@ -629,16 +629,22 @@ class keyboard_ui(edje_group):
 
     def onShow( self ):
         self.focus = True
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
-        #if illume:
-            #illume.kbd_show()
+        #self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
+        func = getattr(self.main.window, "x_window_virtual_keyboard_state_set", None)
+
+        if callable(func):
+
+		self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
 
     def onHide( self ):
         self.focus = False
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
-        #if illume:
-            #illume.kbd_hide()
+        #self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
+	func = getattr(self.main.window, "x_window_virtual_keyboard_state_set", None)
 
+        if callable(func):
+
+		self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
+        
     @evas.decorators.key_down_callback
     def on_key_down( self, event ):
         key = event.keyname
@@ -1263,15 +1269,24 @@ class conf_keys(edje_group):
     
     def onShow( self ):
         self.focus = True
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
-        #if illume:
-            #illume.kbd_show()
+        #self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
+
+        func = getattr(self.main.window, "x_window_virtual_keyboard_state_set", None)
+
+        if callable(func):
+
+              self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
 
     def onHide( self ):
         self.focus = False
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
-        #if illume:
-            #illume.kbd_hide()
+        #self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
+
+	func = getattr(self.main.window, "x_window_virtual_keyboard_state_set", None)
+
+        if callable(func):
+
+		self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
+       
 
     @edje.decorators.signal_callback("mouse,clicked,1", "*")
     def on_edje_signal_button_pressed(self, emission, source):
