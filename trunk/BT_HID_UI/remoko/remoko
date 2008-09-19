@@ -1413,36 +1413,8 @@ class conf_keys(edje_group):
 
 		else:
 			self.main.key_text = translate_key(self,key_value,key)
-			if self.main.key_text == "f":
-				self.press_f = True
-				self.part_text_set("value","  " + self.main.key_text+" ")
-				
-			elif self.press_f == True:
-				if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
-					if self.main.key_text == "1":
-						self.press_fpp = True
-					self.main.key_text = "f" + self.main.key_text
-					self.part_text_set("value","  " + self.main.key_text+" ")
-					self.press_f = False
-					
-				else:
-					
-					self.press_f = False
-					self.part_text_set("value","  " + self.main.key_text+" ")
-					
-					
-			elif self.press_fpp == True:
-				if self.main.key_text in ("0", "1", "2"):
-					self.main.key_text = "f1" + self.main.key_text
-					self.part_text_set("value","  " + self.main.key_text+" ")
-					self.press_fpp = False
-						
-				else:
-					
-					self.press_fpp = False
-					self.part_text_set("value","  " + self.main.key_text+" ")
 
-			elif self.main.key_text =="w":
+			if self.main.key_text =="w":
 				self.press_w = True
 				self.part_text_set("value","  " + self.main.key_text+" ")
 
@@ -1473,6 +1445,36 @@ class conf_keys(edje_group):
 				self.press_win = False	
 				self.part_text_set("value","win+" + self.main.key_text+" ")
 				self.main.key_text = "win+" + self.main.key_text
+			elif self.main.key_text == "f":
+				self.press_f = True
+				self.part_text_set("value","  " + self.main.key_text+" ")
+				
+			elif self.press_f == True:
+				if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
+					if self.main.key_text == "1":
+						self.press_fpp = True
+					self.main.key_text = "f" + self.main.key_text
+					self.part_text_set("value","  " + self.main.key_text+" ")
+					self.press_f = False
+					
+				else:
+					
+					self.press_f = False
+					self.part_text_set("value","  " + self.main.key_text+" ")
+					
+					
+			elif self.press_fpp == True:
+				if self.main.key_text in ("0", "1", "2"):
+					self.main.key_text = "f1" + self.main.key_text
+					self.part_text_set("value","  " + self.main.key_text+" ")
+					self.press_fpp = False
+						
+				else:
+					
+					self.press_fpp = False
+					self.part_text_set("value","  " + self.main.key_text+" ")
+
+			
 			else:
 				self.part_text_set("value","  " + self.main.key_text+" ")
 				
