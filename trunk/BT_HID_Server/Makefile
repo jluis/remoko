@@ -14,9 +14,9 @@
 
 
 
-pkgdatadir = $(datadir)/hidclient
-pkglibdir = $(libdir)/hidclient
-pkgincludedir = $(includedir)/hidclient
+pkgdatadir = $(datadir)/remokoserver
+pkglibdir = $(libdir)/remokoserver
+pkgincludedir = $(includedir)/remokoserver
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -117,12 +117,12 @@ MAINT = #
 MAKEINFO = ${SHELL} /home/valerio/remoko/BT_HID_Server/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
-PACKAGE = hidclient
-PACKAGE_BUGREPORT = http://www.openmoko.org/
-PACKAGE_NAME = hidclient
-PACKAGE_STRING = hidclient 0.0.1
-PACKAGE_TARNAME = hidclient
-PACKAGE_VERSION = 0.0.1
+PACKAGE = remokoserver
+PACKAGE_BUGREPORT = http://code.google.com/p/remoko
+PACKAGE_NAME = remokoserver
+PACKAGE_STRING = remokoserver 0.2
+PACKAGE_TARNAME = remokoserver
+PACKAGE_VERSION = 0.2
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/local/openmoko/arm/bin/pkg-config
 RANLIB = arm-angstrom-linux-gnueabi-ranlib
@@ -130,7 +130,7 @@ SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = arm-angstrom-linux-gnueabi-strip
-VERSION = 0.0.1
+VERSION = 0.2
 abs_builddir = /home/valerio/remoko/BT_HID_Server
 abs_srcdir = /home/valerio/remoko/BT_HID_Server
 abs_top_builddir = /home/valerio/remoko/BT_HID_Server

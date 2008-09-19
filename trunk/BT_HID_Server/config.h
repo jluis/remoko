@@ -32,25 +32,25 @@
 #define HAVE_UNISTD_H 1
 
 /* Name of package */
-#define PACKAGE "hidclient"
+#define PACKAGE "remokoserver"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "http://www.openmoko.org/"
+#define PACKAGE_BUGREPORT "http://code.google.com/p/remoko"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "hidclient"
+#define PACKAGE_NAME "remokoserver"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "hidclient 0.0.1"
+#define PACKAGE_STRING "remokoserver 0.2"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "hidclient"
+#define PACKAGE_TARNAME "remokoserver"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.0.1"
+#define PACKAGE_VERSION "0.2"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "0.0.1"
+#define VERSION "0.2"
