@@ -1504,10 +1504,7 @@ class GUI(object):
 	self.try_framework = 0
 	self.key_text = ""
 	self.gestures = False
-	self.accelerometer_prev = "menu"
-	self.dbus_accel()
-	self.dbus_objectInit()
-		
+	self.accelerometer_prev = "menu"	
 	self.key_mapper = key_mapper()
 	
 
@@ -1531,6 +1528,8 @@ class GUI(object):
         self.in_transition = False
 	self.current_conf_screen = None
 	self.current_source = None
+	self.dbus_accel()
+	self.dbus_objectInit()
 	self.initialize_remoko_server()
 
     def check_connection_status(self):
@@ -1905,9 +1904,10 @@ class DBusObject( object ):
         return self.fullinit	
 
 
-    def cbResourceChanged( self, resourcename ):
+    def cbResourceChanged( self, resourcename, state, attributes ):
         for cb in self.onResourceChanged:
-            cb( resourcename=resourcename )
+            cb( resourcename=resourcename, state=state, attributes=attributes )
+
 
     def cbReconizedGest(self,id):
 		if self.main.accelerometer == "No":
