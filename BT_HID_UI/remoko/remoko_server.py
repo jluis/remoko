@@ -49,30 +49,72 @@ class Connect:
 		file_read = open('/usr/share/remoko/data/service_record.xml','r')
 		xml = file_read.read()
 
-		# Add service record to the BlueZ database
-		bus = dbus.SystemBus()
-		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
-																'org.bluez.Database')
-		self.handle = self.database.AddServiceRecordFromXML(xml)
-		
-
 		# Check if input service is running, if yes terminate the service
-		
-		#input_status = self.input.IsRunning()
+
 		try:
 
-                     input_status = self.input.IsRunning()
+                       input_status = self.input.IsRunning()
+		       print "passou"
+                except:
+		       print "ERROR: isRunning d-bus call not present"
 
-                except dbus.exceptions.DBusException:
+		       try:
+				os.system("/etc/init.d/bluetooth stop")
+		       except:
+				print "can't stop bluetooth services"
+		       try:
+				os.system("mv /usr/lib/bluetooth/plugins/libinput.so /usr/lib/bluetooth/plugins/libinput.so_back")
+		       except:
+				print "can't move input plugin"
 
-                      input_status = False
+		       try:
+			
+				os.system("/etc/init.d/bluetooth start")
+		       except:
+				print "can't start bluetooth services"
 
-                      self.input_connect = False
+		       try:
+				os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+		       except:
+				print "can't move input plugin"
+			
+				
+				
+                       input_status = False
+
+                       self.input_connect = False
+
+		#input_status = self.input.IsRunning()
 
 		if input_status == True:
+			
+			try:
+				cenas = self.input.Stop()
+				self.input_connect = True
+			except:
 
-			self.input_connect = True
-			cenas = self.input.Stop()
+			       try:
+					os.system("/etc/init.d/bluetooth stop")
+		       	       except:
+					print "can't stop bluetooth services"
+			       try:
+					os.system("mv /usr/lib/bluetooth/plugins/libinput.so /usr/lib/bluetooth/plugins/libinput.so_back")
+			       except:
+					print "can't move input plugin"
+
+			       try:
+			
+					os.system("/etc/init.d/bluetooth start")
+			       except:
+					print "can't start bluetooth services"
+
+			       try:
+					os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+			       except:
+					print "can't move input plugin"
+				
+			       self.input_connect = False
+			
 			
 			print "--> BlueZ input service stopped"
 			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
@@ -80,6 +122,19 @@ class Connect:
 		else:
 			
 			self.input_connect = False
+
+		bus_input = dbus.SystemBus()
+		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
+		
+		bus_adapter = dbus.SystemBus()
+		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
+
+		# Add service record to the BlueZ database
+		bus = dbus.SystemBus()
+		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
+																'org.bluez.Database')
+		self.handle = self.database.AddServiceRecordFromXML(xml)
+	
 			
 	def start_connection(self):	
 		
