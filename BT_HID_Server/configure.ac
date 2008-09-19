@@ -1,5 +1,5 @@
 AC_PREREQ(2.53)
-AC_INIT(hidclient, 0.0.1, http://www.openmoko.org/)
+AC_INIT(remokoserver, 0.2, http://code.google.com/p/remoko)
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR(src/hidclient.c)
 AM_CONFIG_HEADER(config.h)
