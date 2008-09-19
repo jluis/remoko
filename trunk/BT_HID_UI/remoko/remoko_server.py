@@ -91,6 +91,7 @@ class Connect:
 			try:
 				cenas = self.input.Stop()
 				self.input_connect = True
+				print "--> BlueZ input service stopped"
 			except:
 
 			       try:
@@ -116,24 +117,27 @@ class Connect:
 			       self.input_connect = False
 			
 			
-			print "--> BlueZ input service stopped"
+			
 			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
 
 		else:
 			
 			self.input_connect = False
-
-		bus_input = dbus.SystemBus()
-		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
+		try:
+			bus_input = dbus.SystemBus()
+			self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
 		
-		bus_adapter = dbus.SystemBus()
-		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
+			bus_adapter = dbus.SystemBus()
+			self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
 
-		# Add service record to the BlueZ database
-		bus = dbus.SystemBus()
-		self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
-																'org.bluez.Database')
-		self.handle = self.database.AddServiceRecordFromXML(xml)
+			# Add service record to the BlueZ database
+			bus = dbus.SystemBus()
+			self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
+																	'org.bluez.Database')
+			self.handle = self.database.AddServiceRecordFromXML(xml)
+		except:
+			
+			print "Error in d-bus system"
 	
 			
 	def start_connection(self):	
@@ -186,7 +190,16 @@ class Connect:
 		if self.input_connect == True:
 			self.input.Start()
 			print "--> BlueZ input service started"
+		try:
+			os.system("/etc/init.d/bluetooth stop")
+		except:
+		        print "can't stop bluetooth services"
+		try:
 			
+			os.system("/etc/init.d/bluetooth start")
+		except:
+			print "can't start bluetooth services"
+	
 		print "Connection terminated"
 			
 				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
