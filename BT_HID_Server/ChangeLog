@@ -1,4 +1,9 @@
-remokoserver (0.2) OpenMoko; urgency=low
+remokoserver (0.2.1) OpenMoko; urgency=low
+
+remokoserver 0.2.1
+
+	* Fix project name and version
+	* Close all sockets when connection is lost
 
 remokoserver 0.2
 

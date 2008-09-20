@@ -407,6 +407,8 @@ int main(int argc, char *argv[])
 				printf("Device class changed to: %s\n", default_class);
 				close(cs);
 				close(is);
+				close(csk);
+				close(isk);
 				close(sockfd);
 				close(newsockfd);
 				exit(1);
