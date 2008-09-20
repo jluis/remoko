@@ -53,77 +53,6 @@ parts {
                     }
              }
 	}
-	part {
-                name: "label_test_version";
-                type: TEXT;
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1 {
-                        relative: 0.2 0.1;
-                        offset: 0 0;
-                        
-                    }
-                    rel2 {
-                        relative: 0.8 0.9;
-                        offset: -1 -1;
-                    }
-                    text {
-                        font: "Sans";
-                        size: 1;
-                        fit: 1 1;
-                        align: 0.0 0.2;
-                    }
-             }
-	}
-
-	part {
-                name: "label_feeback";
-                type: TEXT;
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1 {
-                        relative: 0.2 0.1;
-                        offset: 0 0;
-                        
-                    }
-                    rel2 {
-                        relative: 0.8 0.9;
-                        offset: 0 0;
-                    }
-                    text {
-                        font: "Sans";
-                        size: 1;
-                        fit: 1 1;
-                        align: 0.3 0.4;
-                    }
-             }
-	}
-	part {
-                name: "label_mail_addr";
-                type: TEXT;
-		effect: SOFT_OUTLINE;
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1 {
-                        relative: 0.2 0.1;
-                        offset: 0 0;
-                        
-                    }
-                    rel2 {
-                        relative: 0.8 0.9;
-                        offset: -1 -1;
-                    }
-                    text {
-                        font: "Sans";
-                        size: 1;
-                        fit: 1 1;
-                        align: 0.2 0.5;
-                    }
-             }
-	}
 
 	part {
                 name: "label_developed";
@@ -144,7 +73,7 @@ parts {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.3 0.7;
+                        align: 0.3 0.25;
                     }
              }
 	}
@@ -168,10 +97,129 @@ parts {
                         font: "Sans";
                         size: 1;
                         fit: 1 1;
-                        align: 0.2 0.85;
+                        align: 0.2 0.35;
                     }
              }
 	}
+	part {
+                name: "label_email";
+                type: TEXT;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.45;
+                    }
+             }
+	}
+	part {
+                name: "label_thanks";
+                type: TEXT;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.6;
+                    }
+             }
+	}
+	part {
+                name: "label_claudio";
+                type: TEXT;
+		effect: OUTLINE_SOFT_SHADOW;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.7;
+                    }
+             }
+	}
+	part {
+                name: "label_daniel";
+                type: TEXT;
+		effect: OUTLINE_SOFT_SHADOW;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.8;
+                    }
+             }
+	}
+	part {
+                name: "label_joachim";
+                type: TEXT;
+		effect: OUTLINE_SOFT_SHADOW;
+                mouse_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1 {
+                        relative: 0.2 0.1;
+                        offset: 0 0;
+                        
+                    }
+                    rel2 {
+                        relative: 0.8 0.9;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 1;
+                        fit: 1 1;
+                        align: 0.2 0.9;
+                    }
+             }
+	}
+	
 	
         LOGO();
 	BACK();

@@ -1,5 +1,11 @@
-remoko (0.3.1) OpenMoko; urgency=low
+remoko (0.3.2) OpenMoko; urgency=low
 
+
+remoko 0.3.2
+
+	* Added Support to bluez-utils version > 3.33 with the new input service system
+	* Fix the win+f bug
+	* Credits screen updated
 
 remoko 0.3.1
 
