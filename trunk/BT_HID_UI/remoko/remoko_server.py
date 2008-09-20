@@ -182,6 +182,11 @@ class Connect:
 			self.sock.send("quit")
 		except:
 			self.connect = False
+			try:
+				os.system("pkill  -9 hidclient")
+				print "hidclient killed"
+			except:
+				print "hidclient daemon already terminated"
 			print "disconnected"
 
 		self.database.RemoveServiceRecord(self.handle)
@@ -190,10 +195,12 @@ class Connect:
 		if self.input_connect == True:
 			self.input.Start()
 			print "--> BlueZ input service started"
+
 		try:
 			os.system("/etc/init.d/bluetooth stop")
 		except:
 		        print "can't stop bluetooth services"
+
 		try:
 			
 			os.system("/etc/init.d/bluetooth start")
@@ -201,6 +208,7 @@ class Connect:
 			print "can't start bluetooth services"
 	
 		print "Connection terminated"
+			
 			
 				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
 				
