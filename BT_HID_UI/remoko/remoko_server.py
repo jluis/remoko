@@ -37,6 +37,7 @@ class Connect:
 		self.client_name = None
 		self.client_addr = None
 		self.error = False
+		self.bluez_subsystem = False
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
@@ -75,6 +76,7 @@ class Connect:
 
 		       try:
 				os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+				self.bluez_subsystem = True
 		       except:
 				print "can't move input plugin"
 			
@@ -111,6 +113,7 @@ class Connect:
 
 			       try:
 					os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+					self.bluez_subsystem = True
 			       except:
 					print "can't move input plugin"
 				
@@ -196,16 +199,18 @@ class Connect:
 			self.input.Start()
 			print "--> BlueZ input service started"
 
-		try:
-			os.system("/etc/init.d/bluetooth stop")
-		except:
-		        print "can't stop bluetooth services"
+		if self.bluez_subsystem == True
 
-		try:
+			try:
+				os.system("/etc/init.d/bluetooth stop")
+			except:
+				print "can't stop bluetooth services"
+
+			try:
 			
-			os.system("/etc/init.d/bluetooth start")
-		except:
-			print "can't start bluetooth services"
+				os.system("/etc/init.d/bluetooth start")
+			except:
+				print "can't start bluetooth services"
 	
 		print "Connection terminated"
 			
