@@ -29,9 +29,7 @@ setup(
     author_email = "vdv100@gmail.com",
     cmdclass = { 'build'    : my_build  ,
                  'clean'    : my_clean  },
-    url = "",
-    cmdclass = { 'build'    : my_build  ,
-                 'clean'    : my_clean  },
+    url = "http://code.google.com/p/remoko/",
     packages = [ "remoko/" ],
     scripts = [ "remoko/remoko" ],
     data_files = [
