@@ -33,9 +33,9 @@ setup(
     packages = [ "remoko" ],
     scripts = [ "remoko/remoko" ],
     data_files = [
-        ( "share/remoko/", ["themes/remoko.edj", "data/service_record.xml"] ),
-        ( "share/pixmaps", ["images/remoko.png"] ),
-        ( "share/applications", ["data/remoko.desktop"] ),
+        ( "remoko", ["themes/remoko.edj", "data/service_record.xml", "data/settings.cfg"] ),
+        ( "pixmaps", ["images/remoko.png"] ),
+        ( "applications", ["data/remoko.desktop"] ),
         ]
 )
 
