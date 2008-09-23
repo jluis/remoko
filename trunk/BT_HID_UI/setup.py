@@ -30,7 +30,6 @@ setup(
     cmdclass = { 'build'    : my_build  ,
                  'clean'    : my_clean  },
     url = "http://code.google.com/p/remoko/",
-    packages = [ "remoko/" ],
     scripts = [ "remoko/remoko" ],
     data_files = [
         ( "share/remoko/", ["themes/remoko.edj", "data/service_record.xml"] ),
