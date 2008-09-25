@@ -199,7 +199,7 @@ class Connect:
 			self.input.Start()
 			print "--> BlueZ input service started"
 
-		if self.bluez_subsystem == True
+		if self.bluez_subsystem == True:
 
 			try:
 				os.system("/etc/init.d/bluetooth stop")
