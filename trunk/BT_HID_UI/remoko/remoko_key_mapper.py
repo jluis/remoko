@@ -165,7 +165,7 @@ class key_mapper:
 		self.mapper['shift+minus'] = "_"
 		self.mapper['shift+equal'] = "+"
 		self.mapper['shift+bracketleft'] = "{"
-		self.mapper['shift+bracketriht'] = "}"
+		self.mapper['shift+bracketright'] = "}"
 		self.mapper['shift+backslash'] = "|"
 		self.mapper['shift+semicolon'] = ":"
 		self.mapper['shift+apostrophe'] = "\""
