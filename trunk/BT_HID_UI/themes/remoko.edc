@@ -39,6 +39,12 @@ images {
   image: "forward_icon.png" COMP;
   image: "volume-_icon.png" COMP;
   image: "volume+_icon.png" COMP;
+  image: "button_right_icon.png" COMP;
+  image: "button_left_icon.png" COMP;
+  image: "button_middle_icon.png" COMP;
+  image: "button_hold_icon.png" COMP;
+  image: "up_icon.png" COMP;
+  image: "down_icon.png" COMP;
 
 }
 
@@ -1073,6 +1079,14 @@ collections {
 	 group {
 		name: "games";
 		#include "games.edc"
+	 }
+	 group {
+		name: "games_conf";
+		#include "games_conf.edc"
+	 }
+	 group {
+		name: "accelerometer";
+		#include "accelerometer.edc"
 	 }
 	 group {
 		name: "accelerometer_conf";

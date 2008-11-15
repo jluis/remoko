@@ -200,6 +200,30 @@ static int send_event(int is, int modifiers, int val)
 	return n;
 }
 
+static int send_event2(int is, int modifiers, int val)
+{
+
+        unsigned char th[10];
+	int n;
+	
+	th[0] = 0xa1;
+	th[1] = 0x01;
+	th[2] = modifiers; //1 -left control ,2 - left shift, 4 left alt,5- ctrl+ alt (01 + 04) 8 - left gui, 16 - right control, 32 - right sift, 64 - right alt, 128 - right gui
+	th[3] = 0x00;
+	th[4] = val; // the key code
+	th[5] = 0x00;
+	th[6] = 0x00;
+	th[7] = 0x00;
+	th[8] = 0x00;
+	th[9] = 0x00;
+	
+
+	n = write(is, th, sizeof(th));
+	return n;
+}
+
+
+
 static int send_mouse_event(int is, int btn, int mov_x, int mov_y, int whell)
 {
 
@@ -388,6 +412,47 @@ int main(int argc, char *argv[])
 			}
 
 		}
+		else if (strcmp(event,"03") == 0){
+			//printf("keyboard\n");
+
+			strncpy(modifiers, &buffer[3],2);
+			modifiers[2] = '\0';
+			//printf("modifiers: %s\n", modifiers);
+			
+			strncpy(tmp, &buffer[7],1);
+			tmp[1] = '\0';
+			
+
+			if (strcmp(tmp,":") == 0){
+				strncpy(key_value, &buffer[6],1);
+				key_value[1] = '\0';
+				//printf("key_value: %s\n", key_value);
+			}
+
+			else {
+				bzero(tmp,2);
+				strncpy(tmp, &buffer[8],1);
+				tmp[1] = '\0';
+
+				if (strcmp(tmp,":") == 0){
+					strncpy(key_value, &buffer[6],2);
+					key_value[2] = '\0';
+					//printf("key_value: %s\n", key_value);
+				}
+				else {	
+					strncpy(key_value, &buffer[6],3);
+					key_value[3] = '\0'; 
+				}
+			}
+			n = send_event2(is,atoi(modifiers),atoi(key_value));
+			if (n < 0){
+				write(newsockfd,"disconnected",13);
+				error("ERROR writing to bluetooth socket");
+			}
+
+		}
+		
+		
 		else if (strcmp(event, "02") == 0){
 			//printf("mouse\n");
 
