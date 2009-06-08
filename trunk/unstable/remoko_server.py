@@ -133,17 +133,25 @@ class Connect:
 			self.input_connect = False
 		try:
 
+			print "1"
+
 			bus_input = dbus.SystemBus()
 			self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
-		
+			print "2"
 			bus_adapter = dbus.SystemBus()
 			self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
-
+			print "3"
 			# Add service record to the BlueZ database
 			bus = dbus.SystemBus()
-			self.database = dbus.Interface(bus.get_object('org.bluez', '/org/bluez'),
-																	'org.bluez.Database')
-			self.handle = self.database.AddServiceRecordFromXML(xml)
+			manager = dbus.Interface(bus.get_object("org.bluez", "/"),"org.bluez.Manager")
+
+			print "4"
+			path = manager.DefaultAdapter()
+
+			service = dbus.Interface(bus.get_object("org.bluez", path),
+						"org.bluez.Service")
+			print "5"
+			handle = service.AddRecord(xml)
 
 		except:
 			print "Error in d-bus system"
