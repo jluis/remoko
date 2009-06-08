@@ -2107,12 +2107,12 @@ class GUI(object):
 	
         
 
-    def initialize_remoko_server(self):
+    def initialize_remoko_server(self, addr=1):
 
 	if self.dbus_object.bluetooth_obj == True:
 
 		self.connection = Connect()
-		ecore.timer_add(1.0,self.connection.start_connection)
+		self.connection.start_connection(addr)
 		self.connection_processed = True
         else:
 		ecore.timer_add(1.0,self.initialize_remoko_server)
@@ -2572,7 +2572,7 @@ class EvasCanvas(object):
         if engine == "x11":
             f = ecore.evas.SoftwareX11
         elif engine == "x11-16":
-            if ecore.evas.engine_type_supported_get("software_x11_16"):
+            if ecore.evas.engine_type_supported_get("software_16_x11"):
                 f = ecore.evas.SoftwareX11_16
             else:
                 print "warning: x11-16 is not supported, fallback to x11"
