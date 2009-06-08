@@ -25,6 +25,8 @@ import os
 import socket
 import sys
 from threading import Thread
+import hidserver
+from remoko_known_devices_conf import *
 
 
 class Connect:
@@ -36,14 +38,22 @@ class Connect:
 		self.sock_open = False
 		self.client_name = None
 		self.client_addr = None
+		self.adapter_addr = None
 		self.error = False
 		self.bluez_subsystem = False
+		self.quit_server = False
+		self.known_dev = None
+		self.devices_conf = remoko_known_devices()
+		
 		
 		bus_input = dbus.SystemBus()
 		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
 		
 		bus_adapter = dbus.SystemBus()
 		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
+
+		#self.adapter_addr = self.adapter.GetAddress()
+		#print self.adapter_addr
 		
 		# Read record file
 		file_read = open('service_record.xml','r')
@@ -55,7 +65,7 @@ class Connect:
 		try:
 
                        input_status = self.input.IsRunning()
-		       print "passou"
+
                 except:
 		       print "ERROR: isRunning d-bus call not present"
 
@@ -85,8 +95,6 @@ class Connect:
                        input_status = False
 
                        self.input_connect = False
-
-		#input_status = self.input.IsRunning()
 
 		if input_status == True:
 			
@@ -119,16 +127,12 @@ class Connect:
 					print "can't move input plugin"
 				
 			       self.input_connect = False
-			
-			
-			
-			#os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Stop")
 
 		else:
 			
 			self.input_connect = False
 		try:
-			#time.sleep(2)
+
 			bus_input = dbus.SystemBus()
 			self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
 		
@@ -143,20 +147,22 @@ class Connect:
 
 		except:
 			print "Error in d-bus system"
-			
-	def start_connection(self):	
+	
+	
+	def start_connection(self,addr):	
 		
-		self.deamon = start_deamon(self)
+		self.deamon = start_deamon(self,addr)
 		self.deamon.start()
-		self.listener = start_listener(self)
-		self.listener.start()
-		
+
 	
 	def send_mouse_event(self,btn,mov_x,mov_y, scroll):
 		
 		try:
-			event = "02:" + str(btn) + ":" + str(mov_x) + ":" + str(mov_y) + ":" + str(scroll)
-			self.sock.send(event)
+			
+			n = hidserver.send_mouse_ev(btn,mov_x,mov_y,scroll)
+			if n < 0:
+				self.connect = False
+				print "Disconnected"
 		except:
 			self.connect = False
 			print "Disconnected"
@@ -164,17 +170,22 @@ class Connect:
 	def send_keyboard_event(self,modifier,key):
 		
 		try:
-			event = "01:" + str(modifier) + ":" + str(key) + ":"
-			self.sock.send(event)
+			mod = int(modifier)
+			key = int(key)
+			n = hidserver.send_key(mod,key)
+			if n < 0:
+				self.connect = False
+				print "Disconnected"
+				
 		except:
 			self.connect = False
 			print "Disconnected"
 
-	def send_accel_event(self,modifier,key):
-		
-		try:
-			event = "03:" + str(modifier) + ":" + str(key) + ":"
-			self.sock.send(event)
+	def release_keyboard_event(self):
+
+		try:	
+			n = hidserver.release_key()
+
 		except:
 			self.connect = False
 			print "Disconnected"
@@ -188,23 +199,27 @@ class Connect:
 		except:
 			self.connect = False
 			print "disconnected"
+
 			
 	def terminate_connection(self):
 		
 		try:
-			self.sock.send("quit")
+			if self.connect == False:
+				hidserver.quit()
+				n = hidserver.quit_server()
+				print "killed"
+			else:
+				n = hidserver.quit_server()
+				if n < 0:
+					self.connect = False
+					print "Error closing sockets"
 		except:
 			self.connect = False
-			try:
-				os.system("pkill  -9 hidclient")
-				print "hidclient killed"
-			except:
-				print "hidclient daemon already terminated"
-			print "disconnected"
+			print "Error closing sockets"
 
 		self.database.RemoveServiceRecord(self.handle)
 
-			# Restore initial input service condition
+		# Restore initial input service condition
 		if self.input_connect == True:
 			self.input.Start()
 			print "--> BlueZ input service started"
@@ -219,74 +234,77 @@ class Connect:
 				os.system("/etc/init.d/bluetooth start")
 			except:
 				print "can't start bluetooth services"
-	
+
+		self.quit_server = True
 		print "Connection terminated"
 			
-				##os.system("dbus-send --system --print-reply --dest=org.bluez /org/bluez/service_input org.bluez.Service.Start")
 				
 class start_deamon(Thread):
 	
-	def __init__(self,remoko):
+	def __init__(self,remoko,addr):
 		
-		Thread.__init__(self)
 		self.remoko = remoko
+		self.addr = addr
+		self.state = 1
+		Thread.__init__(self)
 		print "initializing daemon ..."
 		
 	def run(self):
 		
 		try:
+			if self.addr==1:
+
+				hidserver.init_hidserver()
+			else:
+				print "cenas"
+				self.state = hidserver.reConnect(self.remoko.adapter_addr,self.addr)
+				#hidserver.reConnect("00:1D:6E:9D:42:9C","00:21:4F:57:93:C8")
+				print "cenas2"
+			while self.remoko.connect == False and self.remoko.error == False:
+				time.sleep(1)
+				n = hidserver.connec_state()
+				print "Waiting for a connection..."
+				if n == 1:
+					self.remoko.connect = True
+
+				elif self.remoko.quit_server == True:
+					print "Exit"
+					remoko.shutdown()
+
+				elif self.state == 0:
+					print "error reconneting"
+					self.remoko.error = True
+
+				elif n == 0:
+					pass
+					
+				else:
+					print "Error"
+					self.remoko.error = True
+
+			if self.remoko.error:
+				pass
+			else:
+				try:		
+					
+					input_status = self.remoko.adapter.ListConnections()
+					print input_status
+					print "You are connect to the address: " + str(input_status[-1])
+					client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
+					self.remoko.client_name = str(client_name)
+					self.remoko.client_addr = str(input_status[-1])
+					if self.remoko.devices_conf.known_devices_list.has_key(self.remoko.client_addr):
+						print "device already existent"
+					else:
+						self.remoko.devices_conf.add_new_dev(self.remoko.client_addr +'='+ self.remoko.client_name + "\n")
+						self.remoko.devices_conf.known_devices_list[self.remoko.client_addr] = self.remoko.client_name
+					print "connected to: " + str(client_name)
+				except:
 			
-			os.system("hidclient")
-			
-			
+					self.remoko.error = True
+					print 'ERROR: Bluetooth is off'
 		except:
 			
-			print "Error in the daemon"
-
-
-
-class start_listener(Thread):
-
-	def __init__(self,remoko):
-		
-		Thread.__init__(self)
-		self.remoko = remoko
-		print "initializing listener ..."
-		
-	def run(self):
-
-
-			while self.remoko.sock_open == False:
-
-				try:
-				
-					self.remoko.sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-					self.remoko.sock.connect(('localhost', 6543))
-					self.remoko.sock_open = True
-				
-				except:
-					print "waiting connection to remoko-server ..."
-		
-			#catch errors
-			
-			reply = self.remoko.sock.recv(100)
-			if reply == "connected":
-				print reply
-				self.remoko.connect = True
-			elif reply == "disconnected":
-				self.remoko.connect = False
-			try:	
-						
-				input_status = self.remoko.adapter.ListConnections()
-				print input_status
-				print "You are connect to the address: " + str(input_status[-1])
-				client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
-				self.remoko.client_name = str(client_name)
-				self.remoko.client_addr = str(input_status[-1])
-				print "connected to: " + str(client_name)
-			except:
-				
-				self.remoko.error = True
-				print 'ERROR: Bluetooth is off'
+			print "Exit"
 			
 
