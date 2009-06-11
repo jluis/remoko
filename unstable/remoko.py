@@ -2462,13 +2462,13 @@ class DBusObject( object ):
         return self.fullinit	
 
 
-    def cbResourceChanged( self, resourcename ):
-        for cb in self.onResourceChanged:
-            cb( resourcename=resourcename )
-
-    #def cbResourceChanged( self, resourcename, state, attributes ):
+    #def cbResourceChanged( self, resourcename ):
      #   for cb in self.onResourceChanged:
-      #      cb( resourcename=resourcename, state=state, attributes=attributes )
+      #      cb( resourcename=resourcename )
+
+    def cbResourceChanged( self, resourcename, state, attributes ):
+        for cb in self.onResourceChanged:
+            cb( resourcename=resourcename, state=state, attributes=attributes )
 
     def cbReconizedGest(self,id):
 		if self.main.accelerometer == "No":
