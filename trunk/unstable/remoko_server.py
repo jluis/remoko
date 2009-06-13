@@ -46,19 +46,25 @@ class Connect:
 		self.devices_conf = remoko_known_devices()
 		
 		
-		bus_input = dbus.SystemBus()
-		self.input = dbus.Interface(bus_input.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
 		
-		bus_adapter = dbus.SystemBus()
-		self.adapter = dbus.Interface(bus_adapter.get_object('org.bluez', '/org/bluez/hci0'), 'org.bluez.Adapter')
-
-		#self.adapter_addr = self.adapter.GetAddress()
-		#print self.adapter_addr
 		
 		# Read record file
 		file_read = open('service_record.xml','r')
 		#file_read = open('/usr/share/remoko/data/service_record.xml','r')
 		xml = file_read.read()
+
+		self.bus = dbus.SystemBus()
+		self.input = dbus.Interface(self.bus.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
+		
+		
+		#manager = dbus.Interface(self.bus.get_object("org.bluez", "/"),"org.bluez.Manager")
+
+		#self.path = manager.DefaultAdapter()
+		#self.adapter = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Adapter")
+
+
+		#self.adapter_addr = self.adapter.GetAddress()
+		#print self.adapter_addr
 
 		# Check if input service is running, if yes terminate the service
 
@@ -74,7 +80,7 @@ class Connect:
 		       except:
 				print "can't stop bluetooth services"
 		       try:
-				os.system("mv /usr/lib/bluetooth/plugins/libinput.so /usr/lib/bluetooth/plugins/libinput.so_back")
+				os.system("mv /usr/lib/bluetooth/plugins/input.so /usr/lib/bluetooth/plugins/input.so_back")
 		       except:
 				print "can't move input plugin"
 
@@ -85,7 +91,7 @@ class Connect:
 				print "can't start bluetooth services"
 
 		       try:
-				os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+				os.system("mv /usr/lib/bluetooth/plugins/input.so_back /usr/lib/bluetooth/plugins/input.so")
 				self.bluez_subsystem = True
 		       except:
 				print "can't move input plugin"
@@ -110,7 +116,7 @@ class Connect:
 		       	       except:
 					print "can't stop bluetooth services"
 			       try:
-					os.system("mv /usr/lib/bluetooth/plugins/libinput.so /usr/lib/bluetooth/plugins/libinput.so_back")
+					os.system("mv /usr/lib/bluetooth/plugins/input.so /usr/lib/bluetooth/plugins/input.so_back")
 			       except:
 					print "can't move input plugin"
 
@@ -121,7 +127,7 @@ class Connect:
 					print "can't start bluetooth services"
 
 			       try:
-					os.system("mv /usr/lib/bluetooth/plugins/libinput.so_back /usr/lib/bluetooth/plugins/libinput.so")
+					os.system("mv /usr/lib/bluetooth/plugins/input.so_back /usr/lib/bluetooth/plugins/input.so")
 					self.bluez_subsystem = True
 			       except:
 					print "can't move input plugin"
@@ -134,18 +140,28 @@ class Connect:
 		try:
 
 			# Add service record to the BlueZ database
-			bus = dbus.SystemBus()
-			manager = dbus.Interface(bus.get_object("org.bluez", "/"),"org.bluez.Manager")
+			manager = dbus.Interface(self.bus.get_object("org.bluez", "/"),"org.bluez.Manager")
 
-			path = manager.DefaultAdapter()
+			self.path = manager.DefaultAdapter()
+			self.adapter = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Adapter")
+			#self.adapter_addr = self.adapter.GetAddress()
+			#print self.adapter_addr
+			
 
-			service = dbus.Interface(bus.get_object("org.bluez", path),
-						"org.bluez.Service")
+			service = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Service")
 
 			handle = service.AddRecord(xml)
 
+			self.adapter.connect_to_signal("DeviceCreated", self._device_created)
+
 		except:
 			print "Error in d-bus system"
+
+	def _device_created(self, device_path):
+		device = dbus.Interface(self.bus.get_object("org.bluez", device_path),"org.bluez.Device")
+		properties = device.GetProperties()
+		print properties["Name"]
+		print properties["Address"]
 	
 	
 	def start_connection(self,addr):	
@@ -284,8 +300,17 @@ class start_deamon(Thread):
 			if self.remoko.error:
 				pass
 			else:
-				try:		
-					
+				try:	
+					properties = self.remoko.adapter.GetProperties()
+					print properties["Address"]
+					#
+					#path = self.remoko.adapter.FindDevice("00:10:60:EB:85:21")
+					#device = dbus.Interface(self.remoko.bus.get_object("org.bluez", path),"org.bluez.Device")
+					#properties = device.GetProperties()
+					#print properties
+					#
+					list = self.remoko.adapter.ListDevices()
+					print list
 					input_status = self.remoko.adapter.ListConnections()
 					print input_status
 					print "You are connect to the address: " + str(input_status[-1])
