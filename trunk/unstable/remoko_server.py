@@ -148,9 +148,9 @@ class Connect:
 			#print self.adapter_addr
 			
 
-			service = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Service")
+			self.service = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Service")
 
-			handle = service.AddRecord(xml)
+			self.handle = self.service.AddRecord(xml)
 
 			self.adapter.connect_to_signal("DeviceCreated", self._device_created)
 
@@ -160,8 +160,8 @@ class Connect:
 	def _device_created(self, device_path):
 		device = dbus.Interface(self.bus.get_object("org.bluez", device_path),"org.bluez.Device")
 		properties = device.GetProperties()
-		print properties["Name"]
-		print properties["Address"]
+		self.client_name = properties["Name"]
+		self.client_addr =  properties["Address"]
 	
 	
 	def start_connection(self,addr):	
@@ -232,7 +232,7 @@ class Connect:
 			self.connect = False
 			print "Error closing sockets"
 
-		self.database.RemoveServiceRecord(self.handle)
+		self.service.RemoveRecord(self.handle)
 
 		# Restore initial input service condition
 		if self.input_connect == True:
@@ -271,10 +271,10 @@ class start_deamon(Thread):
 
 				hidserver.init_hidserver()
 			else:
-				print "cenas"
+
 				self.state = hidserver.reConnect(self.remoko.adapter_addr,self.addr)
 				#hidserver.reConnect("00:1D:6E:9D:42:9C","00:21:4F:57:93:C8")
-				print "cenas2"
+
 			while self.remoko.connect == False and self.remoko.error == False:
 				time.sleep(1)
 				n = hidserver.connec_state()
@@ -309,20 +309,18 @@ class start_deamon(Thread):
 					#properties = device.GetProperties()
 					#print properties
 					#
-					list = self.remoko.adapter.ListDevices()
-					print list
-					input_status = self.remoko.adapter.ListConnections()
-					print input_status
-					print "You are connect to the address: " + str(input_status[-1])
-					client_name = self.remoko.adapter.GetRemoteName(input_status[-1])
-					self.remoko.client_name = str(client_name)
-					self.remoko.client_addr = str(input_status[-1])
+					#list = self.remoko.adapter.ListDevices()
+					#print list
+					#input_status = self.remoko.adapter.ListConnections()
+					#print input_status
+					print "You are connect to the address: " + self.remoko.client_addr
+					
 					if self.remoko.devices_conf.known_devices_list.has_key(self.remoko.client_addr):
 						print "device already existent"
 					else:
 						self.remoko.devices_conf.add_new_dev(self.remoko.client_addr +'='+ self.remoko.client_name + "\n")
 						self.remoko.devices_conf.known_devices_list[self.remoko.client_addr] = self.remoko.client_name
-					print "connected to: " + str(client_name)
+					print "connected to: " + self.remoko.client_name
 				except:
 			
 					self.remoko.error = True
