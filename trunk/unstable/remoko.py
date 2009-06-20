@@ -43,6 +43,8 @@ from remoko_conf import *
 from remoko_edje_group import *
 from remoko_mouse import *
 from remoko_disconnect import *
+from remoko_connection_status import *
+from remoko_about import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -136,21 +138,6 @@ class main(edje_group):
 			ecore.idle_enterer_add( self.main.check_connection_status)
 			ecore.timer_add(3.0,self.main.transition_to,"menu")
 
-
-#----------------------------------------------------------------------------#
-class connection_status(edje_group):
-#----------------------------------------------------------------------------#
-    def __init__(self, main):
-        edje_group.__init__(self, main, "connection_status")
-
-        
-    	
-    @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_edje_signal_button_pressed(self, emission, source):
-	if source == "back":
-		
-		self.main.transition_to("menu")
-
 #----------------------------------------------------------------------------#
 class bluetooth_off_alert(edje_group):
 #----------------------------------------------------------------------------#
@@ -173,17 +160,6 @@ class bluetooth_off_alert(edje_group):
 		self.main.dbus_object.bluetooth_obj = True
 		self.main.transition_to("main")
 
-#----------------------------------------------------------------------------#
-class about(edje_group):
-#----------------------------------------------------------------------------#
-    def __init__(self, main):
-        edje_group.__init__(self, main, "about")
-
-    @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_edje_signal_button_pressed(self, emission, source):
-	if source == "back":
-		
-		self.main.transition_to("menu")
 
 #----------------------------------------------------------------------------#
 class settings(edje_group):
