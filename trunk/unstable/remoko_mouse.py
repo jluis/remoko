@@ -43,7 +43,14 @@ class mouse_ui(edje_group):
         self.button_hold = False
 	self.scroll_pos = 0
 	self.tape_mouse_area = 0
-	
+     
+    def onShow( self ):
+	self.focus = True
+    
+
+    def onHide( self ):
+	self.focus = False
+
 
     @edje.decorators.signal_callback("mouse,down,1", "*")
     def on_mouse_down(self, emission, source):
