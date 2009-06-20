@@ -40,6 +40,8 @@ from struct import unpack_from
 from remoko_server import *
 from remoko_key_mapper import *
 from remoko_conf import *
+from remoko_edje_group import *
+from remoko_mouse import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -49,96 +51,6 @@ WM_NAME = "remoko"
 WM_CLASS = "remoko"
 
 
-edjepaths = "remoko.edj themes/remoko.edj /usr/share/remoko/themes/remoko.edj".split()
-
-for i in edjepaths:
-    if os.path.exists( i ):
-       global edjepath
-       edjepath = i
-       break
-else:
-    raise Exception( "remoko.edj not found. looked in %s" % edjepaths )
-
-
-#-------------------------------------------------------------------------#
-def mouse_position(self,x1,y1):
-#-------------------------------------------------------------------------#	
-	x = x1 - self.x_init
-	y = y1 - self.y_init
-	
-	self.x_init = x1
-	self.y_init = y1
-			
-	return x,y
-#-------------------------------------------------------------------------#
-def key_dec(self,key):
-#-------------------------------------------------------------------------#
-	self.shift = False
-	self.ctrl = False
-	self.alt = False
-	self.win = False
-	self.modif = ""
-	self.val = ""
-	if len(key) < 5:
-
-		return "00", key
-
-	else:
-
-		key_split = key.split("+")
-		
-		for i in key_split:
-			
-			if i == "shift":
-				self.shift = True
-			
-			elif i == "ctrl":
-				self.ctrl = True
-			
-			elif i == "alt":
-				self.alt = True
-			elif i == "win":
-				self.win = True
-			
-			else:
-			
-				if self.shift == True:
-
-					self.modif = "02"
-					self.shift = False
-					self.val = str(i)
-
-				if self.win == True:
-
-					self.modif = "08"
-					self.win = False
-					self.val = str(i)
-
-				elif self.ctrl == True and self.alt == True:
-
-					self.ctrl = False
-					self.alt = False
-					self.modif = "05"
-					self.val = str(i)
-				
-				elif self.ctrl == True:
-
-					
-					self.ctrl = False
-					self.modif = "01"
-					self.val = str(i)
-				
-				elif self.alt == True:
-					
-					self.alt = False
-					self.modif = "04"
-					self.val = str(i)
-			
-				else:	
-					self.modif = "00"
-					self.val = str(i)
-	
-	return self.modif,self.val
 #----------------------------------------------------------------------------#
 def translate_key(self,keyname, keystring):
 #----------------------------------------------------------------------------#
@@ -173,33 +85,6 @@ def translate_key(self,keyname, keystring):
 	else:
 		return keystring
 
-#----------------------------------------------------------------------------#
-class edje_group(edje.Edje):
-#----------------------------------------------------------------------------#
-    def __init__(self, main, group, parent_name="main"):
-        self.main = main
-        self.parent_name = parent_name
-        global edjepath
-        f = edjepath
-        try:
-            edje.Edje.__init__(self, self.main.evas_canvas.evas_obj.evas, file=f, group=group)
-        except edje.EdjeLoadError, e:
-            raise SystemExit("error loading %s: %s" % (f, e))
-        self.size = self.main.evas_canvas.evas_obj.evas.size
-
-    def onShow( self ):
-        pass
-
-    def onHide( self ):
-        pass
-
-    @edje.decorators.signal_callback("mouse,clicked,1", "button_bottom_right")
-    def on_edje_signal_button_bottom_right_pressed(self, emission, source):
-        self.main.transition_to(self.parent_name)
-
-    @edje.decorators.signal_callback("finished_transition", "*")
-    def on_edje_signal_finished_transition(self, emission, source):
-        self.main.transition_finished()
 
 #----------------------------------------------------------------------------#
 class main(edje_group):
@@ -468,154 +353,6 @@ class menu(edje_group):
 			
 			print "feature not implemented yet :) "
 
-#----------------------------------------------------------------------------#
-class mouse_ui(edje_group):
-#----------------------------------------------------------------------------#
-    def __init__(self, main):
-        edje_group.__init__(self, main, "mouse_ui")
-        self.x_init, self.y_init = 0,0
-        self.mouse_down = False
-        self.first_touch = True
-        self.button_hold = False
-	self.scroll_pos = 0
-	self.tape_mouse_area = 0
-	
-
-    @edje.decorators.signal_callback("mouse,down,1", "*")
-    def on_mouse_down(self, emission, source):
-		
-		self.mouse_down = True
-		self.tape_mouse_area = time.time()
-
-    		
-
-    @edje.decorators.signal_callback("mouse,up,1", "*")
-    def on_mouse_up(self, emission, source):
-
-		if source == "mouse_area":
-			tape_time = time.time() - self.tape_mouse_area
-			
-			if tape_time < 0.2:
-
-				self.main.connection.send_mouse_event(1,0,0,0)
-				self.main.connection.send_event("btn_up")
-
-		self.mouse_down = False
-		self.first_touch = True
-		self.x_init, self.y_init = 0,0
-		
-
-    @edje.decorators.signal_callback("mouse_over_scroll", "*") 
-    def on_mouse_over_scroll(self, emission, source):
-
-		if self.mouse_down == True:
-			
-			if self.first_touch == True:
-
-				tmp,self.scroll_pos = self.main.canvas.pointer_canvas_xy			
-				self.first_touch = False
-			else:
-
-				tmp,y_scroll = self.main.canvas.pointer_canvas_xy	
-
-				if y_scroll > self.scroll_pos + self.main.scroll:
-
-					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:00:000:000:255")
-					
-					
-
-				elif y_scroll < self.scroll_pos - self.main.scroll:
-
-					self.scroll_pos = y_scroll
-					self.main.connection.send_event("02:00:000:000:01")
-					
-					
-				else:
-
-					pass
-
-		else:
-
-			print "mouse_over_scroll"
-
-    @edje.decorators.signal_callback("mouse_over_area", "*")
-    def on_mouse_over_area(self, emission, source):
-
-		if self.mouse_down == True:
-			
-			if self.first_touch == True:
-				
-				self.first_touch = False
-				self.x_init, self.y_init = self.main.canvas.pointer_canvas_xy
-				
-			else:
-				
-				x,y = self.main.canvas.pointer_canvas_xy
-				x1,y1 = mouse_position(self,x,y)
-				
-				
-				if self.button_hold == True:
-					
-					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
-					
-					self.main.connection.send_mouse_event(01,x1,y1,00)
-					
-				else:	
-					
-					mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-					
-					self.main.connection.send_mouse_event(00,x1,y1,00)
-
-		else:
-			pass	
-			
-   
-	
-    @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_mouse_click(self, emission, source):
-    	
-		
-		if source == "bt_right":
-			
-			self.main.connection.send_mouse_event(2,0,0,0)
-			self.main.connection.send_event("btn_up")
-			
-		elif source == "bt_left":
-			
-			self.main.connection.send_mouse_event(1,0,0,0)
-			self.main.connection.send_event("btn_up")
-			
-		elif source == "bt_hold":
-			
-			if self.button_hold == True:
-				
-				self.button_hold = False
-				
-				self.signal_emit("hold_released", "")
-				self.main.connection.send_event("btn_up")
-
-				
-			else:
-				
-				self.button_hold = True
-				self.signal_emit("hold_pressed", "")
-				
-		elif source == "bt_middle":
-			
-			self.main.connection.send_mouse_event(4,0,0,0)
-			self.main.connection.send_event("btn_up")
-
-			
-			
-		elif source == "back":
-	
-			print self.main.previous_group
-			self.main.transition_to("menu")
-				
-		else:
-				
-			pass
 
 #----------------------------------------------------------------------------#
 class keyboard_ui(edje_group):

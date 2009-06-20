@@ -37,7 +37,8 @@ class remoko_conf:
 
 		except:
 			os.system("mkdir /etc/remoko/")
-			os.system("cp /usr/share/remoko/data/remoko.cfg /etc/remoko/")
+			#os.system("cp /usr/share/remoko/data/remoko.cfg /etc/remoko/")
+			os.system("cp data/remoko.cfg /etc/remoko/")
 			self.config.readfp(open(defaultsfile))
 
 		#settings
