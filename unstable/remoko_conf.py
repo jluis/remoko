@@ -22,6 +22,9 @@
 
 import ConfigParser
 import os
+import os.path
+
+defaultsfile = "/etc/remoko/remoko.cfg"
 
 
 class remoko_conf:
