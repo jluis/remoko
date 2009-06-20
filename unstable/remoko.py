@@ -45,6 +45,8 @@ from remoko_mouse import *
 from remoko_disconnect import *
 from remoko_connection_status import *
 from remoko_about import *
+from remoko_settings import *
+from remoko_keyboard import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -161,70 +163,6 @@ class bluetooth_off_alert(edje_group):
 		self.main.transition_to("main")
 
 
-#----------------------------------------------------------------------------#
-class settings(edje_group):
-#----------------------------------------------------------------------------#
-    def __init__(self, main):
-        edje_group.__init__(self, main, "settings")
-        self.part_text_set("fullscreen_option",str(self.main.remoko_conf.fullscreen))
-	self.part_text_set("scroll_option", str(self.main.remoko_conf.scroll))
-	self.part_text_set("accelerometer_option",self.main.accelerometer)
-	self.scroll_value = int(self.main.remoko_conf.scroll)
-	self.fscreen_option = str(self.main.remoko_conf.fullscreen)
-	self.accelerometer_option = self.main.accelerometer
-
-    @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_edje_signal_button_pressed(self, emission, source):
-	 
-
-	if source == "back":
-		
-		self.main.remoko_conf.set_option("user","fullscreen",self.fscreen_option)
-		self.main.remoko_conf.set_option("user","scroll",self.scroll_value)
-		self.main.remoko_conf.save_options()
-		self.main.scroll = self.scroll_value
-		self.main.transition_to("menu")
-
-	elif source == "fullscreen_option":
-		
-		if self.fscreen_option == "Yes":
-			
-			self.part_text_set("fullscreen_option","No")
-			self.fscreen_option = "No"
-			self.main.window.fullscreen = False
-
-		elif self.fscreen_option == "No":
-			
-			self.part_text_set("fullscreen_option","Yes")
-			self.fscreen_option = "Yes"
-			self.main.window.fullscreen = True
-
-	elif source == "scroll_right_icon":
-		
-		if self.scroll_value < 9:
-			self.scroll_value += 1
-			self.part_text_set("scroll_option", str(self.scroll_value))
-	
-	elif source == "scroll_left_icon":
-		
-		if self.scroll_value >= 1:
-			self.scroll_value -= 1
-			self.part_text_set("scroll_option", str(self.scroll_value))
-
-	elif source == "accelerometer_option":
-		
-		if self.accelerometer_option == "Yes":
-			
-			self.part_text_set("accelerometer_option","No")
-			self.accelerometer_option = "No"
-			self.main.accelerometer = "No"
-			
-
-		elif self.fscreen_option == "No":
-			
-			self.part_text_set("accelerometer_option","Yes")
-			self.accelerometer_option = "Yes"
-			self.main.accelerometer = "Yes"
 
 #----------------------------------------------------------------------------#
 class menu(edje_group):
@@ -300,123 +238,6 @@ class menu(edje_group):
 		else:
 			
 			print "feature not implemented yet :) "
-
-
-#----------------------------------------------------------------------------#
-class keyboard_ui(edje_group):
-#----------------------------------------------------------------------------#
-    def __init__(self, main):
-        edje_group.__init__(self, main, "keyboard_ui")
-        self.shift = False
-        self.alt = False
-        self.ctrl = False
-	self.tape_mouse_area = 0
-	self.x_init, self.y_init = 0,0
-        self.mouse_down = False
-        self.first_touch = True
-
-    def onShow( self ):
-        self.focus = True
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_ON)
-        #if illume:
-            #illume.kbd_show()
-
-    def onHide( self ):
-        self.focus = False
-        self.main.window.x_window_virtual_keyboard_state_set(ecore.x.ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF)
-        #if illume:
-            #illume.kbd_hide()
-
-    @evas.decorators.key_down_callback
-    def on_key_down( self, event ):
-    	print event
-        key = event.keyname
-	
-	try:
-		if key == "Shift_L":
-			self.shift = True
-			
-		elif key == "Control_L":
-			self.ctrl = True
-			
-		elif key == "Alt_L":
-			self.alt = True
-			
-		else:
-			
-			value = self.main.key_mapper.mapper[str(key)]
-			
-			if self.shift == True:
-				self.main.connection.send_keyboard_event("02",value)
-				self.shift = False
-			
-			elif self.alt == True and self.ctrl == True:
-				self.main.connection.send_keyboard_event("05",value)
-				self.ctrl = False
-				self.alt = False
-				
-			elif self.ctrl == True:
-				self.main.connection.send_keyboard_event("01",value)
-				self.ctrl = False
-				
-			elif self.alt == True:
-				self.main.connection.send_keyboard_event("04",value) 	
-				self.alt = False
-			
-			else:
-				self.main.connection.send_keyboard_event("00",value)
-	except:
-		print "Key error --->>>"
-
-    @edje.decorators.signal_callback("mouse,clicked,1", "*")
-    def on_edje_signal_button_pressed(self, emission, source):
-	if source == "back":
-		
-		self.main.transition_to("menu")
-
-######## Mouse Area ##############################
-
-    @edje.decorators.signal_callback("mouse,down,1", "background")
-    def on_mouse_down(self, emission, source):
-		
-		self.mouse_down = True
-		self.tape_mouse_area = time.time()
-
-    @edje.decorators.signal_callback("mouse,up,1", "background")
-    def on_mouse_up(self, emission, source):
-
-		
-		tape_time = time.time() - self.tape_mouse_area
-		
-		if tape_time < 0.2:
-
-			self.main.connection.send_mouse_event(1,0,0,0)
-			self.main.connection.send_event("btn_up")
-
-		self.mouse_down = False
-		self.first_touch = True
-		self.x_init, self.y_init = 0,0
-
-    @edje.decorators.signal_callback("mouse_over_area", "*")
-    def on_mouse_over_area(self, emission, source):
-
-		if self.mouse_down == True:
-			
-			if self.first_touch == True:
-				
-				self.first_touch = False
-				self.x_init, self.y_init = self.main.canvas.pointer_canvas_xy
-				
-			else:
-				
-				x,y = self.main.canvas.pointer_canvas_xy
-				x1,y1 = mouse_position(self,x,y)
-					
-				mov = "02:00:" + str(x1) + ":" + str(y1) + ":000"
-				self.main.connection.send_mouse_event(00,x1,y1,00)
-
-		else:
-			pass	
 
 
 #----------------------------------------------------------------------------#
