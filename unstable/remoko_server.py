@@ -33,7 +33,6 @@ class Connect:
 	
 	def __init__(self):
 
-		self.input_connect = False
 		self.connect = False
 		self.sock_open = False
 		self.client_name = None
@@ -56,87 +55,31 @@ class Connect:
 		self.bus = dbus.SystemBus()
 		self.input = dbus.Interface(self.bus.get_object('org.bluez', '/org/bluez/service_input'), 'org.bluez.Service')
 		
-		
-		#manager = dbus.Interface(self.bus.get_object("org.bluez", "/"),"org.bluez.Manager")
-
-		#self.path = manager.DefaultAdapter()
-		#self.adapter = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Adapter")
-
-
-		#self.adapter_addr = self.adapter.GetAddress()
-		#print self.adapter_addr
 
 		# Check if input service is running, if yes terminate the service
 
-		try:
+	        try:
+			os.system("/etc/init.d/bluetooth stop")
+	        except:
+			print "can't stop bluetooth services"
+	        try:
+			os.system("mv /usr/lib/bluetooth/plugins/input.so /usr/lib/bluetooth/plugins/input.so_back")
+	        except:
+			print "can't move input plugin"
 
-                       input_status = self.input.IsRunning()
+	        try:
+		
+			os.system("/etc/init.d/bluetooth start")
+	        except:
+			print "can't start bluetooth services"
 
-                except:
-		       print "ERROR: isRunning d-bus call not present"
+	        try:
+			os.system("mv /usr/lib/bluetooth/plugins/input.so_back /usr/lib/bluetooth/plugins/input.so")
+			self.bluez_subsystem = True
+	        except:
+			print "can't move input plugin" 
 
-		       try:
-				os.system("/etc/init.d/bluetooth stop")
-		       except:
-				print "can't stop bluetooth services"
-		       try:
-				os.system("mv /usr/lib/bluetooth/plugins/input.so /usr/lib/bluetooth/plugins/input.so_back")
-		       except:
-				print "can't move input plugin"
-
-		       try:
-			
-				os.system("/etc/init.d/bluetooth start")
-		       except:
-				print "can't start bluetooth services"
-
-		       try:
-				os.system("mv /usr/lib/bluetooth/plugins/input.so_back /usr/lib/bluetooth/plugins/input.so")
-				self.bluez_subsystem = True
-		       except:
-				print "can't move input plugin"
-			
-				
-				
-                       input_status = False
-
-                       self.input_connect = False
-
-		if input_status == True:
-			
-			try:
-				cenas = self.input.Stop()
-				self.input_connect = True
-				print "--> BlueZ input service stopped"
-
-			except:
-
-			       try:
-					os.system("/etc/init.d/bluetooth stop")
-		       	       except:
-					print "can't stop bluetooth services"
-			       try:
-					os.system("mv /usr/lib/bluetooth/plugins/input.so /usr/lib/bluetooth/plugins/input.so_back")
-			       except:
-					print "can't move input plugin"
-
-			       try:
-			
-					os.system("/etc/init.d/bluetooth start")
-			       except:
-					print "can't start bluetooth services"
-
-			       try:
-					os.system("mv /usr/lib/bluetooth/plugins/input.so_back /usr/lib/bluetooth/plugins/input.so")
-					self.bluez_subsystem = True
-			       except:
-					print "can't move input plugin"
-				
-			       self.input_connect = False
-
-		else:
-			
-			self.input_connect = False
+		
 		try:
 
 			# Add service record to the BlueZ database
@@ -144,9 +87,6 @@ class Connect:
 
 			self.path = manager.DefaultAdapter()
 			self.adapter = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Adapter")
-			#self.adapter_addr = self.adapter.GetAddress()
-			#print self.adapter_addr
-			
 
 			self.service = dbus.Interface(self.bus.get_object("org.bluez", self.path),"org.bluez.Service")
 
@@ -236,9 +176,7 @@ class Connect:
 		self.service.RemoveRecord(self.handle)
 
 		# Restore initial input service condition
-		if self.input_connect == True:
-			self.input.Start()
-			print "--> BlueZ input service started"
+
 		if self.bluez_subsystem == True:
 			try:
 				os.system("/etc/init.d/bluetooth stop")
@@ -304,16 +242,6 @@ class start_deamon(Thread):
 				try:	
 					properties = self.remoko.adapter.GetProperties()
 					print properties["Address"]
-					#
-					#path = self.remoko.adapter.FindDevice("00:10:60:EB:85:21")
-					#device = dbus.Interface(self.remoko.bus.get_object("org.bluez", path),"org.bluez.Device")
-					#properties = device.GetProperties()
-					#print properties
-					#
-					#list = self.remoko.adapter.ListDevices()
-					#print list
-					#input_status = self.remoko.adapter.ListConnections()
-					#print input_status
 					print "You are connect to the address: " + self.remoko.client_addr
 					
 					if self.remoko.devices_conf.known_devices_list.has_key(self.remoko.client_addr):

@@ -69,6 +69,7 @@ class accelerometer(edje_group):
 		else:
 			self.press = False
 			self.signal_emit("hold_released", "")
+
 		
 		#self.main.accelerometer_prev = "multimedia"
 		#self.main.transition_to("accelerometer_conf")
