@@ -90,20 +90,20 @@ class keyboard_ui(edje_group):
 			
 			value = self.main.key_mapper.mapper[str(key)]
 			
-			if self.shift == True:
+			if self.shift:
 				self.main.connection.send_keyboard_event("02",value)
 				self.shift = False
 			
-			elif self.alt == True and self.ctrl == True:
+			elif self.alt  and self.ctrl:
 				self.main.connection.send_keyboard_event("05",value)
 				self.ctrl = False
 				self.alt = False
 				
-			elif self.ctrl == True:
+			elif self.ctrl:
 				self.main.connection.send_keyboard_event("01",value)
 				self.ctrl = False
 				
-			elif self.alt == True:
+			elif self.alt:
 				self.main.connection.send_keyboard_event("04",value) 	
 				self.alt = False
 			
@@ -144,9 +144,9 @@ class keyboard_ui(edje_group):
     @edje.decorators.signal_callback("mouse_over_area", "*")
     def on_mouse_over_area(self, emission, source):
 
-		if self.mouse_down == True:
+		if self.mouse_down:
 			
-			if self.first_touch == True:
+			if self.first_touch:
 				
 				self.first_touch = False
 				self.x_init, self.y_init = self.main.canvas.pointer_canvas_xy

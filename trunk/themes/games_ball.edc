@@ -1,6 +1,6 @@
 /*
 *
-*      games.edc
+*      games_ball.edc
 *
 *      Copyright 2008 - 2009 	Valerio Valerio <vdv100@gmail.com>
 *						
@@ -19,6 +19,7 @@
 *      along with this program; if not, write to the Free Software
 *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
+
 
 #define ICON(part_name, xpos, ypos)                         		 \
             part {                                                       \
@@ -84,7 +85,7 @@ parts {
 	  part {
             name: "background";
             type: IMAGE;
-            mouse_events: 0;
+            mouse_events: 1;
 	    clip_to: "swallow_clip";   
             description {
                state: "default" 0.0;
@@ -108,21 +109,41 @@ parts {
             }
          }
 
-	ICON("racing",0,0);
-	ICON("ball",0.8,0);
-	ICON("mouse",0,1.5);
-	ICON("no_fullscreen",0.8,1.5);
-	SCREEN_TEXT("Games","games_icon.png",0.15);
+	ICON("button_left",0,1.5);
+	ICON("button_right",0.8,1.5);
+	ACCEL_BUTTON("");
         LOGO();
 	BACK();
 	
     }
-    programs {
 
-	ACTIVATE("back");
-	ACTIVATE("racing");
-	ACTIVATE("ball");
-	ACTIVATE("mouse");
-	ACTIVATE("no_fullscreen");
+    programs {
+	
+	
+
+        ACTIVATE("back");
+        ACTIVATE("accel_button");
+	program {
+                name: "accel_on";
+                signal: "accel_on";
+		action: STATE_SET "clicked" 0.0;
+		target: "accel_button_icon";   
+        }
+        program {
+                name: "accel_off";
+                signal: "accel_off";
+		action: STATE_SET "default" 0.0;   
+		target: "accel_button_icon";       
+        }
+	program {
+                name: "mouse_area_entered";
+                signal: "mouse,move";
+                source: "background";
+		action: SIGNAL_EMIT "mouse_over_area" "mouse_area";       
+        }
     	TRANSITION();
+      
     }
+    
+	
+

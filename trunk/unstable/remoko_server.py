@@ -128,7 +128,7 @@ class Connect:
 			mod = int(modifier)
 			key = int(key)
 			n = hidserver.send_key(mod,key)
-			self.release_keyboard_event()
+			#self.release_keyboard_event()
 			if n < 0:
 				self.connect = False
 				print "Disconnected"
@@ -160,7 +160,7 @@ class Connect:
 	def terminate_connection(self):
 		
 		try:
-			if self.connect == False:
+			if not self.connect:
 				hidserver.quit()
 				n = hidserver.quit_server()
 				print "killed"
@@ -177,7 +177,7 @@ class Connect:
 
 		# Restore initial input service condition
 
-		if self.bluez_subsystem == True:
+		if self.bluez_subsystem:
 			try:
 				os.system("/etc/init.d/bluetooth stop")
 			except:
@@ -214,14 +214,14 @@ class start_deamon(Thread):
 				self.state = hidserver.reConnect(self.remoko.adapter_addr,self.addr)
 				#hidserver.reConnect("00:1D:6E:9D:42:9C","00:21:4F:57:93:C8")
 
-			while self.remoko.connect == False and self.remoko.error == False:
+			while not self.remoko.connect and not self.remoko.error:
 				time.sleep(1)
 				n = hidserver.connec_state()
 				print "Waiting for a connection..."
 				if n == 1:
 					self.remoko.connect = True
 
-				elif self.remoko.quit_server == True:
+				elif self.remoko.quit_server:
 					print "Exit"
 					remoko.shutdown()
 
