@@ -79,9 +79,9 @@ class mouse_ui(edje_group):
     @edje.decorators.signal_callback("mouse_over_scroll", "*") 
     def on_mouse_over_scroll(self, emission, source):
 
-		if self.mouse_down == True:
+		if self.mouse_down:
 			
-			if self.first_touch == True:
+			if self.first_touch:
 
 				tmp,self.scroll_pos = self.main.canvas.pointer_canvas_xy			
 				self.first_touch = False
@@ -113,9 +113,9 @@ class mouse_ui(edje_group):
     @edje.decorators.signal_callback("mouse_over_area", "*")
     def on_mouse_over_area(self, emission, source):
 
-		if self.mouse_down == True:
+		if self.mouse_down:
 			
-			if self.first_touch == True:
+			if self.first_touch:
 				
 				self.first_touch = False
 				self.x_init, self.y_init = self.main.canvas.pointer_canvas_xy
@@ -126,7 +126,7 @@ class mouse_ui(edje_group):
 				x1,y1 = mouse_position(self,x,y)
 				
 				
-				if self.button_hold == True:
+				if self.button_hold:
 					
 					mov = "02:01:" + str(x1) + ":" + str(y1) + ":000"
 					
@@ -159,7 +159,7 @@ class mouse_ui(edje_group):
 			
 		elif source == "bt_hold":
 			
-			if self.button_hold == True:
+			if self.button_hold:
 				
 				self.button_hold = False
 				

@@ -52,6 +52,8 @@ from remoko_presentation import *
 from remoko_multimedia import *
 from remoko_accelerometer import *
 from remoko_games import *
+from remoko_games_racing import *
+from remoko_games_ball import *
 
 WIDTH = 480
 HEIGHT = 640
@@ -103,7 +105,7 @@ class main(edje_group):
         edje_group.__init__(self, main, "main")
 
 	self.part_text_set("label_waiting", "Waiting for connection ... ")
-	#ecore.timer_add(1.0,self.main.transition_to,"about")
+	#ecore.timer_add(1.0,self.main.transition_to,"menu")
 
 	ecore.timer_add(1.0,self.check_connection)
 
@@ -112,7 +114,7 @@ class main(edje_group):
 	if source == "quit":
 		
 		self.main.connection.terminate_connection()
-		if self.main.connection.connect == False:
+		if not self.main.connection.connect:
 			os.system("pkill  -9 hidclient")
 		self.main.on_exit()
 		ecore.main_loop_quit()
@@ -120,9 +122,9 @@ class main(edje_group):
 
     def check_connection(self):
 
-		if self.main.connection_processed == True:
+		if self.main.connection_processed:
 
-			if self.main.connection.connect == False:
+			if not self.main.connection.connect:
 				ecore.timer_add(1.0,self.check_connection)
 				
 			else:
@@ -208,7 +210,7 @@ class conf_keys(edje_group):
 		prev_source = self.main.current_source + "_icon"
 		local_key = str(self.main.current_source)
 		
-		if self.hit == False:
+		if not self.hit:
 			
 			self.hit = False
 			self.main.transition_to(prev)
@@ -252,26 +254,26 @@ class conf_keys(edje_group):
 
 	else:
 	
-		if self.shift == True:
+		if self.shift:
 			
 			self.part_text_set("value","  "+ str(key)+ " ")
 			self.shift = False
 			self.main.key_text = "shift+"+str(key_value)
 		
-		elif self.alt == True and self.ctrl == True:
+		elif self.alt and self.ctrl:
 
 			self.part_text_set("value","ctrl+alt+" + str(key_key))
 			self.ctrl = False
 			self.alt = False
 			self.main.key_text = "ctrl+alt+" + str(key_key)
 
-		elif self.ctrl == True:
+		elif self.ctrl:
 
 			self.part_text_set("value","ctrl+" + str(key_key))
 			self.ctrl = False
 			self.main.key_text = "ctrl+" + str(key_key)			
 
-		elif self.alt == True:
+		elif self.alt:
 
 			if key_value == "Tab":
 
@@ -286,7 +288,7 @@ class conf_keys(edje_group):
 					self.press_f = True
 					self.part_text_set("value","alt+" + self.main.key_text)
 				
-				elif self.press_f == True:
+				elif self.press_f:
 					if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
 						if self.main.key_text == "1":
 							self.press_fpp = True
@@ -301,7 +303,7 @@ class conf_keys(edje_group):
 						self.part_text_set("value","  " +self.main.key_text+ " ")
 					
 					
-				elif self.press_fpp == True:
+				elif self.press_fpp:
 					if self.main.key_text in ("0", "1", "2"):
 						self.main.key_text = "alt+f1" + self.main.key_text
 						self.part_text_set("value",self.main.key_text)
@@ -327,7 +329,7 @@ class conf_keys(edje_group):
 				self.press_w = True
 				self.part_text_set("value","  " + self.main.key_text+" ")
 
-			elif self.press_w == True:
+			elif self.press_w:
 
 				if self.main.key_text == "i":
 					self.press_wi = True
@@ -338,7 +340,7 @@ class conf_keys(edje_group):
 					self.press_w = False
 					self.part_text_set("value","  " + self.main.key_text+" ")
 
-			elif self.press_wi == True:	
+			elif self.press_wi:	
 
 				if self.main.key_text == "n":
 					self.press_win = True
@@ -349,7 +351,7 @@ class conf_keys(edje_group):
 					self.press_w = False
 					self.part_text_set("value","  " + self.main.key_text+" ")
 
-			elif self.press_win == True:
+			elif self.press_win:
 
 				self.press_win = False	
 				self.part_text_set("value","win+" + self.main.key_text+" ")
@@ -360,7 +362,7 @@ class conf_keys(edje_group):
 				self.press_f = True
 				self.part_text_set("value","  " + self.main.key_text+" ")
 				
-			elif self.press_f == True:
+			elif self.press_f:
 				if self.main.key_text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
 					if self.main.key_text == "1":
 						self.press_fpp = True
@@ -374,7 +376,7 @@ class conf_keys(edje_group):
 					self.part_text_set("value","  " + self.main.key_text+" ")
 					
 					
-			elif self.press_fpp == True:
+			elif self.press_fpp:
 				if self.main.key_text in ("0", "1", "2"):
 					self.main.key_text = "f1" + self.main.key_text
 					self.part_text_set("value","  " + self.main.key_text+" ")
@@ -427,7 +429,7 @@ class GUI(object):
         self.groups["swallow"] = edje_group(self, "swallow")
         self.evas_canvas.evas_obj.data["swallow"] = self.groups["swallow"]
 
-        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","accelerometer_conf","games","games_conf","multimedia","multimedia_conf","presentation","presentation_conf","conf_keys"):
+        for page in ("main","mouse_ui", "menu", "disconnect", "connection_status", "keyboard_ui","about","bluetooth_off_alert","settings","accelerometer","accelerometer_conf","games","games_racing_conf","multimedia","multimedia_conf","presentation","presentation_conf","conf_keys","games_racing","games_ball"):
 		ctor = globals().get( page, None )
 		if ctor:
 			self.groups[page] = ctor( self )
@@ -506,7 +508,7 @@ class GUI(object):
 	
     def on_exit(self):
 	
-	if self.restore_conditions == True:
+	if self.restore_conditions:
 
 		os.system("echo 1 > /sys/devices/platform/s3c2440-i2c/i2c-adapter/i2c-0/0-0073/neo1973-pm-bt.0/reset")
 	
@@ -514,7 +516,7 @@ class GUI(object):
 
     def initialize_remoko_server(self, addr=1):
 
-	if self.dbus_object.bluetooth_obj == True:
+	if self.dbus_object.bluetooth_obj:
 
 		self.connection = Connect()
 		self.connection.start_connection(addr)
@@ -1004,7 +1006,7 @@ class EvasCanvas(object):
 
 	self.main.connection.terminate_connection()
 
-	if self.main.connection.connect == False:
+	if not self.main.connection.connect:
 		os.system("pkill  -9 hidclient")
 	self.main.on_exit()
 	ecore.main_loop_quit()

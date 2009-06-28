@@ -60,7 +60,7 @@ class accelerometer(edje_group):
 
 	elif source == "conf_gestures":
 		
-		if self.press == False:
+		if not self.press:
 			self.press = True
 			self.accell_value()
 			self.first_time = False
@@ -111,12 +111,12 @@ class accelerometer(edje_group):
 		
 
 	    #print "X=" + str(self.x) + " Y=" + str(self.y) + " Z=" + str(self.z)
-	    if self.first_time == True:
+	    if self.first_time:
 		self.x_init = self.x
 		self.y_init = self.y
 		self.z_init = self.z
 
-	    elif self.first_time == False:
+	    elif not self.first_time:
 		
 		if self.y < 120 and self.x < 0:
 
@@ -246,10 +246,10 @@ class accelerometer(edje_group):
 		#print str(self.y) + "-" + str(self.y_init)
 		
 		
-	    if self.press == True:
+	    if self.press:
 		ecore.timer_add(0.001,self.accell_value)
 
-	    elif self.press == False:
+	    elif self.press:
 
 		self.first_time = True
 		
@@ -324,7 +324,7 @@ class accelerometer_conf(edje_group):
 	self.part_text_set("horizontal_circle_key_icon", self.horizontal_circle_key)
 	
 	self.key_value = ""
-	if self.main.gestures == False:
+	if not self.main.gestures:
 		self.signal_emit("hide_screen_2", "")
 		self.signal_emit("hide_screen_3", "")
 		self.signal_emit("hide_screen_1", "")

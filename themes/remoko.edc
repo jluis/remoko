@@ -67,6 +67,19 @@ images {
   image: "button_hold_icon.png" COMP;
   image: "up_icon.png" COMP;
   image: "down_icon.png" COMP;
+  image: "a_icon.png" COMP;
+  image: "b_icon.png" COMP;
+  image: "c_icon.png" COMP;
+  image: "d_icon.png" COMP;
+  image: "keyboard_icon_landscape.png" COMP;
+  image: "back_landscape.png" COMP;
+  image: "accel_off_landscape_icon.png" COMP;
+  image: "accel_on_landscape_icon.png" COMP;
+  image: "logo_openmoko_landscape.png" COMP;
+  image: "accel_off_icon.png" COMP;
+  image: "accel_on_icon.png" COMP;
+  image: "ball_icon.png" COMP;
+  image: "racing_icon.png" COMP;
 
 }
 
@@ -547,7 +560,164 @@ fonts {
                fill { smooth: 0; } 					\
             }								\
          }
+
+#define BACK_LANDSCAPE()						\
+   part {								\
+            name: "back";						\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.83 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.99 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "button_background.png"; }               \   
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "button_background_active.png"; }        \          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "back_icon";						\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.83 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.99 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "back_landscape.png"; }                  \
+               fill { smooth: 0; } 					\
+            }								\
+         }
+
+#define CONF_KEYS_LANDSCAPE()						\
+   part {								\
+            name: "conf_keys";						\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.63 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.79 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "button_background.png"; }               \   
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "button_background_active.png"; }        \          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "conf_keys_icon";					\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.63 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.79 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "keyboard_icon_landscape.png"; }         \
+               fill { smooth: 0; } 					\
+            }								\
+         }
+
+#define ACCEL_BUTTON(layout)							\
+   part {								\
+            name: "accel_button";					\
+            type: IMAGE;						\
+            mouse_events: 1;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "button_background.png"; }               \   
+               fill { smooth: 0; } 					\
+            }								\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "button_background_active.png"; }       	\          
+               fill { smooth: 0; } 					\
+            }								\
+         }								\
+									\
+	part {								\
+            name: "accel_button_icon";					\
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+	       visible: 1;						\
+               rel1 {							\
+                  relative: 0.43 0.87;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.59 0.99;					\
+                  offset: -1 -1;					\
+               }							\
+	       image { normal: "accel_off_"layout"icon.png"; }        \
+               fill { smooth: 0; } 					\
+            }								\
+									\
+	    description {						\
+               state: "clicked" 0.0;					\
+	       inherit: "default" 0.0;                             	\
+	       image { normal: "accel_on_"layout"icon.png"; }       	\          
+               fill { smooth: 0; } 					\
+            }								\							
+         }								\
 	
+
+	
+
 #define CONF_GESTURES()							\
    part {								\
             name: "conf_gestures";					\
@@ -854,7 +1024,7 @@ fonts {
 #define LOGO()								\
 									\
   part {								\
-            name: "bt_left_icon";					\
+            name: "logo_icon";					        \
             type: IMAGE;						\
             mouse_events: 0;						\
             clip_to: "swallow_clip";   					\
@@ -870,6 +1040,29 @@ fonts {
                   offset: -1 -1;					\
                }							\
 	      image { normal: "logo_openmoko.png"; }                  	\
+              fill { smooth: 0; } 					\
+            }								\
+         }		
+
+#define LOGO_LANDSCAPE()						\
+									\
+  part {								\
+            name: "logo_icon";					        \
+            type: IMAGE;						\
+            mouse_events: 0;						\
+            clip_to: "swallow_clip";   					\
+            description {						\
+               state: "default" 0.0;					\
+               visible: 1;						\
+               rel1 {							\
+                  relative: 0.01 0.03;					\
+                  offset: 0 0;						\
+               }							\
+               rel2 {							\
+                  relative: 0.12 0.18;					\
+                  offset: -1 -1;					\
+               }							\
+	      image { normal: "logo_openmoko_landscape.png"; }          \
               fill { smooth: 0; } 					\
             }								\
          }								
@@ -1103,8 +1296,16 @@ collections {
 		#include "games.edc"
 	 }
 	 group {
-		name: "games_conf";
-		#include "games_conf.edc"
+		name: "games_racing";
+		#include "games_racing.edc"
+	 }
+	 group {
+		name: "games_racing_conf";
+		#include "games_racing_conf.edc"
+	 }
+         group {
+		name: "games_ball";
+		#include "games_ball.edc"
 	 }
 	 group {
 		name: "accelerometer";
